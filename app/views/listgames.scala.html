@@ -1,0 +1,12 @@
+@(games:List[Models.Game])
+
+@main("Games"){
+    "A list of games!"
+
+    @games.map { g =>
+        <ul>
+            <li>@g.id</li>
+            <li>@g.name</li>
+        </ul>
+    }
+}

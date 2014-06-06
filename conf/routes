@@ -5,5 +5,12 @@
 # Home page
 GET     /                           controllers.Application.index
 
+# List games
+GET     /games                      controllers.Application.listGames
+
+# Add a game
+GET     /newgame                    controllers.Application.getNewGame
+POST    /newgame                    controllers.Application.createNewGame
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

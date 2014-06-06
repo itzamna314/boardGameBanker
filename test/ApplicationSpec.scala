@@ -26,5 +26,15 @@ class ApplicationSpec extends Specification {
       contentType(home) must beSome.which(_ == "text/html")
       contentAsString(home) must contain ("Your new application is ready.")
     }
+
+    "show the games index" in new WithApplication{
+      models.Dal.resetTest()
+      val games = route(FakeRequest(GET, "/games")).get
+
+      status(games) must equalTo(OK)
+      contentType(games) must beSome.which(_ == "text/html")
+      contentAsString(games) must contain ("Game of Thrones")
+      contentAsString(games) must contain ("Smallworld")
+    }
   }
 }

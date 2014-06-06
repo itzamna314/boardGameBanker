@@ -19,7 +19,7 @@ object Models {
   class GameTable(tag: Tag) extends Table[Game](tag,"games") {
 
     def id = column[Int]("gameid", O.PrimaryKey, O.AutoInc)
-    def name = column[String]("name", O.NotNull)
+    def name = column[String]("gamename", O.NotNull)
 
     def * = (id.?, name) <> (Game.tupled, Game.unapply)
   }

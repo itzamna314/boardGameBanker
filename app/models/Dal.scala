@@ -17,6 +17,15 @@ object Dal {
     resetTest()
   }
 
+  println("Loading DAL")
+  println("db: " + play.Play.application().configuration().getString("db.default.url"))
+
+  def listGames() = {
+    play.api.db.slick.DB.withSession { implicit session =>
+      Models.games.list
+    }
+  }
+
   def resetTest() = {
     if (isTest) {
       // Populate the test database

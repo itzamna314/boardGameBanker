@@ -9,7 +9,6 @@ libraryDependencies ++= Seq(
   anorm,
   cache,
   "mysql" % "mysql-connector-java" % "5.1.24",
-  "org.slf4j" % "slf4j-nop" % "1.6.4",
   "org.scala-lang" % "scala-reflect" % "2.10.3",
   "com.typesafe.slick" %% "slick" % "2.0.0",
   "com.typesafe.play" %% "play-slick" % "0.6.0.1"

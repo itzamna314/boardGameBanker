@@ -16,7 +16,7 @@ object Application extends Controller {
   }
 
   def listGames = DBAction { implicit rs =>
-    val games = Models.games.list
+    val games = Dal.listGames
     Ok(views.html.listgames(games))
   }
 

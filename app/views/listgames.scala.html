@@ -30,18 +30,35 @@
         </li>
     </ul>
 
-    <p>Number of games: 2</p>
-
     <div id="gameslist" ng-controller="GamesList">
-    <ul>
-        <li ng-repeat="game in games">
-            {{ game.name }}
-            <p>
-                <span>Players: </span>
-                <span>{{game.players}}</span>
-            </p>
-        </li>
-    </ul>
+
+        <p>Number of {{entity}}: {{games.length}} </p>
+
+        <ul>
+            <li ng-repeat="game in games">
+                {{ game.name }}
+                <p>
+                    <span>Players: </span>
+                    <span>{{game.players}}</span>
+                </p>
+            </li>
+        </ul>
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-2">
+                    Search: <input ng-model="query" />
+                </div>
+            </div>
+        </div>
+        <div class="col-md-10">
+            <ul class="games">
+                <li ng-repeat="game in games | filter:query">
+                    {{game.name}}
+                    <p>{{game.players}}</p>
+                </li>
+            </ul>
+        </div>
     </div>
 
    @*

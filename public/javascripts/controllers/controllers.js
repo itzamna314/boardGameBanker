@@ -17,6 +17,8 @@ function GamesList($scope) {
             }*/
         }
     ]
+
+    $scope.entity = "Players"
 }
 
 function foo(){ alert('Foo!'); }

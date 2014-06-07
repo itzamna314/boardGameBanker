@@ -9,4 +9,11 @@ describe("Player",function() {
 
         expect(scope.games.length).toBe(2);
     });
+
+    it("should have an entity name", function() {
+        var scope = {};
+        var gamesList = new GamesList(scope);
+
+        expect(scope.entity).toBe("Players");
+    })
 })

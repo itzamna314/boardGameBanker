@@ -1,12 +1,55 @@
 @(games:List[Models.Game])
 
 @main("Games"){
-    "A list of games!"
+    <div>
+        Nothing here {{1 + 2}}
+    </div>
 
+    <ul>
+        <li>
+            <span>SmallWorld</span>
+            <p>
+                <span>Players:</span>
+                <ul>
+                    <li>Kim</li>
+                    <li>Annie</li>
+                    <li>Hannah</li>
+                </ul>
+            </p>
+        </li>
+        <li>
+            <span>Game Of Thrones</span>
+            <p>
+                <span>Players:</span>
+                <ul>
+                    <li>Alex</li>
+                    <li>Mike</li>
+                    <li>Ryan</li>
+                </ul>
+            </p>
+        </li>
+    </ul>
+
+    <p>Number of games: 2</p>
+
+    <div id="gameslist" ng-controller="GamesList">
+    <ul>
+        <li ng-repeat="game in games">
+            {{ game.name }}
+            <p>
+                <span>Players: </span>
+                <span>{{game.players}}</span>
+            </p>
+        </li>
+    </ul>
+    </div>
+
+   @*
     @games.map { g =>
         <ul>
             <li>@g.id</li>
             <li>@g.name</li>
         </ul>
     }
+    *@
 }

@@ -34,5 +34,8 @@ object Application extends Controller {
       )
   }
 
+  def testJavascripts = Action { implicit request =>
+    Ok(views.html.js_spec())
+  }
 
 }

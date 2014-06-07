@@ -12,5 +12,8 @@ GET     /games                      controllers.Application.listGames
 GET     /newgame                    controllers.Application.getNewGame
 POST    /newgame                    controllers.Application.createNewGame
 
+# Run JS tests
+GET    /jstest                      controllers.Application.testJavascripts
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

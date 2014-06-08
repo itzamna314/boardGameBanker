@@ -3,6 +3,7 @@ package models
 import play.api.db.slick.Config.driver.simple._
 import play.api.Play.current
 import scala.slick.jdbc.meta.MTable
+import Models._
 
 /**
  * Simple data access layer.
@@ -17,12 +18,21 @@ object Dal {
     resetTest()
   }
 
-  println("Loading DAL")
-  println("db: " + play.Play.application().configuration().getString("db.default.url"))
-
   def listGames() = {
     play.api.db.slick.DB.withSession { implicit session =>
       Models.games.list
+    }
+  }
+
+  def findUser(query:String) = {
+    play.api.db.slick.DB.withSession { implicit session =>
+      Models.users.filter(u => u.username === query || u.email === query).firstOption
+    }
+  }
+
+  def createUser(u:User) = {
+    play.api.db.slick.DB.withSession { implicit session =>
+      Models.users += u
     }
   }
 
@@ -42,12 +52,12 @@ object Dal {
         )
 
         Models.users ++= Seq(
-          Models.User(Some(1),"Kim"),
-          Models.User(Some(2),"Squish"),
-          Models.User(Some(3),"Dao"),
-          Models.User(Some(4),"Fish"),
-          Models.User(Some(5),"Gene"),
-          Models.User(Some(6),"Ryan")
+          Models.User(Some(1),"Kim", "kim@gmail.com"),
+          Models.User(Some(2),"Squish", "squish@gmail.com"),
+          Models.User(Some(3),"Dao", "dao@gmail.com"),
+          Models.User(Some(4),"Fish", "fish@gmail.com"),
+          Models.User(Some(5),"Gene", "gene@gmail.com"),
+          Models.User(Some(6),"Ryan", "ryan@gmail.com")
         )
 
         Models.players += Models.Player(Some(1),2,1,"QuimmFTW","123456")

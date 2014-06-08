@@ -12,7 +12,7 @@ import play.api.Play.current
 object Application extends Controller {
 
   def index = Action {
-    Ok(views.html.index("Your new application is ready."))
+    Ok(views.html.welcome(Forms.createUserForm))
   }
 
   def listGames = DBAction { implicit rs =>
@@ -37,5 +37,4 @@ object Application extends Controller {
   def testJavascripts = Action { implicit request =>
     Ok(views.html.js_spec())
   }
-
 }

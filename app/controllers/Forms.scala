@@ -2,7 +2,7 @@ package controllers
 
 import play.api.data.Forms._
 import play.api.data._
-import models.Models.Game
+import models.Models._
 
 /**
  * Object wrapper for all forms
@@ -14,5 +14,13 @@ object Forms {
       "id" -> optional(number()),
       "name" -> text()
     )(Game.apply)(Game.unapply)
+  )
+
+  val createUserForm = Form(
+    mapping(
+      "id" -> optional(number()),
+      "name" -> text(),
+      "email" -> text()
+    )(User.apply)(User.unapply)
   )
 }

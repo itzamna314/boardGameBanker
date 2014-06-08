@@ -26,7 +26,7 @@ object Models {
 
   val games = TableQuery[GameTable]
 
-  case class User(id:Option[Int],name:String)
+  case class User(id:Option[Int],name:String,email:String)
 
   /*
    * Table to store users.  Users may be used to persist logins in the future.  For
@@ -36,8 +36,9 @@ object Models {
 
     def id = column[Int]("userid", O.PrimaryKey, O.AutoInc)
     def username = column[String]("username", O.NotNull)
+    def email = column[String]("email",O.NotNull)
 
-    def * = (id.?, username) <> (User.tupled, User.unapply)
+    def * = (id.?, username, email) <> (User.tupled, User.unapply)
   }
 
   val users = TableQuery[UserTable]

@@ -12,6 +12,12 @@ GET     /games                      controllers.Application.listGames
 GET     /newgame                    controllers.Application.getNewGame
 POST    /newgame                    controllers.Application.createNewGame
 
+# Ajax endpoints
+GET    /ajax/games                  controllers.Ajax.listGames
+GET    /ajax/getuser/:query         controllers.Ajax.getUser(query)
+
+POST  /ajax/createuser              controllers.Ajax.createUser
+
 # Run JS tests
 GET    /jstest                      controllers.Application.testJavascripts
 

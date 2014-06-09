@@ -1,4 +1,44 @@
-This is your new Play application
-=====================================
+Welcome to Board Game Banker (potentially-temporary name)
 
-This file will be packaged with your application, when using `play dist`.
+This project is in its infancy.  The eventual goal is to create a web app targeting mobile devices.  
+
+The app would allow each player in a board game to keep score on her own device, and keep all scoring synchronized.  Instead of crowding around one device with a spreadsheet, each player can see scores and add/subtract currency from her own device.
+
+Technology list:
+- Database
+	- MySql in production
+	- H2 for testing
+	- Up to developer for staging (MySql recommended to match production)
+
+- Back end
+	- Scala
+	- Play MVC framework
+	- Slick (data access)
+	- Specs2 for testing
+	
+- Front end
+	- Angular JS (JavaScript)
+	- Jasmine for testing
+	- Bootstrap (CSS/HTML)
+
+Setup instructions:
+1) Scala/Play
+	- Download and install scala 2.10.3
+		(http://www.scala-lang.org/download/2.10.3.html)
+	- Download and extract play framework 2.2.3
+		(http://downloads.typesafe.com/play/2.2.3/play-2.2.3.zip)
+	- Add the location of play to your PATH environment variable
+		(Instructions: http://www.computerhope.com/issues/ch000549.htm)
+	- Open a command prompt and type "play."  You should see a nifty dialog.  If so, proceed.  If not, 
+		try again.
+
+2) IntelliJ IDEA
+	- Download and install IntelliJ IDEA.  Grab the community edition, or if you're feeling lavish 
+		splurge on the ultimate edition.
+			(http://www.jetbrains.com/idea/download/)
+
+3) The project
+	- Fork the repository from GitHub.  Optionally, use the github app to do that.
+	
+4) Open the project in IntelliJ.  Ignore any warnings about modules not being backed by SBT.  
+	Also ignore any offers to import existing modules.

@@ -22,6 +22,9 @@ Technology list:
 	- Bootstrap (CSS/HTML)
 
 Setup instructions:
+0) JDK
+	- Download and install a JDK.  I'm linking to 7 because 8 is allegedly unstable, but 8 should work fine too.
+		(http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html)
 1) Scala/Play
 	- Download and install scala 2.10.3
 		(http://www.scala-lang.org/download/2.10.3.html)

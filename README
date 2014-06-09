@@ -42,3 +42,6 @@ Setup instructions:
 	
 4) Open the project in IntelliJ.  Ignore any warnings about modules not being backed by SBT.  
 	Also ignore any offers to import existing modules.
+		- First, build the project with play.  Open up the terminal in intellij, and type "play compile"
+		- Now that the project is built, you're ready to run some tests.  Try running any of the provided
+			run configurations.  If that runs successfully, you're set to go!

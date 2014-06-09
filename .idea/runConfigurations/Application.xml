@@ -1,0 +1,17 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Application" type="Specs2RunConfiguration" factoryName="Specs2">
+    <module name="boardgamebanker" />
+    <setting name="path" value="ApplicationSpec" />
+    <setting name="package" value="" />
+    <setting name="vmparams" value="" />
+    <setting name="params" value="" />
+    <setting name="workingDirectory" value="file://$PROJECT_DIR$" />
+    <setting name="searchForTest" value="Across module dependencies" />
+    <setting name="testName" value="" />
+    <setting name="testKind" value="Class" />
+    <setting name="showProgressMessages" value="true" />
+    <RunnerSettings RunnerId="Run" />
+    <ConfigurationWrapper RunnerId="Run" />
+    <method />
+  </configuration>
+</component>

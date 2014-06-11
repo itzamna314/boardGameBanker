@@ -29,7 +29,7 @@ Setup instructions:
 	- Download and install scala 2.10.3
 		(http://www.scala-lang.org/download/2.10.3.html)
 	- Download and extract play framework 2.2.3
-		(http://downloads.typesafe.com/play/2.2.3/play-2.2.3.zip)
+		(http://www.playframework.com/download)
 	- Add the location of play to your PATH environment variable
 		(Instructions: http://www.computerhope.com/issues/ch000549.htm)
 	- Open a command prompt and type "play."  You should see a nifty dialog.  If so, proceed.  If not, 

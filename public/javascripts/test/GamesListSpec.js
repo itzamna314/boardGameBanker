@@ -2,7 +2,7 @@
  * Test for GamesList controller action
 **/
 
-describe("Player",function() {
+describe("GamesList",function() {
     it("should have 2 games", function() {
         var scope = {};
         var gamesList = new GamesList(scope);

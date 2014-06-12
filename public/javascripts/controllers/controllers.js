@@ -15,7 +15,7 @@ function GamesList($scope) {
             "players":"another test"/*{
                 {"name":"Alex"},
                 {"name":"Mike"},
-                {"name":"Ryan"},
+                {"name":"Ryan"}
             }*/
         }
     ]
@@ -28,8 +28,14 @@ function Welcome($scope,$http,$cookies) {
         $http.get('ajax/getuser/' + query).success(function(data){
             $scope.user = data;
             if ( data.found ) {
-                $cookies.username = data.name;
-                //$cookies.user = {email:data.email,username:data.name};
+                //$cookies.username = data.name;
+                $cookies.user = JSON.stringify({
+                    email:data.email,
+                    username:data.name
+                });
+            }
+            else {
+                $cookies.user = JSON.stringify({});
             }
         });
     }
@@ -37,14 +43,26 @@ function Welcome($scope,$http,$cookies) {
         $http.post('ajax/createuser',{name:username,email:email}).success(function(data){
             $scope.result = data;
 
-            if ( data.status == 'success' ) {
-                //$cookies.user = {email:email,username:username};
+            if ( !data.error ) {
+                $cookies.user = JSON.stringify({
+                    email:email,
+                    username:username
+                });
+            }
+            else {
+                $cookies.user = JSON.stringify({});
             }
         })
     }
-    $scope.loadUser = function() {
 
+    $scope.loadUser = function() {
+        var curUser = $cookies.user;
+
+        if ( curUser ) {
+            $scope.user = JSON.parse(curUser);
+        }
     }
+
     $scope.resetUser = function(){
         $scope.user = null;
     }

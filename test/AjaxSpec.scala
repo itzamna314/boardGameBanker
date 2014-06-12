@@ -1,5 +1,5 @@
 import org.junit.runner.RunWith
-import play.api.libs.json.Json
+import play.api.libs.json.{JsNull, Json}
 import org.specs2.mutable._
 import org.specs2.runner.JUnitRunner
 
@@ -30,5 +30,18 @@ class AjaxSpec extends Specification {
       notFoundJson \ "found" must_== Json.toJson(false)
     }
 
+    "add a user" in new resetDal {
+      val toAdd = Json.obj("name" -> "Summer Smith", "email" -> "ssmith@needfulthings.com")
+      val added = route(FakeRequest(POST,"/ajax/adduser/").withJsonBody(toAdd)).get
+      status(added) must equalTo(OK)
+      contentType(added) must beSome("application/json")
+      val addedJson = contentAsJson(added)
+      addedJson \ "error" must_== JsNull
+
+      val found = route(FakeRequest(GET, "/ajax/getuser/ssmith@needfulthings.com")).get
+      val foundJson = contentAsJson(found)
+      foundJson \ "found" must_== Json.toJson(true)
+
+    }
   }
 }

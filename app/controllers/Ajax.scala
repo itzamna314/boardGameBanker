@@ -50,10 +50,19 @@ object Ajax extends Controller {
 
     if ( name.isDefined && email.isDefined ) {
       Dal.createUser(Models.User(None,name.get,email.get))
-      Ok(Json.obj("status" -> "success", "message" -> ""))
+      Ok(Json.obj("error" -> JsNull, "message" -> ""))
     }
     else {
-      BadRequest(Json.obj("status" -> "error", "message" -> "Missing username and/or e-mail"))
+      BadRequest(Json.obj("error" -> "BadParameters", "message" -> "Missing username and/or e-mail"))
     }
+  }
+
+  def resetDb = Action { implicit request =>
+    if ( Dal.isTest ) {
+      Dal.resetTest()
+      Ok(JsBoolean(true))
+    }
+    else
+      NotFound("")
   }
 }

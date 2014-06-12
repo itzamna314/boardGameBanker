@@ -20,6 +20,9 @@ POST  /ajax/createuser              controllers.Ajax.createUser
 
 # Run JS tests
 GET    /jstest                      controllers.Application.testJavascripts
+# Used for JS tests.  Resets DB if we are configured for test mode.  Otherwise returns
+# blank 404.
+GET    /resetDb                     controllers.Ajax.resetDb
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

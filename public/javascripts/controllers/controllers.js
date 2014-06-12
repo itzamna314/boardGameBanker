@@ -39,6 +39,7 @@ function Welcome($scope,$http,$cookies) {
             }
         });
     }
+
     $scope.createUser = function(username,email){
         $http.post('ajax/createuser',{name:username,email:email}).success(function(data){
             $scope.result = data;

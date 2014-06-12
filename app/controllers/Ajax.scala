@@ -33,7 +33,7 @@ object Ajax extends Controller {
         "id" -> JsNull
       )
 
-      case Some(u:Models.User) => Json.obj(
+      case Some(u) => Json.obj(
         "found" -> JsBoolean(true),
         "email" -> u.email,
         "username" -> u.name,

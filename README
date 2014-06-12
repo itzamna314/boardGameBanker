@@ -22,11 +22,14 @@ Technology list:
 	- Bootstrap (CSS/HTML)
 
 Setup instructions:
+0) JDK
+	- Download and install a JDK.  I'm linking to 7 because 8 is allegedly unstable, but 8 should work fine too.
+		(http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html)
 1) Scala/Play
 	- Download and install scala 2.10.3
 		(http://www.scala-lang.org/download/2.10.3.html)
 	- Download and extract play framework 2.2.3
-		(http://downloads.typesafe.com/play/2.2.3/play-2.2.3.zip)
+		(http://www.playframework.com/download)
 	- Add the location of play to your PATH environment variable
 		(Instructions: http://www.computerhope.com/issues/ch000549.htm)
 	- Open a command prompt and type "play."  You should see a nifty dialog.  If so, proceed.  If not, 

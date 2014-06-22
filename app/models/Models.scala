@@ -1,5 +1,7 @@
 package models
 
+import java.sql.Timestamp
+import java.util.Calendar
 import play.api.db.slick.Config.driver.simple._
 
 /**
@@ -14,7 +16,7 @@ import play.api.db.slick.Config.driver.simple._
 object Models {
 
   case class Player(id:Option[Int],gameId:Int,userId:Option[Int],
-                    token:String,status:String="Pending",score:Int = 0)
+                    token:String,score:Int = 0)
 
   /*
    * Table to store players.  A player is a user in the context of a specific game.
@@ -27,16 +29,19 @@ object Models {
     def gameId = column[Int]("gameid",O.NotNull)
     def userId = column[Option[Int]]("userid",O.Nullable)
     def token = column[String]("token",O.NotNull)
-    def status = column[String]("status",O.NotNull,O.Default("Pending"))
     def score = column[Int]("score",O.Default(0))
 
-    def * = (id.?,gameId,userId,token,status,score) <>
+    def gameFk = foreignKey("player-game",gameId,games)(_.id)
+    def userFk = foreignKey("player-user",userId,users)(_.id)
+
+    def * = (id.?,gameId,userId,token,score) <>
       (Player.tupled, Player.unapply)
   }
 
   val players = TableQuery[PlayerTable]
 
-  case class Game(id:Option[Int],name:String)
+  case class Game(id:Option[Int],name:String,creatorId:Int,created:Timestamp =
+                   new java.sql.Timestamp(Calendar.getInstance().getTime.getTime))
 
   /*
    * Table to store games.  Each one only has a name, but is referenced by the
@@ -46,8 +51,12 @@ object Models {
 
     def id = column[Int]("gameid", O.PrimaryKey, O.AutoInc)
     def name = column[String]("gamename", O.NotNull)
+    def creator = column[Int]("creator",O.NotNull)
+    def createdDate = column[Timestamp]("created",O.NotNull)
 
-    def * = (id.?, name) <> (Game.tupled, Game.unapply)
+    def creatorFk = foreignKey("game-creator",creator,users)(_.id)
+
+    def * = (id.?, name, creator, createdDate) <> (Game.tupled, Game.unapply)
   }
 
   val games = TableQuery[GameTable]

@@ -12,26 +12,30 @@ import play.api.Play.current
 object Application extends Controller {
 
   def index = Action {
-    Ok(views.html.welcome(Forms.createUserForm))
+    Ok(views.html.welcome())
   }
 
   def listGames = DBAction { implicit rs =>
-    val games = Dal.listGames
-    Ok(views.html.listgames(games))
+    Ok(views.html.listgames())
   }
 
   def getNewGame = Action { implicit request =>
-    Ok(views.html.newgame(Forms.gameForm))
+    Ok(views.html.newgame())
   }
 
-  def postNewGame = DBAction{ implicit rs =>
-      Forms.gameForm.bindFromRequest.fold(
-        errors => BadRequest("Error!"),
-        g => {
-          Models.games += g
-          Redirect(routes.Application.listGames)
+  def joinGame = Action { implicit request =>
+    val tokenQuery = request.queryString.get("token")
+    val token = tokenQuery match {
+      case Some(tq) =>
+        tq.length match {
+          case 1 =>
+            tq(0)
+          case _ => ""
         }
-      )
+      case None => ""
+    }
+
+    Ok(views.html.joingame(token))
   }
 
   def testJavascripts = Action { implicit request =>

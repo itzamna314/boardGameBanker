@@ -18,9 +18,13 @@ object Dal {
     resetTest()
   }
 
-  def listGames() = {
+  def listGames(userId:Int) = {
     play.api.db.slick.DB.withSession { implicit session =>
-      Models.games.list
+      val gamesQuery = for {
+        p <- Models.players if p.userId === userId
+        g <- Models.games if g.id === p.gameId
+      } yield g
+      gamesQuery.list
     }
   }
 
@@ -30,9 +34,15 @@ object Dal {
     }
   }
 
+  def getUser(id:Int) = {
+    play.api.db.slick.DB.withSession { implicit session =>
+      Models.users.filter(u => u.id === id).firstOption
+    }
+  }
+
   def createUser(u:User) = {
     play.api.db.slick.DB.withSession { implicit session =>
-      Models.users += u
+      (Models.users returning Models.users.map(_.id)) += u
     }
   }
 
@@ -48,6 +58,13 @@ object Dal {
     }
   }
 
+  def bindPlayer(userId:Int,uuid:String) = {
+    play.api.db.slick.DB.withSession { implicit session =>
+      val q = for { p <- Models.players if p.token === uuid } yield p.userId
+      q.update(Some(userId))
+    }
+  }
+
   def resetTest() = {
     if (isTest) {
       // Populate the test database
@@ -58,11 +75,6 @@ object Dal {
 
         (Models.games.ddl ++ Models.users.ddl ++ Models.players.ddl).create
 
-        Models.games ++= Seq(
-          Models.Game(Some(1),"Game of Thrones"),
-          Models.Game(Some(2),"Smallworld")
-        )
-
         Models.users ++= Seq(
           Models.User(Some(1),"Kim", "kim@gmail.com"),
           Models.User(Some(2),"Squish", "squish@gmail.com"),
@@ -72,14 +84,18 @@ object Dal {
           Models.User(Some(6),"Ryan", "ryan@gmail.com")
         )
 
-        Models.players += Models.Player(Some(1),2,Some(1),"123456","Active")
+        Models.games ++= Seq(
+          Models.Game(Some(1),"Game of Thrones",1),
+          Models.Game(Some(2),"Smallworld",6)
+        )
 
         Models.players ++= Seq(
-          Models.Player(Some(2),2,Some(2),"234567","Active"),
-          Models.Player(Some(3),2,Some(3),"345678","Active"),
-          Models.Player(Some(4),2,Some(4),"456789","Active"),
-          Models.Player(Some(5),2,Some(5),"567890","Active"),
-          Models.Player(Some(6),2,Some(6),"678901","Pending")
+          Models.Player(Some(1),2,Some(1),"123456"),
+          Models.Player(Some(2),2,Some(2),"234567"),
+          Models.Player(Some(3),2,Some(3),"345678"),
+          Models.Player(Some(4),2,Some(4),"456789"),
+          Models.Player(Some(5),2,Some(5),"567890"),
+          Models.Player(Some(6),2,Some(6),"678901")
         )
       }
     }

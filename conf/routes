@@ -10,15 +10,19 @@ GET     /games                      controllers.Application.listGames
 
 # Add a game
 GET     /newgame                    controllers.Application.getNewGame
-POST    /newgame                    controllers.Application.postNewGame
+
+# Join an existing game
+GET     /joingame                   controllers.Application.joinGame
 
 # Ajax endpoints
-GET    /ajax/games                  controllers.Ajax.listGames
-GET    /ajax/getuser/:query         controllers.Ajax.getUser(query)
+GET    /ajax/games/:userId          controllers.Ajax.listGames(userId)
+GET    /ajax/getuser/:query         controllers.Ajax.findUser(query)
 
 POST  /ajax/createuser              controllers.Ajax.createUser
 
 POST  /ajax/newgame                 controllers.Ajax.createGame
+
+POST  /ajax/joingame                controllers.Ajax.joinGame
 
 # Run JS tests
 GET    /jstest                      controllers.Application.testJavascripts

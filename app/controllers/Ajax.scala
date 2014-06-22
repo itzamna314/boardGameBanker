@@ -1,7 +1,7 @@
 package controllers
 
-import models.Models.{Game, Player}
-import play.api.mvc.{BodyParser, Action, Controller}
+import models.Models._
+import play.api.mvc._
 import play.api.libs.json._
 import models._
 import java.util.UUID
@@ -68,6 +68,7 @@ object Ajax extends Controller {
         req.players foreach { p=>
           val uuid = UUID.randomUUID().toString
           Dal.createPlayer(Player(None,gameId,None,uuid))
+          notifyPlayer(p.email,req.creator,uuid,req.name,routes.Application.index().absoluteURL())
         }
         Ok(Json.obj("error" -> JsNull,"message" -> ""))
       case _ =>
@@ -84,7 +85,7 @@ object Ajax extends Controller {
       NotFound("")
   }
 
-  private case class createGameRequest(name:String,players:Array[createGameRequestPlayer])
+  private case class createGameRequest(name:String,creator:User,players:Array[createGameRequestPlayer])
   private case class createGameRequestPlayer(email:String)
 
   // Parse JSON game request into strongly-type scala game request
@@ -92,12 +93,12 @@ object Ajax extends Controller {
   private def parseCreateGameJson(json:Option[JsObject]) : Option[createGameRequest] = {
     json match {
       case Some(j:JsObject) =>
-        val gameName = (j \ "gamename").asOpt[String]
+        val gameName = (j \ "title").asOpt[String]
         val players = (j \ "players").asOpt[Array[JsObject]]
 
         if ( gameName.isDefined && players.isDefined ) {
-          val playersArr = players.get filter {
-            p => (p \ "email").asOpt[String] match {
+          val playersArr = players.get filter { p =>
+            (p \ "email").asOpt[String] match {
               case Some(_) => true
               case None => false
             }
@@ -105,16 +106,44 @@ object Ajax extends Controller {
             p =>
               createGameRequestPlayer((p \ "email").as[String])
           }
-          Some(createGameRequest(gameName.get,playersArr))
+          val creator : Seq[User] = players.get filter { p =>
+            (p \ "isCreator").asOpt[Boolean] match {
+              case Some(b:Boolean) => b
+              case None => false
+            }
+          } map { p =>
+            (p \ "email").asOpt[String] match {
+              case Some(e:String) =>
+                Dal.findUser(e)
+              case None =>
+                None
+            }
+          } filter(_.isDefined) map (_.get)
+
+          if ( creator.length == 1 )
+            Some(createGameRequest(gameName.get,creator(0),playersArr))
+          else
+            None
         }
+        else
+          None
       case _ =>
         None
     }
-
-    None
   }
 
-  private def notifyPlayer(email:String,creator:String,uuid:String,gameName:String) = {
+  private def notifyPlayer(email:String,creator:User,uuid:String,gameName:String,url:String) = {
+    import play.api.Play.current
+    import com.typesafe.plugin._
+
+    val mail = use[MailerPlugin].email
+    mail.setFrom("Board Game Banker <boardgamebanker@gmail.com>")
+    mail.setSubject("Care for a nice game of " + gameName + "?")
+    mail.setRecipient(email)
+    mail.sendHtml("<html><body><p>You have received an invitation to play " + gameName + " by " + creator.name +
+      "&lt;" + creator.email + "&gt;." + "To accept, " +
+      "<a href=\"" + url + "/joinGame?token=" + uuid + "\">click here</a>.<br/><br/>You can also enter " +
+     "this code in the app:<br>" + uuid + ".</p></body></html>")
 
   }
 }

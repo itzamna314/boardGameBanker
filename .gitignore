@@ -15,4 +15,5 @@ deploy.bat
 /.idea/workspace.xml
 /.idea/misc.xml
 conf/application-prod.conf
+conf/application-stage.conf
 conf/evolutions.default

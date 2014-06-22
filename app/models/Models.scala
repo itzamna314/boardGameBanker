@@ -13,7 +13,8 @@ import play.api.db.slick.Config.driver.simple._
 
 object Models {
 
-  case class Player(id:Option[Int],gameId:Int,userId:Int,token:String,status:String="Pending",score:Int = 0)
+  case class Player(id:Option[Int],gameId:Int,userId:Option[Int],
+                    token:String,status:String="Pending",score:Int = 0)
 
   /*
    * Table to store players.  A player is a user in the context of a specific game.
@@ -24,7 +25,7 @@ object Models {
 
     def id = column[Int]("playerid", O.PrimaryKey, O.AutoInc)
     def gameId = column[Int]("gameid",O.NotNull)
-    def userId = column[Int]("userid",O.NotNull)
+    def userId = column[Option[Int]]("userid",O.Nullable)
     def token = column[String]("token",O.NotNull)
     def status = column[String]("status",O.NotNull,O.Default("Pending"))
     def score = column[Int]("score",O.Default(0))

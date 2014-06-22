@@ -18,6 +18,8 @@ GET    /ajax/getuser/:query         controllers.Ajax.getUser(query)
 
 POST  /ajax/createuser              controllers.Ajax.createUser
 
+POST  /ajax/newgame                 controllers.Ajax.createGame
+
 # Run JS tests
 GET    /jstest                      controllers.Application.testJavascripts
 # Used for JS tests.  Resets DB if we are configured for test mode.  Otherwise returns

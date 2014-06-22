@@ -3,6 +3,12 @@
   <component name="ScalaSbtSettings">
     <option name="linkedExternalProjectsSettings">
       <SbtProjectSettings>
+        <option name="externalProjectPath" value="C:/Projects/board-game-banker" />
+      </SbtProjectSettings>
+      <SbtProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+      </SbtProjectSettings>
+      <SbtProjectSettings>
         <option name="externalProjectPath" value="C:\Users\Kyl\Documents\GitHub\boardGameBanker" />
         <option name="useAutoImport" value="true" />
       </SbtProjectSettings>

@@ -1,8 +1,10 @@
 package controllers
 
+import models.Models.{Game, Player}
 import play.api.mvc.{BodyParser, Action, Controller}
 import play.api.libs.json._
 import models._
+import java.util.UUID
 
 /**
  * Controllers that correspond to AJAX methods that will be called from angular
@@ -10,7 +12,6 @@ import models._
  * Created by Kyl on 6/7/2014.
  */
 object Ajax extends Controller {
-
   def listGames = Action {
     val games = Dal.listGames()
     val gamesJson = games map {g =>
@@ -58,9 +59,20 @@ object Ajax extends Controller {
   }
 
   def createGame = Action(parse.json){ implicit request =>
-    val gameName = (request.body \ "gamename").asOpt[String]
+    val reqJson = request.body.asOpt[JsObject]
+    val reqObj = parseCreateGameJson(reqJson)
 
-    Ok(Json.obj("error" -> JsNull,"message" -> ""))
+    reqObj match {
+      case Some(req : createGameRequest) =>
+        val gameId = Dal.createGame(Game(None,req.name))
+        req.players foreach { p=>
+          val uuid = UUID.randomUUID().toString
+          Dal.createPlayer(Player(None,gameId,None,uuid))
+        }
+        Ok(Json.obj("error" -> JsNull,"message" -> ""))
+      case _ =>
+        BadRequest(Json.obj("error" -> "IllegalJSON","message" -> ("Received: " + request.body)))
+    }
   }
 
   def resetDb = Action { implicit request =>
@@ -70,5 +82,39 @@ object Ajax extends Controller {
     }
     else
       NotFound("")
+  }
+
+  private case class createGameRequest(name:String,players:Array[createGameRequestPlayer])
+  private case class createGameRequestPlayer(email:String)
+
+  // Parse JSON game request into strongly-type scala game request
+  // Return Some for valid request, else None
+  private def parseCreateGameJson(json:Option[JsObject]) : Option[createGameRequest] = {
+    json match {
+      case Some(j:JsObject) =>
+        val gameName = (j \ "gamename").asOpt[String]
+        val players = (j \ "players").asOpt[Array[JsObject]]
+
+        if ( gameName.isDefined && players.isDefined ) {
+          val playersArr = players.get filter {
+            p => (p \ "email").asOpt[String] match {
+              case Some(_) => true
+              case None => false
+            }
+          } map {
+            p =>
+              createGameRequestPlayer((p \ "email").as[String])
+          }
+          Some(createGameRequest(gameName.get,playersArr))
+        }
+      case _ =>
+        None
+    }
+
+    None
+  }
+
+  private def notifyPlayer(email:String,creator:String,uuid:String,gameName:String) = {
+
   }
 }

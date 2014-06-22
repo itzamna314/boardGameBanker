@@ -11,7 +11,8 @@ libraryDependencies ++= Seq(
   "mysql" % "mysql-connector-java" % "5.1.24",
   "org.scala-lang" % "scala-reflect" % "2.10.3",
   "com.typesafe.slick" %% "slick" % "2.0.0",
-  "com.typesafe.play" %% "play-slick" % "0.6.0.1"
+  "com.typesafe.play" %% "play-slick" % "0.6.0.1",
+  "com.typesafe.play.plugins" %% "play-plugins-mailer" % "2.3.0"
 )     
 
 play.Project.playScalaSettings

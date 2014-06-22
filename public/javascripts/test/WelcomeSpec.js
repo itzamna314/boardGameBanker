@@ -7,7 +7,7 @@ describe("Welcome",function() {
 
     // Create a new Welcome controller with default scope, cookies, and http
     beforeEach(function(){
-        scope = {},cookies = {},http = {};
+        scope = {}; cookies = {}; http = {};
         http.get = jasmine.createSpy('httpGetSpy');
         http.post = jasmine.createSpy('httpPostSpy');
 
@@ -15,24 +15,14 @@ describe("Welcome",function() {
     });
 
     describe(".findUser",function() {
-        var successCallbackData = {};
-        beforeEach(function(){
-            function registerGetSuccess(successCallback){
-                // Fire callback with test data
-                successCallback(successCallbackData);
-            }
-
-            http.get.and.returnValue({
-                success:registerGetSuccess
-            });
-        });
+        beforeEach(setupHttpGetCallback);
 
         it("should should set user cookie if user found",function() {
             successCallbackData = {
                 found:true,
                 name:'Rick Sanchez',
                 email:'Rick@zygeria.ng'
-            }
+            };
             scope.findUser('Rick');
             // Should use http to get data from the server
             expect(http.get).toHaveBeenCalled();
@@ -43,6 +33,12 @@ describe("Welcome",function() {
             expect(JSON.parse(cookies.user)).toEqual({
                 email:'Rick@zygeria.ng',
                 username:'Rick Sanchez'
+            });
+
+            expect(scope.user).toEqual({
+                email:'Rick@zygeria.ng',
+                name:'Rick Sanchez',
+                found:true
             });
         });
 
@@ -55,12 +51,11 @@ describe("Welcome",function() {
 
             scope.findUser('Morty');
             expect(JSON.parse(cookies.user)).toEqual({});
-            });
+            expect(scope.user.found).toEqual(false);
         });
+    });
 
     describe(".createUser",function() {
-        var successCallbackData = {};
-
         beforeEach(function(){
             function registerPostSuccess(successCallback){
                 successCallback(successCallbackData);
@@ -105,4 +100,34 @@ describe("Welcome",function() {
             expect(scope.user).toBe(null);
         });
     });
+
+    describe('.loadUser',function(){
+        beforeEach(setupHttpGetCallback);
+        it("should load user from cookies, if one is set",function(){
+            cookies = {user:'{"email":"foo@bar.com"}'};
+            var welcomeWithUser = new Welcome(scope,http,cookies);
+            expect(http.get).toHaveBeenCalled();
+            expect(http.get.calls.count()).toEqual(1);
+            expect(http.get).toHaveBeenCalledWith('ajax/getuser/foo@bar.com');
+        });
+
+        it("should do nothing is no user cookie is set",function(){
+            expect(http.get.calls.count()).toEqual(0);
+            expect(scope.user).toBe(null);
+        });
+    });
+
+    // Utility functions
+    var successCallbackData = {};
+    function setupHttpGetCallback(){
+        successCallbackData = {};
+        function registerGetSuccess(successCallback){
+            // Fire callback with test data
+            successCallback(successCallbackData);
+        }
+
+        http.get.and.returnValue({
+            success:registerGetSuccess
+        });
+    }
 });

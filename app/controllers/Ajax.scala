@@ -57,6 +57,12 @@ object Ajax extends Controller {
     }
   }
 
+  def createGame = Action(parse.json){ implicit request =>
+    val gameName = (request.body \ "gamename").asOpt[String]
+
+    Ok(Json.obj("error" -> JsNull,"message" -> ""))
+  }
+
   def resetDb = Action { implicit request =>
     if ( Dal.isTest ) {
       Dal.resetTest()

@@ -10,7 +10,7 @@ GET     /games                      controllers.Application.listGames
 
 # Add a game
 GET     /newgame                    controllers.Application.getNewGame
-POST    /newgame                    controllers.Application.createNewGame
+POST    /newgame                    controllers.Application.postNewGame
 
 # Ajax endpoints
 GET    /ajax/games                  controllers.Ajax.listGames

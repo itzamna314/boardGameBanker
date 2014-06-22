@@ -21,10 +21,10 @@ object Application extends Controller {
   }
 
   def getNewGame = Action { implicit request =>
-    Ok(views.html.addgame(Forms.gameForm))
+    Ok(views.html.newgame(Forms.gameForm))
   }
 
-  def createNewGame = DBAction{ implicit rs =>
+  def postNewGame = DBAction{ implicit rs =>
       Forms.gameForm.bindFromRequest.fold(
         errors => BadRequest("Error!"),
         g => {

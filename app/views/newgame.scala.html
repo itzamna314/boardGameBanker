@@ -1,0 +1,23 @@
+@(gameForm:Form[Models.Game])
+
+@import helper._
+
+@main("Create a game"){
+    <div id="create-game" ng-controller="NewGame">
+        <div class="container">
+            <div class="row">
+                <input class="form-control" placeholder="Game Title" ng-model="title" />
+            </div>
+
+            <div class="row" ng-repeat="player in players">
+                <input class="form-control" placeholder="Player's e-mail" ng-model="player.email"
+                       ng-disabled="{{player.isCreator}}"/>
+            </div>
+
+            <div class="row">
+                <button class="btn btn-default" ng-click="addPlayer()">Add Player</button>
+                <button class="btn btn-default" ng-click="createGame()">Create!</button>
+            </div>
+        </div>
+    </div>
+}

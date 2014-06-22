@@ -48,8 +48,9 @@ function Welcome($scope,$http,$cookies,$window) {
                     email:email,
                     username:username,
                     id:data.id
-                }
-                $cookies.user = $scope.user
+                };
+
+                $cookies.user = JSON.stringify($scope.user);
             }
             else {
                 $cookies.user = JSON.stringify({});

@@ -1,149 +1,162 @@
-var bgbApp = angular.module('bgbApp',['ngCookies']);
+var bgbControllers = angular.module('bgbControllers',[
+    'ngCookies'
+]);
 
-function GamesList($scope,$http,$cookies,$window) {
+bgbControllers.controller('Welcome',[
+    '$scope',
+    '$http',
+    '$cookies',
+    '$rootScope',
+    '$location',
+    function($scope,$http,$cookies,$rootScope,$location) {
+        /**************************** Public *********************************/
+        $scope.findUser = function(query){
+            $http.get('ajax/getuser/' + query).success(function(data){
+                $rootScope.user = data;
 
-    var curUser = loadUser($cookies);
-    if ( !curUser || !curUser.email ) {
-        $window.location.href = '/';
-        return;
-    }
+                if ( data.found ) {
+                    $cookies.user = JSON.stringify({
+                        email:data.email,
+                        username:data.username,
+                        id:data.id
+                    });
 
-    $scope.user = curUser;
-
-    $http.get('ajax/games/' + curUser.id).success(function(data){
-        $scope.games = data.games;
-    })
-}
-
-function Welcome($scope,$http,$cookies,$window) {
-
-    /**************************** Public *********************************/
-    $scope.findUser = function(query){
-        $http.get('ajax/getuser/' + query).success(function(data){
-            $scope.user = data;
-            if ( data.found ) {
-
-                $cookies.user = JSON.stringify({
-                    email:data.email,
-                    username:data.username,
-                    id:data.id
-                });
-
-                if ( $cookies.token ) {
-                    $window.location.href = '/joingame';
+                    if ( $rootScope.token ) {
+                        $location.path('/joingame');
+                    }
                 }
-            }
-            else {
-                $cookies.user = JSON.stringify({});
-            }
-        });
-    };
+                else {
+                    $cookies.user = JSON.stringify({});
+                }
+            });
+        };
 
-    $scope.createUser = function(username,email){
-        $http.post('ajax/createuser',{name:username,email:email}).success(function(data){
-            $scope.result = data;
+        $scope.createUser = function(username,email){
+            $http.post('ajax/createuser',{name:username,email:email}).success(function(data){
+                $scope.result = data;
 
-            if ( !data.error ) {
-                $scope.user = {
-                    email:email,
-                    username:username,
-                    id:data.id
-                };
+                if ( !data.error ) {
+                    $scope.user = {
+                        email:email,
+                        username:username,
+                        id:data.id
+                    };
 
-                $cookies.user = JSON.stringify($scope.user);
-            }
-            else {
-                $cookies.user = JSON.stringify({});
-            }
-        })
-    };
+                    $cookies.user = JSON.stringify($scope.user);
+                }
+                else {
+                    $cookies.user = JSON.stringify({});
+                }
+            })
+        };
 
-    $scope.resetUser = function(){
-        $scope.user = null;
-        $cookies.user = JSON.stringify({});
-    };
-
-    $scope.loadUser = function () {
-        var curUser = loadUser($cookies);
-
-        if ( curUser && curUser.email )
-            $scope.findUser(curUser.email);
-        else
+        $scope.resetUser = function(){
             $scope.user = null;
-    };
+            $cookies.user = JSON.stringify({});
+        };
 
-    /*********************** Private ******************************/
+        $scope.loadUser = function () {
+            var curUser = loadUser($cookies);
 
-    /************************* Constructor *************************/
-    $scope.loadUser();
-}
+            if ( curUser && curUser.email )
+                $scope.findUser(curUser.email);
+            else
+                $scope.user = null;
+        };
 
-function NewGame($scope,$http,$cookies,$window){
+        /*********************** Private ******************************/
 
-    $scope.addPlayer = function(){
-        $scope.players.push(PlayerFactory.newPlayer());
+        /************************* Constructor *************************/
+        $scope.loadUser();
     }
+]);
 
-    $scope.createGame = function(){
-        $http.post('ajax/newgame',{title:$scope.title,players:$scope.players}).success(function(data){
-            $window.location.href = '/games';
-        });
-    }
-
-    // Constructor
-    var curUser = loadUser($cookies);
-    if ( !curUser || !curUser.email ){
-        $window.location.href = '/';
-        return;
-    }
-
-    $scope.user = curUser;
-
-    var selfPlayer = PlayerFactory.init().newPlayer();
-    selfPlayer.email = curUser.email;
-    selfPlayer.isCreator = true;
-    var firstPlayer = PlayerFactory.newPlayer();
-    $scope.players = [selfPlayer,firstPlayer];
-}
-
-function JoinGame($scope,$http,$cookies,$window){
-
-    $scope.init = function( token ) {
-        if ( token ) {
-            $cookies.token = $scope.token = token;
-        }
-        else if ( $cookies.token ) {
-            $scope.token = $cookies.token;
-        }
-
-        var curUser = loadUser($cookies);
-        if ( !curUser || !curUser.email ) {
-            $window.location.href = '/';
+bgbControllers.controller('GamesList',[
+    '$scope',
+    '$http',
+    '$rootScope',
+    '$location',
+    function($scope,$http,$rootScope,$location) {
+        if ( !$rootScope.user || !$rootScope.user.email ) {
+            $location.path('/');
             return;
         }
 
-        $scope.user = curUser;
-        doJoin();
-    }
+        $http.get('ajax/games/' + curUser.id).success(function(data){
+            $scope.games = data.games;
+        })
+    }]
+);
 
-    $scope.joinGame = function(){
-        doJoin();
-    }
+bgbControllers.controller('NewGame',[
+    '$scope',
+    '$http',
+    '$rootScope',
+    '$location',
+    function($scope,$http,$rootScope,$location){
 
-    function doJoin() {
-        if ( $scope.user && $scope.token ) {
-            var joinToken = $scope.token;
-            $scope.token = null;
-            delete $cookies.token;
+        $scope.addPlayer = function(){
+            $scope.players.push(PlayerFactory.newPlayer());
+        }
 
-            $http.post('ajax/joingame',{userId:$scope.user.id,token:joinToken}).success(function(data){
-                $window.location.href = '/games';
-            }).error(function(data){
-                $scope.errorMessage = "Invalid Token!";
+        $scope.createGame = function(){
+            $http.post('ajax/newgame',{title:$scope.title,players:$scope.players}).success(function(data){
+                $location.path('/games');
             });
         }
+
+        // Constructor
+        if ( !$rootScope.user || !$rootScope.user.email ){
+            $location.path('/');
+            return;
+        }
+
+        var selfPlayer = PlayerFactory.init().newPlayer();
+        selfPlayer.email = curUser.email;
+        selfPlayer.isCreator = true;
+        var firstPlayer = PlayerFactory.newPlayer();
+        $scope.players = [selfPlayer,firstPlayer];
     }
-}
+]);
+
+bgbControllers.controller('JoinGame',[
+    '$scope',
+    '$http',
+    '$rootScope',
+    '$location',
+    '$routeParams',
+    function($scope,$http,$rootScope,$location,$routeParams){
+
+        if ( $routeParams.token ) {
+            $rootScope.token = $routeParams.token;
+        }
+
+        if ( !$rootScope.user || !$rootScope.user.email ) {
+            $location.path('/');
+            return;
+        }
+
+        doJoin();
+
+
+        $scope.joinGame = function(){
+            doJoin();
+        }
+
+        function doJoin() {
+            if ( $rootScope.user && $scope.token ) {
+                var joinToken = $rootScope.token;
+                $rootScope.token = null;
+
+                $http.post('ajax/joingame',{userId:$rootScope.user.id,token:joinToken}).success(function(data){
+                    $location.path('/games');
+                }).error(function(data){
+                    $scope.errorMessage = "Invalid Token!";
+                });
+            }
+        }
+    }
+]);
 
 // Look up current user from cookies.
 // Return user object if found in cookie, else null

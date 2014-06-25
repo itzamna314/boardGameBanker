@@ -93,11 +93,17 @@ object Ajax extends Controller {
 
     reqObj match {
       case Some(req) =>
-        Dal.bindPlayer(req.userId,req.uuid)
+        val updatedPlayer = Dal.bindPlayer(req.userId,req.uuid)
+        updatedPlayer match {
+          case Some(_) =>
+            Ok(Json.obj("error" -> JsNull, "message" -> ""))
+          case None =>
+            val errorMessage = "Token " + req.uuid + " is not a valid token"
+            BadRequest(Json.obj("error" -> "InvalidToken", "message" -> errorMessage))
+        }
       case None =>
         BadRequest(Json.obj("error" -> "IllegalJSON","message" -> ("Received: " + request.body)))
     }
-    Ok(Json.obj("error" -> JsNull, "message" -> ""))
   }
 
   def resetDb = Action { implicit request =>

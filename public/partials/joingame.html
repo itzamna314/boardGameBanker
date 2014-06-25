@@ -1,0 +1,17 @@
+<div id="join-game" ng-controller="JoinGame">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-4">
+                <input class="form-control" type="text" ng-visibility="!!token" ng-model="token" />
+            </div>
+            <div class="col-xs-4">
+                <button class="btn btn-default" ng-click="joinGame()">Join Game!</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-4">
+                <p class="bg-danger" ng-visibility="!!errorMessage">{{errorMessage}}</p>
+            </div>
+        </div>
+    </div>
+</div>

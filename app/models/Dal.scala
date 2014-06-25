@@ -62,6 +62,8 @@ object Dal {
     play.api.db.slick.DB.withSession { implicit session =>
       val q = for { p <- Models.players if p.token === uuid } yield p.userId
       q.update(Some(userId))
+
+      q.firstOption
     }
   }
 

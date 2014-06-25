@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://C:/Projects/board-game-banker/.idea/modules/board-game-banker.iml" filepath="C:/Projects/board-game-banker/.idea/modules/board-game-banker.iml" />
-      <module fileurl="file://C:/Projects/board-game-banker/.idea/modules/board-game-banker-build.iml" filepath="C:/Projects/board-game-banker/.idea/modules/board-game-banker-build.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/boardgamebanker.iml" filepath="$PROJECT_DIR$/.idea/modules/boardgamebanker.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/boardgamebanker-build.iml" filepath="$PROJECT_DIR$/.idea/modules/boardgamebanker-build.iml" />
     </modules>

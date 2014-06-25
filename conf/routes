@@ -5,15 +5,6 @@
 # Home page
 GET     /                           controllers.Application.index
 
-# List games
-GET     /games                      controllers.Application.listGames
-
-# Add a game
-GET     /newgame                    controllers.Application.getNewGame
-
-# Join an existing game
-GET     /joingame                   controllers.Application.joinGame
-
 # Ajax endpoints
 GET    /ajax/games/:userId          controllers.Ajax.listGames(userId)
 GET    /ajax/getuser/:query         controllers.Ajax.findUser(query)

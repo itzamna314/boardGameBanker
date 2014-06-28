@@ -97,7 +97,8 @@ object Dal {
           Models.Player(Some(3),2,Some(3),"345678"),
           Models.Player(Some(4),2,Some(4),"456789"),
           Models.Player(Some(5),2,Some(5),"567890"),
-          Models.Player(Some(6),2,Some(6),"678901")
+          Models.Player(Some(6),2,Some(6),"678901"),
+          Models.Player(Some(7),1,None,"1")
         )
       }
     }

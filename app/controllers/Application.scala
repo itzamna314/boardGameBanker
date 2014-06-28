@@ -4,7 +4,7 @@ import play.api.mvc._
 
 object Application extends Controller {
 
-  def index = Action {
+  def index() = Action {
     Ok(views.html.main("Board Game Banker",false))
   }
 

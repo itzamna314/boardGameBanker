@@ -6,7 +6,7 @@
                 <th>Host</th>
                 <th>Date</th>
             </tr>
-            <tr ng-repeat="game in games">
+            <tr ng-repeat="game in games" ng-click="gameDetail(game.id)">
                 <td>{{ game.name }}</td>
                 <td>{{ game.creator.username }}</td>
                 <td>{{ game.created }}</td>

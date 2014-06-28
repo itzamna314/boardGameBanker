@@ -34,6 +34,10 @@ object Ajax extends Controller {
     Ok(jsonArr)
   }
 
+  def gameDetail(gameId:String) = Action {
+    Ok(Json.obj("error" -> JsNull, "message" -> ""))
+  }
+
   def findUser(emailOrUsername:String) = Action {
     val user = Dal.findUser(emailOrUsername)
     val userJson = user match {
@@ -193,8 +197,8 @@ object Ajax extends Controller {
     mail.setRecipient(email)
     mail.sendHtml("<html><body><p>You have received an invitation to play " + gameName + " by " + creator.name +
       "&lt;" + creator.email + "&gt;." + "To accept, " +
-      "<a href=\"" + url + "joingame?token=" + uuid + "\">click here</a>.<br/><br/>You can also enter " +
-     "this code in the app:<br>" + uuid + ".</p></body></html>")
+      "<a href=\"" + url + "/#/joingame/" + uuid + "\">click here</a> to go to board game banker.<br/><br/>" +
+      "Alternately, enter this code in the app:<br/><br/>" + uuid + ".</p></body></html>")
 
   }
 }

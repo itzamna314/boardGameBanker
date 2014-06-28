@@ -31,8 +31,8 @@ class AjaxSpec extends Specification {
     }
 
     "add a user" in new resetDal {
-      val toAdd = Json.obj("name" -> "Summer Smith", "email" -> "ssmith@needfulthings.com")
-      val added = route(FakeRequest(POST,"/ajax/adduser/").withJsonBody(toAdd)).get
+      val toAdd = Json.obj("username" -> "Summer Smith", "email" -> "ssmith@needfulthings.com")
+      val added = route(FakeRequest(POST,"/ajax/createuser").withJsonBody(toAdd)).get
       status(added) must equalTo(OK)
       contentType(added) must beSome("application/json")
       val addedJson = contentAsJson(added)

@@ -56,7 +56,7 @@ object Ajax extends Controller {
   }
 
   def createUser = Action(parse.json) { implicit request =>
-    val name = (request.body \ "name").asOpt[String]
+    val name = (request.body \ "username").asOpt[String]
     val email = (request.body \ "email").asOpt[String]
 
     if ( name.isDefined && email.isDefined ) {

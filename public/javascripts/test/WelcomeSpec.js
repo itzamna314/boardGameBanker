@@ -5,14 +5,17 @@
 describe("Welcome",function() {
     var scope,cookies,http,welcomeCtrl;
 
+    beforeEach(angular.module('bgbApp'));
+
     // Create a new Welcome controller with default scope, cookies, and http
-    beforeEach(function(){
-        scope = {}; cookies = {}; http = {};
+    /*beforeEach(angular.inject(function($controller){
+        /*http = {}; cookies = {};
         http.get = jasmine.createSpy('httpGetSpy');
         http.post = jasmine.createSpy('httpPostSpy');
+        scope = $rootScope.$new();*/
 
-        welcomeCtrl = new Welcome(scope,http,cookies);
-    });
+        /*welcomeCtrl = $controller('Welcome',{$scope:scope});
+    }));*/
 
     describe(".findUser",function() {
         beforeEach(setupHttpGetCallback);

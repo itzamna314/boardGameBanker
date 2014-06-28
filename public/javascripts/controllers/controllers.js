@@ -8,7 +8,7 @@ bgbControllers.controller('Welcome',[
     '$cookies',
     '$rootScope',
     '$location',
-    function($scope,$http,$cookies,$rootScope,$location) {
+    function($scope/*,$http,$cookies,$rootScope,$location*/) {
         /**************************** Public *********************************/
         $scope.findUser = function(query){
             $http.get('ajax/getuser/' + query).success(function(data){
@@ -56,12 +56,12 @@ bgbControllers.controller('Welcome',[
         };
 
         $scope.loadUser = function () {
-            var curUser = loadUser($cookies);
+            /*var curUser = loadUser($cookies);
 
             if ( curUser && curUser.email )
                 $scope.findUser(curUser.email);
             else
-                $scope.user = null;
+                $scope.user = null;*/
         };
 
         /*********************** Private ******************************/

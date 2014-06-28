@@ -4,8 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/boardgamebanker.iml" filepath="$PROJECT_DIR$/.idea/modules/boardgamebanker.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/boardgamebanker-build.iml" filepath="$PROJECT_DIR$/.idea/modules/boardgamebanker-build.iml" />
-      <module fileurl="file://C:/Projects/.idea/modules/projects.iml" filepath="C:/Projects/.idea/modules/projects.iml" />
-      <module fileurl="file://C:/Projects/.idea/modules/projects-build.iml" filepath="C:/Projects/.idea/modules/projects-build.iml" />
     </modules>
   </component>
 </project>

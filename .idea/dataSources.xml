@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" hash="506865671">
+    <data-source source="LOCAL" name="MySQL - cb_bgb-db@localhost" uuid="62231e00-8d8c-4c62-b587-e2c89165b81b">
+      <driver-ref>mysql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://localhost:3306/cb_bgb-db</jdbc-url>
+      <user-name>root</user-name>
+      <user-password>df91dfeadfc3dfebdfe7dff1dffcdfdcdf83df9edf86df99</user-password>
+      <schema-pattern>cb_bgb-db.*</schema-pattern>
+      <default-schemas>cb_bgb-db.*</default-schemas>
+      <driver-properties>
+        <property name="zeroDateTimeBehavior" value="convertToNull" />
+        <property name="tinyInt1isBit" value="false" />
+      </driver-properties>
+      <libraries />
+    </data-source>
+  </component>
+</project>
+

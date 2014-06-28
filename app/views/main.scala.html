@@ -1,4 +1,4 @@
-@(title: String,isTest:Boolean)
+@(title:String,isTest:Boolean)
 
 <html>
     <head>
@@ -11,7 +11,7 @@
             <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
             <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
         }else{
-            <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("lib/jasmine-2.0.0/jasmine_favicon.png")">
+            <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("javascripts/lib/jasmine-2.0.0/jasmine_favicon.png")">
             <link rel="stylesheet" type="text/css" href="@routes.Assets.at("javascripts/lib/jasmine-2.0.0/jasmine.css")">
         }
 
@@ -24,21 +24,28 @@
             <script type="text/javascript" src="@routes.Assets.at("javascripts/lib/jasmine-2.0.0/boot.js")"></script>
         }
 
-        <script src="@routes.Assets.at("javascripts/lib/angular-1.3.0/angular.min.js")" type="text/javascript"></script>
+        @if( isTest ) {
+            <script src="@routes.Assets.at("javascripts/lib/angular-1.3.0/angular.js")" type="text/javascript"></script>
+        }else{
+            <script src="@routes.Assets.at("javascripts/lib/angular-1.3.0/angular.min.js")" type="text/javascript"></script>
+        }
         <script src="@routes.Assets.at("javascripts/lib/angular-1.3.0/angular-cookies.min.js")" type="text/javascript"></script>
         <script src="@routes.Assets.at("javascripts/lib/angular-1.3.0/angular-route.js")" type="text/javascript"></script>
         <script src="@routes.Assets.at("javascripts/controllers/controllers.js")" type="text/javascript"></script>
-        <script src="@routes.Assets.at("javascripts/app.js")" type="text/javascript"></script>
+        @* @if( !isTest ) { *@
+            <script src="@routes.Assets.at("javascripts/app.js")" type="text/javascript"></script>
+        @*}*@
 
         @if( isTest ) {
-            <!-- script type="text/javascript" src="@routes.Assets.at("javascripts/test/GamesListSpec.js")"></script -->
+            <script type="text/javascript" src="@routes.Assets.at("javascripts/lib/angular-1.3.0/angular-mocks.js")"></script>
+            <!-- script type="text/javascript" src="@routes.Assets.at("javascripts/test/GamesListSpec.js")"></script-->
             <script type="text/javascript" src="@routes.Assets.at("javascripts/test/WelcomeSpec.js")"></script>
-            <script type="text/javascript" src="@routes.Assets.at("javascripts/test/NewGameSpec.js")"></script>
+            <!-- script type="text/javascript" src="@routes.Assets.at("javascripts/test/NewGameSpec.js")"></script-->
         }
     </head>
 
+    <body  ng-app="bgbApp">
     @if( !isTest ) {
-        <body  ng-app="bgbApp">
             <nav class="navbar navbar-default" role="navigation">
                 <div class="container-fluid">
                     <div class="navbar-header">
@@ -63,6 +70,6 @@
             </nav>
 
             <div id="app" ng-view></div>
-        </body>
     }
+    </body>
 </html>

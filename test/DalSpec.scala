@@ -23,7 +23,7 @@ class DalSpec extends Specification {
     }
 
     "list games" in new resetDal {
-      val games = Dal.listGames()
+      val games = Dal.listGames(1)
       games.length must_== 2
     }
 
@@ -35,12 +35,12 @@ class DalSpec extends Specification {
     }
 
     "create a game" in new resetDal {
-      val game = Game(None,"Shoots & Ladders")
+      val game = Game(None,"Shoots & Ladders",1)
       val gameId = Dal.createGame(game)
       gameId must_== 3
-      val games = Dal.listGames()
+      val games = Dal.listGames(1)
       games.length must_== 3
-      games(2) must_== Game(Some(3),"Shoots & Ladders")
+      games(2) must_== Game(Some(3),"Shoots & Ladders",1)
     }
 
     "create a player" in new resetDal {

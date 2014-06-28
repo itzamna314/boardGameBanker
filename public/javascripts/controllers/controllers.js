@@ -8,11 +8,11 @@ bgbControllers.controller('Welcome',[
     '$cookies',
     '$rootScope',
     '$location',
-    function($scope/*,$http,$cookies,$rootScope,$location*/) {
+    function($scope,$http,$cookies,$rootScope,$location) {
         /**************************** Public *********************************/
         $scope.findUser = function(query){
             $http.get('ajax/getuser/' + query).success(function(data){
-                $rootScope.user = data;
+                $rootScope.user = $scope.user = data;
 
                 if ( data.found ) {
                     $cookies.user = JSON.stringify({
@@ -32,11 +32,11 @@ bgbControllers.controller('Welcome',[
         };
 
         $scope.createUser = function(username,email){
-            $http.post('ajax/createuser',{name:username,email:email}).success(function(data){
+            $http.post('ajax/createuser',{username:username,email:email}).success(function(data){
                 $scope.result = data;
 
                 if ( !data.error ) {
-                    $scope.user = {
+                    $scope.user = $rootScope.user = {
                         email:email,
                         username:username,
                         id:data.id
@@ -51,17 +51,17 @@ bgbControllers.controller('Welcome',[
         };
 
         $scope.resetUser = function(){
-            $scope.user = null;
+            $scope.user = $rootScope.user = null;
             $cookies.user = JSON.stringify({});
         };
 
         $scope.loadUser = function () {
-            /*var curUser = loadUser($cookies);
+            var curUser = loadUser($cookies);
 
             if ( curUser && curUser.email )
                 $scope.findUser(curUser.email);
             else
-                $scope.user = null;*/
+                $scope.user = $rootScope.user = null;
         };
 
         /*********************** Private ******************************/
@@ -82,11 +82,10 @@ bgbControllers.controller('GamesList',[
             return;
         }
 
-        $http.get('ajax/games/' + curUser.id).success(function(data){
+        $http.get('ajax/games/' + $rootScope.user.id).success(function(data){
             $scope.games = data.games;
         })
-    }]
-);
+    }]);
 
 bgbControllers.controller('NewGame',[
     '$scope',
@@ -97,13 +96,13 @@ bgbControllers.controller('NewGame',[
 
         $scope.addPlayer = function(){
             $scope.players.push(PlayerFactory.newPlayer());
-        }
+        };
 
         $scope.createGame = function(){
-            $http.post('ajax/newgame',{title:$scope.title,players:$scope.players}).success(function(data){
+            $http.post('ajax/newgame',{title:$scope.title,players:$scope.players}).success(function(){
                 $location.path('/games');
             });
-        }
+        };
 
         // Constructor
         if ( !$rootScope.user || !$rootScope.user.email ){
@@ -112,7 +111,7 @@ bgbControllers.controller('NewGame',[
         }
 
         var selfPlayer = PlayerFactory.init().newPlayer();
-        selfPlayer.email = curUser.email;
+        selfPlayer.email = $rootScope.user.email;
         selfPlayer.isCreator = true;
         var firstPlayer = PlayerFactory.newPlayer();
         $scope.players = [selfPlayer,firstPlayer];
@@ -141,16 +140,16 @@ bgbControllers.controller('JoinGame',[
 
         $scope.joinGame = function(){
             doJoin();
-        }
+        };
 
         function doJoin() {
             if ( $rootScope.user && $scope.token ) {
                 var joinToken = $rootScope.token;
                 $rootScope.token = null;
 
-                $http.post('ajax/joingame',{userId:$rootScope.user.id,token:joinToken}).success(function(data){
+                $http.post('ajax/joingame',{userId:$rootScope.user.id,token:joinToken}).success(function(){
                     $location.path('/games');
-                }).error(function(data){
+                }).error(function(){
                     $scope.errorMessage = "Invalid Token!";
                 });
             }
@@ -175,7 +174,7 @@ var PlayerFactory = (function(){
     function Player(){
         this.email = null;
         this.idx = null;
-        this.isCreator = false;
+        this.isCreator = null;
     }
 
     return {

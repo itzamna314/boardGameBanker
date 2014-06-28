@@ -77,14 +77,14 @@ bgbControllers.controller('GamesList',[
     '$rootScope',
     '$location',
     function($scope,$http,$rootScope,$location) {
-        if ( !$rootScope.user || !$rootScope.user.email ) {
+        if ( !$rootScope.user || !$rootScope.user.email || !$rootScope.user.id) {
             $location.path('/');
             return;
         }
 
         $http.get('ajax/games/' + $rootScope.user.id).success(function(data){
             $scope.games = data.games;
-        })
+        });
     }]);
 
 bgbControllers.controller('NewGame',[

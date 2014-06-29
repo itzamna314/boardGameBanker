@@ -214,7 +214,7 @@ object Ajax extends Controller {
     mail.setRecipient(email)
     mail.sendHtml("<html><body><p>You have received an invitation to play " + gameName + " by " + creator.name +
       "&lt;" + creator.email + "&gt;." + "To accept, " +
-      "<a href=\"" + url + "/#/joingame/" + uuid + "\">click here</a> to go to board game banker.<br/><br/>" +
+      "<a href=\"" + url + "#/joingame/" + uuid + "\">click here</a> to go to board game banker.<br/><br/>" +
       "Alternately, enter this code in the app:<br/><br/>" + uuid + ".</p></body></html>")
 
   }

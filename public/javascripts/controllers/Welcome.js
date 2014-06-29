@@ -54,8 +54,10 @@ bgbControllers.controller('Welcome',[
         $scope.loadUser = function () {
             var curUser = loadUser($cookies);
 
-            if ( curUser && curUser.id )
+            if ( curUser && curUser.id ) {
+                curUser.found = true;
                 $scope.user = $rootScope.user = curUser;
+            }
             else
                 $scope.user = $rootScope.user = null;
         };
@@ -75,9 +77,13 @@ bgbControllers.controller('Welcome',[
         /************************* Constructor *************************/
         if ( !$rootScope.user ) {
             $scope.loadUser();
-            if ( $rootScope.previousPath != $location.path() ){
+            if ( $rootScope.user && $rootScope.previousPath != $location.path() ){
                 $location.path($rootScope.previousPath);
             }
+        }
+
+        if ( !$scope.user ) {
+            $scope.user = $rootScope.user;
         }
     }
 ]);

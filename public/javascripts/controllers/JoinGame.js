@@ -24,8 +24,8 @@ bgbControllers.controller('JoinGame',[
 
         function doJoin() {
             if ( $rootScope.user && $scope.token ) {
-                var joinToken = $rootScope.token;
-                $rootScope.token = null;
+                var joinToken = $rootScope.token || $scope.token;
+                $rootScope.token = $scope.token = null;
 
                 $http.post('ajax/joingame',{userId:$rootScope.user.id,token:joinToken}).success(function(){
                     $location.path('/games');

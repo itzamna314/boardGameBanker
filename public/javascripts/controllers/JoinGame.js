@@ -29,8 +29,8 @@ bgbControllers.controller('JoinGame',[
 
                 $http.post('ajax/joingame',{userId:$rootScope.user.id,token:joinToken}).success(function(){
                     $location.path('/games');
-                }).error(function(){
-                    $scope.errorMessage = "Invalid Token!";
+                }).error(function(data){
+                    $scope.errorMessage = data.message;
                 });
             }
         }

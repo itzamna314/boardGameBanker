@@ -90,12 +90,25 @@ object Dal {
     }
   }
 
-  def bindPlayer(userId:Int,uuid:String) = {
+  def bindPlayer(userId:Int,uuid:String) : String = {
     play.api.db.slick.DB.withSession { implicit session =>
-      val q = for { p <- Models.players if p.token === uuid } yield p.userId
-      q.update(Some(userId))
 
-      q.firstOption
+      val q = for { p <- Models.players if p.token === uuid } yield p
+      val player = q.firstOption
+      player match {
+        case None =>
+          "UUIDInvalid"
+        case Some(p:Player) =>
+          val existingPlayer = Models.players.filter(_.gameId === p.gameId ).filter(_.userId === userId)
+          existingPlayer.firstOption.isDefined match {
+            case false =>
+              val updateQuery = for {p <- Models.players if p.token === uuid } yield p.userId
+              updateQuery.update(Some(userId))
+              ""
+            case true =>
+              "PlayerExisted"
+          }
+      }
     }
   }
 

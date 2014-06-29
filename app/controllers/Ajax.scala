@@ -116,11 +116,14 @@ object Ajax extends Controller {
       case Some(req) =>
         val updatedPlayer = Dal.bindPlayer(req.userId,req.uuid)
         updatedPlayer match {
-          case Some(_) =>
-            Ok(Json.obj("error" -> JsNull, "message" -> ""))
-          case None =>
+          case "UUIDInvalid" =>
             val errorMessage = "Token " + req.uuid + " is not a valid token"
             BadRequest(Json.obj("error" -> "InvalidToken", "message" -> errorMessage))
+          case "PlayerExisted" =>
+            BadRequest(Json.obj("error" -> "PlayerExisted","message" -> "You are already in this game!"))
+          case "" =>
+            Ok(Json.obj("error" -> JsNull, "message" -> ""))
+
         }
       case None =>
         BadRequest(Json.obj("error" -> "IllegalJSON","message" -> ("Received: " + request.body)))
@@ -162,12 +165,11 @@ object Ajax extends Controller {
           }
 
           val creator : Seq[User] = players.get filter { p =>
-            (p \ "isCreator").asOpt[Boolean] match {
-              case Some(b:Boolean) => b
-              case None => false
-            }
+            val isCreator = (p \ "isCreator").asOpt[Boolean].getOrElse(false)
+            isCreator
           } map { p =>
-            (p \ "email").asOpt[String] match {
+            val email = (p \ "email").asOpt[String]
+            email match {
               case Some(e:String) =>
                 Dal.findUser(e)
               case None =>

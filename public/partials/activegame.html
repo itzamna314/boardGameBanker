@@ -1,50 +1,58 @@
 <div id="active-game" ng-controller="ActiveGame">
     <div class="container">
         <div class="row">
-            <div class="row">
-                <div class="col-xs-5">
-                    <button class="btn" ng-click="addPoints(-1)">-1</button>
+            <div class="container col-xs-1">
+                <div class="row scoreboard">
+                    <div class="col-xs-1">
+                        <button class="btn btn-default" ng-click="addPoints(-1)">-1</button>
+                    </div>
                 </div>
-                <div class="col-xs-2"></div>
-                <div class="col-xs-5">
-                    <button class="btn" ng-click="addPoints(1)">+1</button>
+                <div class="row scoreboard">
+                    <div class="col-xs-1">
+                        <button class="btn btn-default" ng-click="addPoints(-5)">-5</button>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-5">
-                    <button class="btn" ng-click="addPoints(-5)">-5</button>
-                </div>
-                <div class="col-xs-2">
-                    {{game.myscore}}
-                </div>
-                <div class="col-xs-5">
-                    <button class="btn" ng-click="addPoints(5)">+5</button>
+                <div class="row scoreboard">
+                    <div class="col-xs-1">
+                        <button class="btn btn-default" ng-click="addPoints(-10)">-10</button>
+                    </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-xs-5">
-                    <button class="btn" ng-click="addPoints(-10)">-10</button>
+            <div class="container col-xs-10">
+                <h1 class="text-center">{{game.myscore}}</h1>
+            </div>
+            <div class="container col-xs-1">
+                <div class="row scoreboard">
+                    <button class="btn btn-default" ng-click="addPoints(1)">+1</button>
                 </div>
-                <div class="col-xs-2"></div>
-                <div class="col-xs-5">
-                    <button class="btn"  ng-click="addPoints(10)">+10</button>
+                <div class="row scoreboard">
+                    <button class="btn btn-default" ng-click="addPoints(5)">+5</button>
+                </div>
+                <div class="row scoreboard">
+                    <button class="btn btn-default"  ng-click="addPoints(10)">+10</button>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-xs-12">
-                <table>
-                    <tr ng-repeat="player in players">
-                        <td>{{player.username}} ({{player.email}})</td>
-                        <td>{{player.score}}</td>
+                <table class="table table-striped">
+                    <tr>
+                        <th>Player</th>
+                        <th>Score</th>
+                    </tr>
+                    <tr ng-repeat="player in players | orderBy:'score':true">
+                        <td ng-class="{creatorRow:player.isCreator,selfRow:player.isMe}">{{player.username}} ({{player.email}})</td>
+                        <td ng-class="{creatorRow:player.isCreator,selfRow:player.isMe}">{{player.score}}</td>
                     </tr>
                 </table>
             </div>
         </div>
         <div class="row">
-            <div class="col-xs-1">
+            <div class="col-xs-5"></div>
+            <div class="col-xs-2">
                 <button class="btn btn-primary" ng-click="refreshScore()">Refresh</button>
             </div>
+            <div class="col-xs-5"></div>
         </div>
     </div>
 </div>

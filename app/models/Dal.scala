@@ -18,13 +18,45 @@ object Dal {
     resetTest()
   }
 
-  def listGames(userId:Int) = {
+  def listGames(userId:Int) : List[Game] = {
     play.api.db.slick.DB.withSession { implicit session =>
       val gamesQuery = for {
         p <- Models.players if p.userId === userId
         g <- Models.games if g.id === p.gameId
       } yield g
-      gamesQuery.list
+      val games: List[Game] = gamesQuery.list
+      val s : Set[Game] = games.foldRight(Set[Game]())({ (g:Game,s:Set[Game]) =>
+        if ( !s.contains(g) )
+          s + g
+        else
+          s
+      })
+
+      s.foldLeft[List[Game]](List[Game]()){ (l:List[Game],g:Game) =>
+        g :: l
+      }
+    }
+  }
+
+  def getGame(gameId:Int) : List[(Game,Player,User)] = {
+    play.api.db.slick.DB.withSession { implicit session =>
+      val gameQuery = for {
+        p <- Models.players if p.gameId === gameId
+        g <- Models.games if g.id === p.gameId
+        u <- Models.users if u.id === p.userId
+      } yield (g,p,u)
+      gameQuery.list
+    }
+  }
+
+  def addPoints(gameId:Int,userId:Int,qty:Int) = {
+    play.api.db.slick.DB.withSession{ implicit session =>
+      val playerQuery = for {
+        p <- Models.players if p.gameId === gameId && p.userId === userId
+      } yield p.score
+      val curScore = playerQuery.first()
+      val retVal = playerQuery.update(curScore + qty)
+      retVal > 0
     }
   }
 
@@ -87,7 +119,7 @@ object Dal {
         )
 
         Models.games ++= Seq(
-          Models.Game(Some(1),"Game of Thrones",1),
+          Models.Game(Some(1),"Game of Thrones",3),
           Models.Game(Some(2),"Smallworld",6)
         )
 

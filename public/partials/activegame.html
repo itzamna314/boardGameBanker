@@ -1,34 +1,49 @@
-<div id="active-game" ng-controller="GamesList">
+<div id="active-game" ng-controller="ActiveGame">
     <div class="container">
         <div class="row">
             <div class="row">
                 <div class="col-xs-5">
-                    <button class="btn">-1</button>
+                    <button class="btn" ng-click="addPoints(-1)">-1</button>
                 </div>
                 <div class="col-xs-2"></div>
                 <div class="col-xs-5">
-                    <button class="btn">+1</button>
+                    <button class="btn" ng-click="addPoints(1)">+1</button>
                 </div>
             </div>
             <div class="row">
                 <div class="col-xs-5">
-                    <button class="btn">-5</button>
+                    <button class="btn" ng-click="addPoints(-5)">-5</button>
                 </div>
                 <div class="col-xs-2">
-                    {{ game.myscore }}
+                    {{game.myscore}}
                 </div>
                 <div class="col-xs-5">
-                    <button class="btn">+5</button>
+                    <button class="btn" ng-click="addPoints(5)">+5</button>
                 </div>
             </div>
             <div class="row">
                 <div class="col-xs-5">
-                    <button class="btn">-10</button>
+                    <button class="btn" ng-click="addPoints(-10)">-10</button>
                 </div>
                 <div class="col-xs-2"></div>
                 <div class="col-xs-5">
-                    <button class="btn">+10</button>
+                    <button class="btn"  ng-click="addPoints(10)">+10</button>
                 </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <table>
+                    <tr ng-repeat="player in players">
+                        <td>{{player.username}} ({{player.email}})</td>
+                        <td>{{player.score}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-1">
+                <button class="btn btn-primary" ng-click="refreshScore()">Refresh</button>
             </div>
         </div>
     </div>

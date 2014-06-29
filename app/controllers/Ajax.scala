@@ -34,8 +34,25 @@ object Ajax extends Controller {
     Ok(jsonArr)
   }
 
-  def gameDetail(gameId:String) = Action {
-    Ok(Json.obj("error" -> JsNull, "message" -> ""))
+  def gameDetail(gameId:String,userId:String) = Action {
+    val gameState = getGameState(gameId.toInt,userId.toInt)
+    val players = (gameState \ "players").asOpt[List[JsObject]]
+
+    if ( players.isDefined && players.get.length > 0 ) {
+      Ok(gameState)
+    }
+    else {
+      BadRequest(Json.obj("error" -> "GameNotFound", "message" -> (gameId + " is not a valid game ID")))
+    }
+  }
+
+  def addPoints(gameId:String,userId:String) = Action(parse.json) { implicit request =>
+    val numberOfPoints = (request.body \ "number").asOpt[Int].getOrElse(0)
+    if (numberOfPoints != 0 && Dal.addPoints(gameId.toInt, userId.toInt, numberOfPoints)) {
+      Ok(getGameState(gameId.toInt,userId.toInt))
+    } else {
+      BadRequest(Json.obj("error" -> "IllegalUpdate","message" -> ("Game ID: " + gameId + ", User ID: " + userId)))
+    }
   }
 
   def findUser(emailOrUsername:String) = Action {
@@ -200,5 +217,35 @@ object Ajax extends Controller {
       "<a href=\"" + url + "/#/joingame/" + uuid + "\">click here</a> to go to board game banker.<br/><br/>" +
       "Alternately, enter this code in the app:<br/><br/>" + uuid + ".</p></body></html>")
 
+  }
+
+  private def getGameState(gameId:Int,userId:Int) : JsObject = {
+    val gamePlayers = Dal.getGame(gameId.toInt)
+    if ( gamePlayers.length > 0 ) {
+      val game = gamePlayers(0)._1
+      val playersJson = gamePlayers map { gp =>
+        val player = gp._2
+        val user = gp._3
+        Json.obj(
+          "username" -> user.name,
+          "email" -> user.email,
+          "playerId" -> player.id,
+          "score" -> player.score,
+          "isCreator" -> JsBoolean(user.id.get == game.creatorId),
+          "isMe" -> JsBoolean(user.id.get == userId.toInt)
+        )
+      }
+
+      val gameJson = Json.obj(
+        "name" -> game.name,
+        "created" -> game.created,
+        "id" -> game.id,
+        "myscore" -> gamePlayers.filter(_._3.id == Some(userId.toInt))(0)._2.score
+      )
+
+      Json.obj("game" -> gameJson, "players" -> Json.toJson(playersJson.toSeq))
+    } else {
+      Json.obj("error" -> "NoPlayers","message" -> "found no players")
+    }
   }
 }

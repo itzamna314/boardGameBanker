@@ -5,12 +5,9 @@ bgbControllers.controller('GamesList',[
     '$location',
     function($scope,$http,$rootScope,$location) {
         /************************ Public **********************************/
-        $scope.gameDetail = function(gameId){
-            $http.get('ajax/gamedetail/' + gameId).success(function(data){
-                $location.path('/games/active/' + gameId);
-            });
+        $scope.gameDetail = function(id){
+          $location.path('/games/active/' + id);
         };
-
         /************************ Constructor *****************************/
         if ( !$rootScope.user || !$rootScope.user.email || !$rootScope.user.id) {
             $location.path('/');
@@ -20,4 +17,5 @@ bgbControllers.controller('GamesList',[
         $http.get('ajax/games/' + $rootScope.user.id).success(function(data){
             $scope.games = data.games;
         });
-    }]);
+    }
+]);

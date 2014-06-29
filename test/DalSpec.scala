@@ -27,6 +27,11 @@ class DalSpec extends Specification {
       games.length must_== 1
     }
 
+    "get game detail" in new resetDal {
+      val game = Dal.getGame(2)
+      game.length must_== 6
+    }
+
     "create a user" in new resetDal {
       val user = User(None,"Cyril Figgis","elcontante@sanmarcos.com")
       Dal.createUser(user)
@@ -47,6 +52,10 @@ class DalSpec extends Specification {
     "create a player" in new resetDal {
       val player = Player(None,2,Some(1),"789456")
       val playerId = Dal.createPlayer(player)
+    }
+
+    "add points" in new resetDal {
+      Dal.addPoints(2,1,5) must_!= 0
     }
   }
 }

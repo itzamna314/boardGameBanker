@@ -25,7 +25,7 @@ bgbApp.config(['$routeProvider',
             })
             .when('/games/active/:id',{
                 templateUrl:'assets/partials/activegame.html',
-                controllers:'GamesList'
+                controllers:'ActiveGame'
             })
             .when('/joingame',{
                 templateUrl:'assets/partials/joingame.html',

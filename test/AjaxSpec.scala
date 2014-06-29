@@ -1,5 +1,5 @@
 import org.junit.runner.RunWith
-import play.api.libs.json.{JsNull, Json}
+import play.api.libs.json.{JsObject, JsArray, JsNull, Json}
 import org.specs2.mutable._
 import org.specs2.runner.JUnitRunner
 
@@ -41,6 +41,18 @@ class AjaxSpec extends Specification {
       val found = route(FakeRequest(GET, "/ajax/getuser/ssmith@needfulthings.com")).get
       val foundJson = contentAsJson(found)
       foundJson \ "found" must_== Json.toJson(true)
+
+    }
+
+    "get game detail" in new resetDal {
+      val detail = route(FakeRequest(GET,"/ajax/gamedetail/2/1")).get
+      status(detail) must equalTo(OK)
+      contentType(detail) must beSome("application/json")
+
+      val json = contentAsJson(detail)
+      val game = json \ "game"
+      val players = (json \ "players").asOpt[List[JsObject]]
+      players must beSome
 
     }
   }

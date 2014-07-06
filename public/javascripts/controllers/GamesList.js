@@ -4,6 +4,8 @@ bgbControllers.controller('GamesList',[
     '$rootScope',
     '$location',
     function($scope,$http,$rootScope,$location) {
+        $rootScope.isActive = 'GamesList';
+
         /************************ Public **********************************/
         $scope.gameDetail = function(id){
           $location.path('/games/active/' + id);

@@ -4,6 +4,7 @@ bgbControllers.controller('NewGame',[
     '$rootScope',
     '$location',
     function($scope,$http,$rootScope,$location){
+        $rootScope.isActive = 'NewGame';
 
         $scope.addPlayer = function(){
             $scope.players.push(PlayerFactory.newPlayer());

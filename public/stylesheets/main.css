@@ -2,10 +2,22 @@ div.row.scoreboard {
     padding-bottom:5px;
 }
 
+div.menu-bar {
+    background-color:lightgray;
+    padding-top:5px;
+    margin-bottom:15px;
+    /*margin-left:0;*/
+    /*#width:100%;*/
+}
+
 .table.table-striped > tbody > tr > td.creatorRow{
     background-color:lightgoldenrodyellow;
 }
 
 .table.table-striped > tbody > tr > td.selfRow{
     background-color:lightgreen;
+}
+
+.menu-item {
+    width:24%;
 }

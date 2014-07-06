@@ -5,6 +5,8 @@ bgbControllers.controller('Welcome',[
     '$rootScope',
     '$location',
     function($scope,$http,$cookies,$rootScope,$location) {
+        $rootScope.isActive = 'Welcome';
+
         /**************************** Public *********************************/
         $scope.findUser = function(query){
             $http.get('ajax/getuser/' + query).success(function(data){

@@ -1,35 +1,33 @@
 <div id="active-game" ng-controller="ActiveGame">
     <div class="container">
         <div class="row">
-            <div class="container col-xs-1">
-                <div class="row scoreboard">
-                    <div class="col-xs-1">
-                        <button class="btn btn-default" ng-click="addPoints(-1)">-1</button>
+            <div class="col-xs-4">
+                <div class="container">
+                    <div class="row scoreboard">
+                        <button class="btn btn-default btn-block" ng-click="addPoints(-1)">-1</button>
                     </div>
-                </div>
-                <div class="row scoreboard">
-                    <div class="col-xs-1">
-                        <button class="btn btn-default" ng-click="addPoints(-5)">-5</button>
+                    <div class="row scoreboard">
+                        <button class="btn btn-default btn-block" ng-click="addPoints(-5)">-5</button>
                     </div>
-                </div>
-                <div class="row scoreboard">
-                    <div class="col-xs-1">
-                        <button class="btn btn-default" ng-click="addPoints(-10)">-10</button>
+                    <div class="row scoreboard">
+                        <button class="btn btn-default btn-block" ng-click="addPoints(-10)">-10</button>
                     </div>
                 </div>
             </div>
-            <div class="container col-xs-10">
+            <div class="col-xs-4">
                 <h1 class="text-center">{{game.myscore}}</h1>
             </div>
-            <div class="container col-xs-1">
-                <div class="row scoreboard">
-                    <button class="btn btn-default" ng-click="addPoints(1)">+1</button>
-                </div>
-                <div class="row scoreboard">
-                    <button class="btn btn-default" ng-click="addPoints(5)">+5</button>
-                </div>
-                <div class="row scoreboard">
-                    <button class="btn btn-default"  ng-click="addPoints(10)">+10</button>
+            <div class="col-xs-4">
+                <div class="container">
+                    <div class="row scoreboard">
+                        <button class="btn btn-default btn-block" ng-click="addPoints(1)">+1</button>
+                    </div>
+                    <div class="row scoreboard">
+                        <button class="btn btn-default btn-block" ng-click="addPoints(5)">+5</button>
+                    </div>
+                    <div class="row scoreboard">
+                        <button class="btn btn-default btn-block"  ng-click="addPoints(10)">+10</button>
+                    </div>
                 </div>
             </div>
         </div>

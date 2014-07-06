@@ -5,6 +5,7 @@ bgbControllers.controller('JoinGame',[
     '$location',
     '$routeParams',
     function($scope,$http,$rootScope,$location,$routeParams){
+        $rootScope.isActive = 'JoinGame';
 
         if ( $routeParams.token ) {
             $rootScope.token = $routeParams.token;

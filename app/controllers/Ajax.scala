@@ -130,6 +130,26 @@ object Ajax extends Controller {
     }
   }
 
+  def deleteGame() = Action(parse.json) { implicit request =>
+    val reqJson = request.body.asOpt[JsObject]
+    reqJson match {
+      case Some(json) =>
+        val reqUser = (json \ "userId").asOpt[Int]
+        val reqGame = (json \ "gameId").asOpt[Int]
+
+        if ( !reqUser.isDefined )
+          jsonResponse(Some("MissingParameter"),"User ID is required!")
+        if ( !reqGame.isDefined )
+          jsonResponse(Some("MissingParameter"),"Game ID is required!")
+        else {
+          Dal.deleteGame(reqGame.get,reqUser.get)
+          jsonResponse(None)
+        }
+      case None =>
+        jsonResponse(Some("IllegalJSON"),"Received: " + request.body)
+    }
+  }
+
   def resetDb = Action { implicit request =>
     if ( Dal.isTest ) {
       Dal.resetTest()
@@ -142,6 +162,15 @@ object Ajax extends Controller {
   private case class createGameRequest(name:String,creator:User,players:Array[createGameRequestPlayer])
   private case class createGameRequestPlayer(email:String)
   private case class joinGameRequest(userId:Int,uuid:String)
+
+  private def jsonResponse(error:Option[String],message:String = "") : SimpleResult = {
+    error match {
+      case Some(s:String) =>
+        BadRequest(Json.obj("error" -> error, "message" -> message))
+      case None =>
+        Ok(Json.obj("error" -> JsNull, "message" -> message))
+    }
+  }
 
   // Parse JSON game request into strongly-type scala game request
   // Return Some for valid request, else None

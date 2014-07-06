@@ -112,6 +112,24 @@ object Dal {
     }
   }
 
+  def deleteGame(gameId:Int,userId:Int) = {
+    play.api.db.slick.DB.withSession { implicit session =>
+      val toDelete = for {
+        p <- Models.players if p.gameId === gameId && p.userId === userId
+        g <- Models.games if g.id === p.gameId && g.creator === userId
+      } yield p
+
+      val canDelete = toDelete.firstOption.isDefined
+
+      if ( canDelete ) {
+        Models.players.filter(_.gameId === gameId).delete
+        Models.games.filter(_.id === gameId).delete
+      }
+
+      canDelete
+    }
+  }
+
   def resetTest() = {
     if (isTest) {
       // Populate the test database

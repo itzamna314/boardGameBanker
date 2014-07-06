@@ -4,10 +4,7 @@ div.row.scoreboard {
 
 div.menu-bar {
     background-color:lightgray;
-    padding-top:5px;
     margin-bottom:15px;
-    /*margin-left:0;*/
-    /*#width:100%;*/
 }
 
 .table.table-striped > tbody > tr > td.creatorRow{
@@ -20,4 +17,5 @@ div.menu-bar {
 
 .menu-item {
     width:24%;
+    margin-top:0;
 }

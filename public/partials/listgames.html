@@ -5,30 +5,16 @@
                 <th>Name</th>
                 <th>Host</th>
                 <th>Date</th>
+                <th ng-show="createdAny"></th>
             </tr>
-            <tr ng-repeat="game in games" ng-click="gameDetail(game.id)">
+            <tr ng-repeat="game in games" ng-click="gameDetail(game.id)" ng-show="!game.deleted">
                 <td>{{ game.name }}</td>
                 <td>{{ game.creator.username }}</td>
                 <td>{{ game.created }}</td>
+                <td ng-show="game.creator.id == user.id">
+                    <button class="btn btn-danger" ng-click="deleteGame(game.id,$event)">Delete</button>
+                </td>
             </tr>
         </table>
     </div>
-
-    <!--
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-2">
-                Search: <input ng-model="query" />
-            </div>
-        </div>
-    </div>
-    <div class="col-md-10">
-        <ul class="games">
-            <li ng-repeat="game in games | filter:query">
-                {{game.name}}
-                <p>{{game.players}}</p>
-            </li>
-        </ul>
-    </div>
-    -->
 </div>

@@ -3,26 +3,28 @@
 # ~~~~
 
 # Home page
-GET         /                                       controllers.Application.index()
+GET         /                                          controllers.Application.index()
 
 # Ajax endpoints
-GET         /ajax/games/:userId                     controllers.Ajax.listGames(userId)
-GET         /ajax/gamedetail/:gameId/:userId        controllers.Ajax.gameDetail(gameId,userId)
-POST        /ajax/gameaddpoints/:gameId/:userId     controllers.Ajax.addPoints(gameId,userId)
+GET         /ajax/games/:userId                        controllers.Ajax.listGames(userId)
+GET         /ajax/gamedetail/:gameId/:userId           controllers.Ajax.gameDetail(gameId,userId)
+POST        /ajax/gameaddpoints/:gameId/:userId        controllers.Ajax.addPoints(gameId,userId)
 
-GET         /ajax/getuser/:query                    controllers.Ajax.findUser(query)
+GET         /ajax/getuser/:query                       controllers.Ajax.findUser(query)
 
-POST        /ajax/createuser                        controllers.Ajax.createUser
+POST        /ajax/createuser                           controllers.Ajax.createUser
 
-POST        /ajax/newgame                           controllers.Ajax.createGame
+POST        /ajax/newgame                              controllers.Ajax.createGame
 
-POST        /ajax/joingame                          controllers.Ajax.joinGame
+POST        /ajax/joingame                             controllers.Ajax.joinGame
+
+POST        /ajax/deletegame                           controllers.Ajax.deleteGame()
 
 # Run JS tests
-GET         /jstest                                 controllers.Application.testJavascripts
+GET         /jstest                                    controllers.Application.testJavascripts
 # Used for JS tests.  Resets DB if we are configured for test mode.  Otherwise returns
 # blank 404.
-GET         /resetDb                                controllers.Ajax.resetDb
+GET         /resetDb                                   controllers.Ajax.resetDb
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file                           controllers.Assets.at(path="/public", file)
+GET         /assets/*file                              controllers.Assets.at(path="/public", file)

@@ -5,6 +5,8 @@ var bgbControllers = angular.module('bgbControllers',[
 var bgbApp = angular.module('bgbApp',[
     'ngCookies',
     'ngRoute',
+    'ngTouch',
+    'angular-gestures',
     'bgbControllers'
 ]).run(['$rootScope',function($rootScope){
 

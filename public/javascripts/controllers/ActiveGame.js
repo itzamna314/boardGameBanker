@@ -17,13 +17,23 @@ bgbControllers.controller('ActiveGame',[
                 getDetails($scope.game.id);
         };
 
-        $scope.showScoreboard = function(){
+        $scope.showScoreboard = function($event){
+            if ( $event )
+                $event.stopPropagation();
+
             $scope.displayMode = 'Scoreboard';
         };
 
-        $scope.showTransaction = function(){
+        $scope.showTransaction = function($event){
+            if ( $event )
+                $event.stopPropagation();
+
             $scope.displayMode = 'Transaction';
             $scope.currentTransaction = 0;
+        };
+
+        $scope.showLogs = function(){
+            $scope.displayMode = 'Logs';
         };
 
         $scope.modifyTransaction = function(amount){
@@ -36,10 +46,6 @@ bgbControllers.controller('ActiveGame',[
             submitPoints($scope.currentTransaction);
             $scope.currentTransaction = 0;
             $scope.displayMode = 'Scoreboard';
-        };
-
-        $scope.showLogs = function(){
-            $scope.displayMode = 'Logs';
         };
 
         function getDetails(gameId){

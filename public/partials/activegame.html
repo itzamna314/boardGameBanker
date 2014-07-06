@@ -62,7 +62,7 @@
                 </div>
             </div>
         </div>
-        <div class="row" ng-show="!isA || displayMode=='Scoreboard'">
+        <div class="row" ng-show="!isA || displayMode=='Scoreboard'" hm-swipe-right="showTransaction()" hm-swipe-down="refreshScore">
             <div class="col-xs-12">
                 <table class="table table-striped">
                     <tr>
@@ -76,7 +76,7 @@
                 </table>
             </div>
         </div>
-        <div class="row" ng-show="isA && displayMode=='Transaction'">
+        <div class="row" ng-show="isA && displayMode=='Transaction'" hm-swipe-left="showScoreboard()">
             <div class="col-xs-4">
                 <div class="row scoreboard">
                     <button class="btn btn-default btn-block" ng-click="modifyTransaction(-1)">-1</button>

@@ -7,16 +7,39 @@ bgbControllers.controller('ActiveGame',[
     function($scope,$http,$rootScope,$location,$routeParams) {
 
         $scope.addPoints = function(numToAdd){
-            $http.post('ajax/gameaddpoints/' + $scope.game.id + '/' + $rootScope.user.id,{number:numToAdd})
-                .success(function (data) {
-                    $scope.game.myscore = data.game.myscore;
-                    $scope.players = data.players;
-            });
+            $scope.game.myscore += numToAdd;
+
+            submitPoints(numToAdd);
         };
 
         $scope.refreshScore = function(){
             if ( $scope.game && $scope.game.id )
                 getDetails($scope.game.id);
+        };
+
+        $scope.showScoreboard = function(){
+            $scope.displayMode = 'Scoreboard';
+        };
+
+        $scope.showTransaction = function(){
+            $scope.displayMode = 'Transaction';
+            $scope.currentTransaction = 0;
+        };
+
+        $scope.modifyTransaction = function(amount){
+            $scope.currentTransaction += amount;
+        };
+
+        $scope.commitTransaction = function(){
+            $scope.game.myscore += $scope.currentTransaction;
+
+            submitPoints($scope.currentTransaction);
+            $scope.currentTransaction = 0;
+            $scope.displayMode = 'Scoreboard';
+        };
+
+        $scope.showLogs = function(){
+            $scope.displayMode = 'Logs';
         };
 
         function getDetails(gameId){
@@ -26,10 +49,20 @@ bgbControllers.controller('ActiveGame',[
             });
         }
 
+        function submitPoints(numPoints){
+            $http.post('ajax/gameaddpoints/' + $scope.game.id + '/' + $rootScope.user.id,{number:numPoints})
+                .success(function (data) {
+                    $scope.game.myscore = data.game.myscore;
+                    $scope.players = data.players;
+                });
+        }
+
         if ( !$rootScope.user ){
             $location.path('/');
             return;
         }
+
+        $scope.displayMode = 'Scoreboard';
 
         getDetails($routeParams.id);
     }

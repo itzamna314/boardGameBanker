@@ -64,6 +64,10 @@ bgbControllers.controller('Welcome',[
                 $scope.user = $rootScope.user = null;
         };
 
+        $scope.setUi = function(uiType){
+            $rootScope.isA = uiType == 'A';
+        };
+
         /*********************** Private ******************************/
             // Look up current user from cookies.
             // Return user object if found in cookie, else null
@@ -87,5 +91,8 @@ bgbControllers.controller('Welcome',[
         if ( !$scope.user ) {
             $scope.user = $rootScope.user;
         }
+
+        if ( $rootScope.isA === undefined )
+            $rootScope.isA = true;
     }
 ]);

@@ -19,3 +19,25 @@ div.menu-bar {
     width:24%;
     margin-top:0;
 }
+
+.activegame-menu-item {
+    width:32%;
+}
+
+.activegame-menu-bar {
+    margin-top:-15px;
+    margin-bottom:15px;
+    background-color:darkgray;
+}
+
+.valign-center {
+    vertical-align: middle;
+}
+
+.transaction-negative {
+    color:red;
+}
+
+.transaction-positive {
+    color:green;
+}

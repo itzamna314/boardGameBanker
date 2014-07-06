@@ -8,6 +8,14 @@
                             Welcome back {{user.username}}
                         </h4>
                         <p>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default {{isA ? 'active' : ''}}" ng-click="setUi('A')">
+                                    A
+                                </button>
+                                <button type="button" class="btn btn-default {{!isA ? 'active' : ''}}" ng-click="setUi('B')">
+                                    B
+                                </button>
+                            </div>
                             <button class="btn btn-default" ng-click="resetUser()">Log Out</button>
                         </p>
                     </div>

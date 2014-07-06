@@ -1,37 +1,68 @@
 <div id="active-game" ng-controller="ActiveGame">
-    <div class="container">
+    <div class="container-fluid activegame-menu-bar" ng-show="isA">
         <div class="row">
+            <div class="col-xs-12">
+                <ul class="nav nav-pills">
+                    <li class="activegame-menu-item {{displayMode=='Scoreboard' ? 'active' : ''}}">
+                        <a class="text-center" ng-click="showScoreboard()"><span class="glyphicon glyphicon-user"></span></a>
+                    </li>
+                    <li class="activegame-menu-item {{displayMode=='Transaction' ? 'active' : ''}}">
+                        <a class="text-center" ng-click="showTransaction()"><span class="glyphicon glyphicon-transfer"></span></a>
+                    </li>
+                    <li class="activegame-menu-item {{displayMode=='Logs' ? 'active' : ''}}">
+                        <a class="text-center" ng-click="showLogs()"><span class="glyphicon glyphicon-tree-conifer"></span></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row" ng-show="!isA">
             <div class="col-xs-4">
-                <div class="container">
-                    <div class="row scoreboard">
-                        <button class="btn btn-default btn-block" ng-click="addPoints(-1)">-1</button>
-                    </div>
-                    <div class="row scoreboard">
-                        <button class="btn btn-default btn-block" ng-click="addPoints(-5)">-5</button>
-                    </div>
-                    <div class="row scoreboard">
-                        <button class="btn btn-default btn-block" ng-click="addPoints(-10)">-10</button>
-                    </div>
+                <div class="row scoreboard">
+                    <button class="btn btn-default btn-block" ng-click="addPoints(-1)">-1</button>
+                </div>
+                <div class="row scoreboard">
+                    <button class="btn btn-default btn-block" ng-click="addPoints(-5)">-5</button>
+                </div>
+                <div class="row scoreboard">
+                    <button class="btn btn-default btn-block" ng-click="addPoints(-10)">-10</button>
+                </div>
+                <div class="row scoreboard">
+                    <button class="btn btn-default btn-block" ng-click="addPoints(-50)">-50</button>
+                </div>
+                <div class="row scoreboard">
+                    <button class="btn btn-default btn-block" ng-click="addPoints(-100)">-100</button>
+                </div>
+                <div class="row scoreboard">
+                    <button class="btn btn-default btn-block" ng-click="addPoints(-1000)">-1000</button>
                 </div>
             </div>
             <div class="col-xs-4">
                 <h1 class="text-center">{{game.myscore}}</h1>
             </div>
             <div class="col-xs-4">
-                <div class="container">
-                    <div class="row scoreboard">
-                        <button class="btn btn-default btn-block" ng-click="addPoints(1)">+1</button>
-                    </div>
-                    <div class="row scoreboard">
-                        <button class="btn btn-default btn-block" ng-click="addPoints(5)">+5</button>
-                    </div>
-                    <div class="row scoreboard">
-                        <button class="btn btn-default btn-block"  ng-click="addPoints(10)">+10</button>
-                    </div>
+                <div class="row scoreboard">
+                    <button class="btn btn-default btn-block" ng-click="addPoints(1)">+1</button>
+                </div>
+                <div class="row scoreboard">
+                    <button class="btn btn-default btn-block" ng-click="addPoints(5)">+5</button>
+                </div>
+                <div class="row scoreboard">
+                    <button class="btn btn-default btn-block"  ng-click="addPoints(10)">+10</button>
+                </div>
+                <div class="row scoreboard">
+                    <button class="btn btn-default btn-block" ng-click="addPoints(50)">+50</button>
+                </div>
+                <div class="row scoreboard">
+                    <button class="btn btn-default btn-block" ng-click="addPoints(100)">+100</button>
+                </div>
+                <div class="row scoreboard">
+                    <button class="btn btn-default btn-block" ng-click="addPoints(1000)">+1000</button>
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row" ng-show="!isA || displayMode=='Scoreboard'">
             <div class="col-xs-12">
                 <table class="table table-striped">
                     <tr>
@@ -45,7 +76,62 @@
                 </table>
             </div>
         </div>
-        <div class="row">
+        <div class="row" ng-show="isA && displayMode=='Transaction'">
+            <div class="col-xs-4">
+                <div class="row scoreboard">
+                    <button class="btn btn-default btn-block" ng-click="modifyTransaction(-1)">-1</button>
+                </div>
+                <div class="row scoreboard">
+                    <button class="btn btn-default btn-block" ng-click="modifyTransaction(-5)">-5</button>
+                </div>
+                <div class="row scoreboard">
+                    <button class="btn btn-default btn-block" ng-click="modifyTransaction(-10)">-10</button>
+                </div>
+                <div class="row scoreboard">
+                    <button class="btn btn-default btn-block" ng-click="modifyTransaction(-50)">-50</button>
+                </div>
+                <div class="row scoreboard">
+                    <button class="btn btn-default btn-block" ng-click="modifyTransaction(-100)">-100</button>
+                </div>
+                <div class="row scoreboard">
+                    <button class="btn btn-default btn-block" ng-click="modifyTransaction(-1000)">-1000</button>
+                </div>
+            </div>
+            <div class="col-xs-4 valign-center">
+                <h1 class="text-center {{currentTransaction > 0 ? 'transaction-positive' : currentTransaction < 0 ? 'transaction-negative' : ''}}">
+                    {{currentTransaction}}
+                </h1>
+            </div>
+            <div class="col-xs-4">
+                <div class="row scoreboard">
+                    <button class="btn btn-default btn-block" ng-click="modifyTransaction(1)">+1</button>
+                </div>
+                <div class="row scoreboard">
+                    <button class="btn btn-default btn-block" ng-click="modifyTransaction(5)">+5</button>
+                </div>
+                <div class="row scoreboard">
+                    <button class="btn btn-default btn-block" ng-click="modifyTransaction(10)">+10</button>
+                </div>
+                <div class="row scoreboard">
+                    <button class="btn btn-default btn-block" ng-click="modifyTransaction(50)">+50</button>
+                </div>
+                <div class="row scoreboard">
+                    <button class="btn btn-default btn-block" ng-click="modifyTransaction(100)">+100</button>
+                </div>
+                <div class="row scoreboard">
+                    <button class="btn btn-default btn-block" ng-click="modifyTransaction(1000)">+1000</button>
+                </div>
+            </div>
+        </div>
+        <div class="row" ng-show="isA && displayMode=='Transaction'">
+            <div class="text-center">
+                <button class="btn btn-success" ng-click="commitTransaction()">Submit</button>
+            </div>
+        </div>
+        <div class="row" ng-show="isA && displayMode=='Logs'">
+            Logs!
+        </div>
+        <div class="row" ng-show="!isA || displayMode=='Scoreboard'">
             <div class="col-xs-5"></div>
             <div class="col-xs-2">
                 <button class="btn btn-primary" ng-click="refreshScore()">Refresh</button>

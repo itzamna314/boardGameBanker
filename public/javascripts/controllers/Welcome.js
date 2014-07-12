@@ -25,6 +25,7 @@ bgbControllers.controller('Welcome',[
                 }
                 else {
                     $cookies.user = JSON.stringify({});
+                    $scope.email = query;
                 }
             });
         };
@@ -37,7 +38,8 @@ bgbControllers.controller('Welcome',[
                     $scope.user = $rootScope.user = {
                         email:email,
                         username:username,
-                        id:data.id
+                        id:data.id,
+                        found:true
                     };
 
                     $cookies.user = JSON.stringify($scope.user);

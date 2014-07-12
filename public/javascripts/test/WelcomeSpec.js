@@ -19,13 +19,13 @@ describe("Welcome",function() {
 
     describe(".findUser",function() {
         it("should should set user cookie if user found",function() {
-            $httpBackend.expectGET('ajax/getuser/Rick').respond({
+            $httpBackend.expectGET('ajax/getuser/Rick@zygeria.ng').respond({
                 found:true,
                 email:'Rick@zygeria.ng',
                 username:'Rick Sanchez'
             });
 
-            scope.findUser('Rick');
+            scope.findUser('Rick@zygeria.ng');
             $httpBackend.flush();
             // Should use http to get data from the server
 
@@ -49,16 +49,17 @@ describe("Welcome",function() {
         });
 
         it("should clear user cookie for not found",function(){
-            $httpBackend.expectGET('ajax/getuser/Morty').respond({
+            $httpBackend.expectGET('ajax/getuser/Morty@earth.ng').respond({
                 found:false,
                 email:null,
                 username:null
             });
 
-            scope.findUser('Morty');
+            scope.findUser('Morty@earth.ng');
             $httpBackend.flush();
             expect(JSON.parse(cookies.user)).toEqual({});
             expect(scope.user.found).toEqual(false);
+            expect(scope.email).toEqual('Morty@earth.ng');
         });
     });
 
@@ -85,7 +86,8 @@ describe("Welcome",function() {
             var userData = {
                 username:'Rick',
                 email:'piratesofthepancrease@anatomy-park.com',
-                id:5
+                id:5,
+                found:true
             };
 
             expect(JSON.parse(cookies.user)).toEqual(userData);
@@ -122,17 +124,10 @@ describe("Welcome",function() {
 
     describe('.loadUser',function(){
         it("should load user from cookies, if one is set",function(){
-            $httpBackend.expectGET('ajax/getuser/foo@bar.com').respond({
-                found:true,
-                email:'foo@bar.com',
-                username:'For orange oligarchs, by angry raccoons'
-            });
-
-            cookies.user =  '{"email":"foo@bar.com"}';
+            cookies.user =  '{"email":"foo@bar.com", "id":12}';
 
             scope.loadUser();
 
-            $httpBackend.flush();
             expect(scope.user).toBeDefined();
             expect(rootScope.user).toBeDefined();
             expect(cookies.user).toBeDefined();

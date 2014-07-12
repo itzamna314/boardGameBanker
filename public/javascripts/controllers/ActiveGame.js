@@ -5,6 +5,7 @@ bgbControllers.controller('ActiveGame',[
     '$location',
     '$routeParams',
     function($scope,$http,$rootScope,$location,$routeParams) {
+        $http.timeout = 1000;
 
         $scope.addPoints = function(numToAdd){
             $scope.game.myscore += numToAdd;
@@ -15,6 +16,10 @@ bgbControllers.controller('ActiveGame',[
         $scope.refreshScore = function(){
             if ( $scope.game && $scope.game.id )
                 getDetails($scope.game.id);
+
+            if ( $scope.storedPoints ) {
+                submitPoints($scope.storedPoints);
+            }
         };
 
         $scope.showScoreboard = function($event){
@@ -49,17 +54,35 @@ bgbControllers.controller('ActiveGame',[
         };
 
         function getDetails(gameId){
-            $http.get('ajax/gamedetail/' + gameId + '/' + $rootScope.user.id).success(function (data) {
+            $http.get('ajax/gamedetail/' + gameId + '/' + $rootScope.user.id)
+                .success(function (data) {
                 $scope.game = data.game;
                 $scope.players = data.players;
-            });
+                })
+                .error(function(data){
+                    $rootScope.modalTitle = 'Failed to reach server!';
+                    $rootScope.modalBody = 'The server is probably hibernating.  The scores will be refreshed ' +
+                        'as soon as it wakes up';
+
+                    $('#the-modal').modal();
+                });
         }
 
         function submitPoints(numPoints){
             $http.post('ajax/gameaddpoints/' + $scope.game.id + '/' + $rootScope.user.id,{number:numPoints})
                 .success(function (data) {
+                    $scope.storedPoints = 0;
                     $scope.game.myscore = data.game.myscore;
                     $scope.players = data.players;
+                })
+                .error(function(data){
+                    $rootScope.modalTitle = 'Failed to reach server!';
+                    $rootScope.modalBody = 'The server is probably hibernating.  Your update has been saved, ' +
+                        'and will be submitted as soon as the server wakes up.';
+
+                    $('#the-modal').modal();
+
+                    $scope.storedPoints += numPoints;
                 });
         }
 
@@ -71,5 +94,7 @@ bgbControllers.controller('ActiveGame',[
         $scope.displayMode = 'Scoreboard';
 
         getDetails($routeParams.id);
+
+        $scope.storedPoints = 0;
     }
 ]);

@@ -53,6 +53,7 @@
             <script type="text/javascript" src="@routes.Assets.at("javascripts/test/GamesListSpec.js")"></script>
             <script type="text/javascript" src="@routes.Assets.at("javascripts/test/WelcomeSpec.js")"></script>
             <script type="text/javascript" src="@routes.Assets.at("javascripts/test/NewGameSpec.js")"></script>
+            <script type="text/javascript" src="@routes.Assets.at("javascripts/test/ActiveGameSpec.js")"></script>
         }
     </head>
 
@@ -82,6 +83,20 @@
                 </div>
             </div>
             <div id="app" ng-view></div>
+            <div id="the-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"></button>
+                            <h4 class="modal-title">{{modalTitle}}</h4>
+                        </div>
+                        <div class="modal-body">{{modalBody}}</div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
     }
     </body>
 </html>

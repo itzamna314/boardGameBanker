@@ -18,7 +18,7 @@ describe("Welcome",function() {
     }));
 
     describe(".findUser",function() {
-        it("should should set user cookie if user found",function() {
+        it("should set user cookie if user found",function() {
             $httpBackend.expectGET('ajax/getuser/Rick@zygeria.ng').respond({
                 found:true,
                 email:'Rick@zygeria.ng',

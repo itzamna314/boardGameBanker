@@ -42,21 +42,21 @@ object Models {
 
   val players = TableQuery[PlayerTable]
 
-  case class PlayerResource(id:Option[Int],playerId:Int,resourceId:Int, value:Int = 0)
+  case class PlayerResource(id:Option[Int],playerId:Int,resourceId:Option[Int] = None,value:Int = 0)
 
   /*
    * Table to store player's resources.  This is where all scoring will be tracked.
    */
-  class PlayerResourceTable(tag: Tag) extends Table[PlayerResource](tag,"playerresource"){
+  class PlayerResourceTable(tag: Tag) extends Table[PlayerResource](tag,"player-resource"){
     def id = column[Int]("playerresourceid",O.PrimaryKey, O.AutoInc)
     def playerId = column[Int]("playerid",O.NotNull)
-    def resourceId = column[Int]("resourceid",O.NotNull)
+    def resourceId = column[Int]("resourceid",O.Nullable)
     def value = column[Int]("value",O.Default(0))
 
     def playerFk = foreignKey("playerresource-player",playerId,players)(_.id)
     def resourceFk = foreignKey("playerresource-resource",resourceId,resources)(_.id)
 
-    def * = (id.?,playerId,resourceId,value) <> (PlayerResource.tupled,PlayerResource.unapply)
+    def * = (id.?,playerId,resourceId.?,value) <> (PlayerResource.tupled,PlayerResource.unapply)
   }
 
   val playerResources = TableQuery[PlayerResourceTable]

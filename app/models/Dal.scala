@@ -38,7 +38,7 @@ object Dal {
     }
   }
 
-  case class resourceState(id:Int,name:String,value:Int)
+  case class resourceState(id:Option[Int],value:Int)
   case class playerState(id:Int,userId:Int,playerName:Option[String],userName:String,email:String,
                          resources:List[resourceState])
   case class gameState(id:Int,name:String,creatorId:Int,created:String,players:List[playerState])
@@ -50,15 +50,14 @@ object Dal {
         g <- Models.games if g.id === p.gameId
         u <- Models.users if u.id === p.userId
         pr <- Models.playerResources if pr.playerId === p.id
-        r <- Models.resources if pr.resourceId === r.id
-      } yield (g,p,u,r,pr)
+      } yield (g,p,u,pr)
       val queryResult = gameQuery.list
 
       val playerGroups = queryResult groupBy { rawQuery => rawQuery._2.id }
 
       val resourceStates = playerGroups map { groupedQuery =>
         groupedQuery._1.get -> (groupedQuery._2 map { rawQuery  =>
-          resourceState(rawQuery._4.id.get,rawQuery._4.name,rawQuery._5.value)
+          resourceState(rawQuery._4.resourceId,rawQuery._4.value)
         })
       }
 
@@ -131,9 +130,25 @@ object Dal {
     }
   }
 
+  // Create the player, as well as all applicable resources
   def createPlayer(p:Player) : Int = {
     play.api.db.slick.DB.withSession { implicit session =>
-      (Models.players returning Models.players.map(_.id)) += p
+      val playerId = (Models.players returning Models.players.map(_.id)) += p
+
+      val game = Models.games.filter(_.id === p.gameId).first()
+
+      game.configId match {
+        case None =>
+          val resource = Models.PlayerResource(None,playerId,None)
+          Models.playerResources += resource
+        case Some(cId) =>
+          val resources = Models.resources.filter(_.configId === cId).list
+          resources foreach { res =>
+            Models.playerResources += Models.PlayerResource(None,playerId,res.id)
+          }
+      }
+
+      playerId
     }
   }
 
@@ -169,6 +184,9 @@ object Dal {
       val canDelete = toDelete.firstOption.isDefined
 
       if ( canDelete ) {
+        Models.playerResources.filter(pr => pr.playerId in
+          Models.players.filter(_.gameId === gameId).map(_.id)
+        ).delete
         Models.players.filter(_.gameId === gameId).delete
         Models.games.filter(_.id === gameId).delete
       }
@@ -221,12 +239,12 @@ object Dal {
         )
 
         Models.playerResources ++= Seq(
-          Models.PlayerResource(Some(1),1,1),
-          Models.PlayerResource(Some(2),2,1),
-          Models.PlayerResource(Some(3),3,1),
-          Models.PlayerResource(Some(4),4,1),
-          Models.PlayerResource(Some(5),5,1),
-          Models.PlayerResource(Some(6),6,1)
+          Models.PlayerResource(Some(1),1,Some(1)),
+          Models.PlayerResource(Some(2),2,Some(1)),
+          Models.PlayerResource(Some(3),3,Some(1)),
+          Models.PlayerResource(Some(4),4,Some(1)),
+          Models.PlayerResource(Some(5),5,Some(1)),
+          Models.PlayerResource(Some(6),6,Some(1))
         )
       }
     }

@@ -7,7 +7,9 @@
                 <th>Date</th>
                 <th ng-show="createdAny"></th>
             </tr>
-            <tr ng-repeat="game in games" ng-click="gameDetail(game.id)" ng-show="!game.deleted">
+            <tr ng-repeat="game in games | orderBy:'created':true"
+                ng-click="gameDetail(game.id)"
+                ng-show="!game.deleted">
                 <td>{{ game.name }}</td>
                 <td>{{ game.creator.username }}</td>
                 <td>{{ game.created }}</td>

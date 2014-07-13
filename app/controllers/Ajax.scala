@@ -270,7 +270,6 @@ object Ajax extends Controller {
         val resources = player.resources map { playerRes =>
           Json.obj(
             "id" -> playerRes.id,
-            "name" -> playerRes.name,
             "score" -> playerRes.value
           )
         }

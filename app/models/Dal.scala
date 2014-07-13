@@ -38,25 +38,72 @@ object Dal {
     }
   }
 
-  def getGame(gameId:Int) : List[(Game,Player,User)] = {
+  case class resourceState(id:Int,name:String,value:Int)
+  case class playerState(id:Int,userId:Int,playerName:Option[String],userName:String,email:String,
+                         resources:List[resourceState])
+  case class gameState(id:Int,name:String,creatorId:Int,created:String,players:List[playerState])
+
+  def getGame(gameId:Int) : gameState = {
     play.api.db.slick.DB.withSession { implicit session =>
       val gameQuery = for {
         p <- Models.players if p.gameId === gameId
         g <- Models.games if g.id === p.gameId
         u <- Models.users if u.id === p.userId
-      } yield (g,p,u)
-      gameQuery.list
+        pr <- Models.playerResources if pr.playerId === p.id
+        r <- Models.resources if pr.resourceId === r.id
+      } yield (g,p,u,r,pr)
+      val queryResult = gameQuery.list
+
+      val playerGroups = queryResult groupBy { rawQuery => rawQuery._2.id }
+
+      val resourceStates = playerGroups map { groupedQuery =>
+        groupedQuery._1.get -> (groupedQuery._2 map { rawQuery  =>
+          resourceState(rawQuery._4.id.get,rawQuery._4.name,rawQuery._5.value)
+        })
+      }
+
+      val playerStates = playerGroups map { groupedQuery =>
+        val firstRow = groupedQuery._2(0)
+        val user = firstRow._3
+        val player = firstRow._2
+
+        playerState(player.id.get,user.id.get,player.name,user.name,user.email,resourceStates(player.id.get))
+      }
+
+      val game = queryResult(0)._1
+      gameState(game.id.get,game.name,game.creatorId,game.created.toString,playerStates.toList)
     }
   }
 
-  def addPoints(gameId:Int,userId:Int,qty:Int) = {
+  def addPoints(gameId:Int,userId:Int,qty:Int,resourceId:Option[Int] = None) = {
     play.api.db.slick.DB.withSession{ implicit session =>
-      val playerQuery = for {
-        p <- Models.players if p.gameId === gameId && p.userId === userId
-      } yield p.score
-      val curScore = playerQuery.first()
-      val retVal = playerQuery.update(curScore + qty)
-      retVal > 0
+      val resourceQuery = resourceId match {
+        case Some(resId) =>
+          for {
+            p <- Models.players if p.gameId === gameId && p.userId === userId
+            pr <- Models.playerResources if pr.playerId === p.id && pr.resourceId === resId
+          } yield pr
+        case None =>
+          for {
+            p <- Models.players if p.gameId === gameId && p.userId === userId
+            pr <- Models.playerResources if pr.playerId === p.id
+          } yield pr
+      }
+
+      Query(resourceQuery.length).first match {
+        case 1 =>
+          val playerResourceId = resourceQuery.first().id
+          val updateQuery = for {
+            pr <- Models.playerResources if pr.id === playerResourceId
+          } yield pr.value
+
+          val curScore = updateQuery.first()
+          val retVal = updateQuery.update(curScore + qty)
+          retVal > 0
+
+        case _ =>
+          false
+      }
     }
   }
 
@@ -138,7 +185,8 @@ object Dal {
           (Models.games.ddl ++ Models.users.ddl ++ Models.players.ddl).drop
         }
 
-        (Models.games.ddl ++ Models.users.ddl ++ Models.players.ddl).create
+        (Models.games.ddl ++ Models.users.ddl ++ Models.players.ddl ++ Models.configs.ddl ++ Models.resources.ddl
+          ++ Models.playerResources.ddl ++ Models.userConfigs.ddl).create
 
         Models.users ++= Seq(
           Models.User(Some(1),"Kim", "kim@gmail.com"),
@@ -162,6 +210,23 @@ object Dal {
           Models.Player(Some(5),2,Some(5),"567890"),
           Models.Player(Some(6),2,Some(6),"678901"),
           Models.Player(Some(7),1,None,"1")
+        )
+
+        Models.configs ++= Seq(
+          Models.Config(Some(1),"Default")
+        )
+
+        Models.resources ++= Seq(
+          Models.Resource(Some(1),"Sheep",None,None,1,"visible",None,None,None)
+        )
+
+        Models.playerResources ++= Seq(
+          Models.PlayerResource(Some(1),1,1),
+          Models.PlayerResource(Some(2),2,1),
+          Models.PlayerResource(Some(3),3,1),
+          Models.PlayerResource(Some(4),4,1),
+          Models.PlayerResource(Some(5),5,1),
+          Models.PlayerResource(Some(6),6,1)
         )
       }
     }

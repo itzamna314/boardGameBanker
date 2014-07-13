@@ -29,7 +29,14 @@ class DalSpec extends Specification {
 
     "get game detail" in new resetDal {
       val game = Dal.getGame(2)
-      game.length must_== 6
+      game.id must_== 2
+      game.name must_== "Smallworld"
+      game.creatorId must_== 6
+      game.players.length must_== 6
+      game.players foreach { p =>
+        p.resources.length must_== 1
+        p.resources(0).value must_== 0
+      }
     }
 
     "create a user" in new resetDal {
@@ -55,7 +62,8 @@ class DalSpec extends Specification {
     }
 
     "add points" in new resetDal {
-      Dal.addPoints(2,1,5) must_!= 0
+      Dal.addPoints(2,1,1) must_!= 0
+      Dal.addPoints(2,5,1,Some(1)) must_!= 0
     }
   }
 }

@@ -1,5 +1,7 @@
 div.row.scoreboard {
     padding-bottom:5px;
+    margin-left:0;
+    margin-right:0;
 }
 
 div.menu-bar {
@@ -40,4 +42,13 @@ div.menu-bar {
 
 .transaction-positive {
     color:green;
+}
+
+.config-section {
+    display:block;
+    width:100px;
+}
+
+.spaced-row{
+    margin-bottom:25px;
 }

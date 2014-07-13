@@ -56,8 +56,10 @@ bgbControllers.controller('ActiveGame',[
         function getDetails(gameId){
             $http.get('ajax/gamedetail/' + gameId + '/' + $rootScope.user.id)
                 .success(function (data) {
-                $scope.game = data.game;
-                $scope.players = data.players;
+                    $scope.game = data.game;
+                    $scope.players = data.players;
+                    var mePlayer = _.find(data.players,'isMe');
+                    $scope.game.myscore = mePlayer.score;
                 })
                 .error(function(data){
                     $rootScope.modalTitle = 'Failed to reach server!';
@@ -72,7 +74,7 @@ bgbControllers.controller('ActiveGame',[
             $http.post('ajax/gameaddpoints/' + $scope.game.id + '/' + $rootScope.user.id,{number:numPoints})
                 .success(function (data) {
                     $scope.storedPoints = 0;
-                    $scope.game.myscore = data.game.myscore;
+                    $scope.game.myscore = _.find(data.players,'isMe').score;
                     $scope.players = data.players;
                 })
                 .error(function(data){

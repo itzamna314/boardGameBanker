@@ -35,6 +35,7 @@ object Ajax extends Controller {
   }
 
   def gameDetail(gameId:String,userId:String) = Action {
+
     val gameState = getGameState(gameId.toInt,userId.toInt)
     val players = (gameState \ "players").asOpt[List[JsObject]]
 
@@ -48,7 +49,9 @@ object Ajax extends Controller {
 
   def addPoints(gameId:String,userId:String) = Action(parse.json) { implicit request =>
     val numberOfPoints = (request.body \ "number").asOpt[Int].getOrElse(0)
-    if (numberOfPoints != 0 && Dal.addPoints(gameId.toInt, userId.toInt, numberOfPoints)) {
+    val resourceId = (request.body \ "resourceId").asOpt[Int]
+    if (numberOfPoints != 0 &&
+      Dal.addPoints(gameId.toInt, userId.toInt, numberOfPoints, resourceId)) {
       Ok(getGameState(gameId.toInt,userId.toInt))
     } else {
       BadRequest(Json.obj("error" -> "IllegalUpdate","message" -> ("Game ID: " + gameId + ", User ID: " + userId)))
@@ -251,27 +254,42 @@ object Ajax extends Controller {
   }
 
   private def getGameState(gameId:Int,userId:Int) : JsObject = {
-    val gamePlayers = Dal.getGame(gameId.toInt)
-    if ( gamePlayers.length > 0 ) {
-      val game = gamePlayers(0)._1
-      val playersJson = gamePlayers map { gp =>
-        val player = gp._2
-        val user = gp._3
+    val gameState = Dal.getGame(gameId.toInt)
+
+    if ( gameState.players.length > 0 ) {
+
+      val playersJson = gameState.players map { player =>
+        // Only set score if this is a simple, single-resource game
+        val score : Option[Int] = player.resources.length match {
+          case 1 =>
+            Some(player.resources(0).value)
+          case _ =>
+            None
+        }
+
+        val resources = player.resources map { playerRes =>
+          Json.obj(
+            "id" -> playerRes.id,
+            "name" -> playerRes.name,
+            "score" -> playerRes.value
+          )
+        }
+
         Json.obj(
-          "username" -> user.name,
-          "email" -> user.email,
+          "username" -> player.userName,
+          "email" -> player.email,
           "playerId" -> player.id,
-          "score" -> player.score,
-          "isCreator" -> JsBoolean(user.id.get == game.creatorId),
-          "isMe" -> JsBoolean(user.id.get == userId.toInt)
+          "score" -> score,
+          "isCreator" -> JsBoolean(player.userId == gameState.creatorId),
+          "isMe" -> JsBoolean(player.userId == userId),
+          "resources" -> resources.toSeq
         )
       }
 
       val gameJson = Json.obj(
-        "name" -> game.name,
-        "created" -> game.created,
-        "id" -> game.id,
-        "myscore" -> gamePlayers.filter(_._3.id == Some(userId.toInt))(0)._2.score
+        "name" -> gameState.name,
+        "created" -> gameState.created,
+        "id" -> gameState.id
       )
 
       Json.obj("game" -> gameJson, "players" -> Json.toJson(playersJson.toSeq))

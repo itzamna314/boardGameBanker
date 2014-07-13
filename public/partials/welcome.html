@@ -2,22 +2,27 @@
     <div ng-switch on="user.found">
         <div ng-switch-when="true">
             <div class="container">
-                <div class="row">
+                <div class="row spaced-row">
+                    <div class="col-xs-12">
+                        <h4 class="text-center">Welcome back {{user.username}}!</h4>
+                    </div>
+                </div>
+                <div class="row spaced-row">
                     <div class="col-xs-10">
-                        <h4>
-                            Welcome back {{user.username}}
-                        </h4>
-                        <p>
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-default {{isA ? 'active' : ''}}" ng-click="setUi('A')">
-                                    A
-                                </button>
-                                <button type="button" class="btn btn-default {{!isA ? 'active' : ''}}" ng-click="setUi('B')">
-                                    B
-                                </button>
-                            </div>
-                            <button class="btn btn-default" ng-click="resetUser()">Log Out</button>
-                        </p>
+                        <span class="label label-default config-section">Interface style</span>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default {{isA ? 'active' : ''}}" ng-click="setUi('A')">
+                                Transactional
+                            </button>
+                            <button type="button" class="btn btn-default {{!isA ? 'active' : ''}}" ng-click="setUi('B')">
+                                Direct
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row spaced-row">
+                    <div class="col-xs-10">
+                        <button class="btn btn-default" ng-click="resetUser()">Log Out</button>
                     </div>
                 </div>
             </div>
@@ -46,6 +51,15 @@
 
         <div ng-switch-default>
             <div class="container">
+                <div class="row" ng-show="token">
+                    <div class="col-xs-10">
+                        <div class="alert alert-info" role="alert">
+                            <p>It looks like you're trying to join a game.</p>
+                            <p>Just enter you're e-mail to sign in or sign up,
+                            and then you'll be redirected to your game.</p>
+                        </div>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-xs-6">
                         <div role="form">

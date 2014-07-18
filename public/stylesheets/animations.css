@@ -1,0 +1,26 @@
+.loading-bar {
+    -webkit-transition:0.5s linear all 0s;
+    transition:0.5s linear all 0s;
+    opacity:1;
+}
+
+.loading-bar.ng-hide .loading-bar-1 {
+    width:15%;
+}
+
+.loading-bar.ng-hide .loading-bar-2 {
+    width:30%;
+}
+
+.loading-bar.ng-hide .loading-bar-3 {
+    width:20%;
+}
+
+.loading-bar.ng-hide .loading-bar-4 {
+    width:35%;
+}
+
+.loading-bar.ng-hide-add,
+.loading-bar.ng-hide-remove {
+    display:block!important;
+}

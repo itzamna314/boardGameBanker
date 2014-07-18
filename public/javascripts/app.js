@@ -1,5 +1,7 @@
 var bgbControllers = angular.module('bgbControllers',[
+    'utilsModule',
     'ngCookies'
+    //'ngAnimate'
 ]);
 
 var bgbApp = angular.module('bgbApp',[
@@ -7,6 +9,8 @@ var bgbApp = angular.module('bgbApp',[
     'ngRoute',
     'ngTouch',
     'angular-gestures',
+    'ngAnimate',
+    'utilsModule',
     'bgbControllers'
 ]).run(['$rootScope',function($rootScope){
 

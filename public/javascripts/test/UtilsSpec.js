@@ -1,6 +1,4 @@
-/**
- * Created by Kyl on 7/11/2014.
- */
+// TODO: Write this spec
 
 describe("Active Game",function()
 {
@@ -35,29 +33,23 @@ describe("Active Game",function()
     }));
 
     describe('.addPoints',function(){
-       it('should store points if the server is unresponsive',function()
-       {
-          $httpBackend.flush();
-          $httpBackend.resetExpectations();
-          $httpBackend.expectPOST('ajax/gameaddpoints/5/1','{"number":3}').respond(500);
+        it('should store points if the server is unresponsive',function()
+        {
+            $httpBackend.flush();
+            $httpBackend.resetExpectations();
+            $httpBackend.expectPOST('ajax/gameaddpoints/5/1','{"number":3}').respond(500);
 
-           scope.addPoints(3);
-           $httpBackend.flush();
-           expect(scope.storedPoints).toEqual(3);
+            scope.addPoints(3);
+            $httpBackend.flush();
+            expect(scope.storedPoints).toEqual(3);
 
-           $httpBackend.expectGET('ajax/gamedetail/5/1').respond(500);
-           $httpBackend.expectPOST('ajax/gameaddpoints/5/1','{"number":3}').respond(200,{
-               game:{},
-               players:[{
-                   isMe:true,
-                   score:3
-                }]
-           });
+            $httpBackend.expectGET('ajax/gamedetail/5/1').respond(500);
+            $httpBackend.expectPOST('ajax/gameaddpoints/5/1','{"number":3}').respond(200,{game:{myscore:3},players:{}});
 
-           scope.refreshScore();
-           $httpBackend.flush();
-           expect(scope.storedPoints).toEqual(0);
-           expect(scope.game.myscore).toEqual(3);
-       });
+            scope.refreshScore();
+            $httpBackend.flush();
+            expect(scope.storedPoints).toEqual(0);
+            expect(scope.game.myscore).toEqual(3);
+        });
     });
 });

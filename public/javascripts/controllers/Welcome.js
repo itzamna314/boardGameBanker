@@ -9,6 +9,7 @@ bgbControllers.controller('Welcome',[
 
         /**************************** Public *********************************/
         $scope.findUser = function(query){
+            $rootScope.isLoading = true;
             $http.get('ajax/getuser/' + query).success(function(data){
                 $rootScope.user = $scope.user = data;
 
@@ -53,6 +54,7 @@ bgbControllers.controller('Welcome',[
         $scope.resetUser = function(){
             $scope.user = $rootScope.user = null;
             $cookies.user = JSON.stringify({});
+            //$rootScope.isLoading = false;
         };
 
         $scope.loadUser = function () {
@@ -96,5 +98,7 @@ bgbControllers.controller('Welcome',[
 
         if ( $rootScope.isA === undefined )
             $rootScope.isA = true;
+
+        //$scope.isLoading = false;
     }
 ]);

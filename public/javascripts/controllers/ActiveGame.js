@@ -4,7 +4,8 @@ bgbControllers.controller('ActiveGame',[
     '$rootScope',
     '$location',
     '$routeParams',
-    function($scope,$http,$rootScope,$location,$routeParams) {
+    'httpWrapper',
+    function($scope,$http,$rootScope,$location,$routeParams,httpWrapper) {
         $http.timeout = 1000;
 
         $scope.addPoints = function(numToAdd){
@@ -54,7 +55,7 @@ bgbControllers.controller('ActiveGame',[
         };
 
         function getDetails(gameId){
-            $http.get('ajax/gamedetail/' + gameId + '/' + $rootScope.user.id)
+            httpWrapper.get('ajax/gamedetail/' + gameId + '/' + $rootScope.user.id)
                 .success(function (data) {
                     $scope.game = data.game;
                     $scope.players = data.players;

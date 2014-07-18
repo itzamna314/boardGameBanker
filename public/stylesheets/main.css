@@ -52,3 +52,37 @@ div.menu-bar {
 .spaced-row{
     margin-bottom:25px;
 }
+
+.loading-bar{
+    height:10px;
+}
+
+.loading-bar-part{
+    height:100%;
+    display:inline-block;
+    padding:0;
+    margin-left:-5px;
+    margin-right:-5px;
+    -webkit-transition:0.5s linear all 0s;
+    transition:0.5s linear all 0s;
+}
+
+.loading-bar-1{
+    width:25%;
+    background-color:deepskyblue;
+}
+
+.loading-bar-2{
+    width:15%;
+    background-color: indianred;
+}
+
+.loading-bar-3{
+    width:30%;
+    background-color: yellow;
+}
+
+.loading-bar-4{
+    width:30%;
+    background-color: green;
+}

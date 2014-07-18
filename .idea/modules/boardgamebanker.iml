@@ -131,6 +131,8 @@
     <orderEntry type="library" scope="TEST" name="SBT: xalan:xalan:2.7.1" level="project" />
     <orderEntry type="library" name="SBT: xerces:xercesImpl:2.11.0" level="project" />
     <orderEntry type="library" name="SBT: xml-apis:xml-apis:1.4.01" level="project" />
+    <orderEntry type="library" name="SBT: org.apache.httpcomponents:httpclient:4.0.1" level="project" />
+    <orderEntry type="library" name="SBT: org.apache.httpcomponents:httpcore:4.0.1" level="project" />
   </component>
 </module>
 

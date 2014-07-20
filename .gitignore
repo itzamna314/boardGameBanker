@@ -17,3 +17,4 @@ deploy.bat
 conf/application-prod.conf
 conf/application-stage.conf
 conf/evolutions.default
+.idea/dataSources.ids

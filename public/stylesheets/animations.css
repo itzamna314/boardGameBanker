@@ -1,9 +1,19 @@
 .loading-bar {
-    -webkit-transition:0.5s linear all 0s;
-    transition:0.5s linear all 0s;
-    opacity:1;
+    -webkit-animation:2s loading infinite;
+    animation:2s loading infinite;
 }
 
+@-webkit-keyframes loading {
+    0%,100%  { opacity: 0; }
+    50% { opacity: 1; }
+}
+
+@keyframes loading {
+    0%,100%   { opacity: 0; }
+    50% { opacity: 1; }
+}
+
+/*
 .loading-bar.ng-hide .loading-bar-1 {
     width:15%;
 }
@@ -19,6 +29,7 @@
 .loading-bar.ng-hide .loading-bar-4 {
     width:35%;
 }
+*/
 
 .loading-bar.ng-hide-add,
 .loading-bar.ng-hide-remove {

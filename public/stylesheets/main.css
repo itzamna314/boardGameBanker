@@ -55,6 +55,7 @@ div.menu-bar {
 
 .loading-bar{
     height:10px;
+    margin:-20px auto 5px auto;
 }
 
 .loading-bar-part{

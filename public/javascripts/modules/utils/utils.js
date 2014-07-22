@@ -3,13 +3,14 @@
  */
 
 var utilsModule = angular.module('utilsModule',[]);
-
 utilsModule.factory('httpWrapper', ['$http','$rootScope', function($http,$rootScope) {
     var _http = function(){};
 
-    _http.prototype = $http.prototype;
+    _http.prototype = $http;
 
-    _http.get = function(uri){
+    var $httpChild = new _http();
+
+    $httpChild.get = function(uri){
         var _successCb = null;
         var _errorCb = null;
         var _response = null;
@@ -62,22 +63,19 @@ utilsModule.factory('httpWrapper', ['$http','$rootScope', function($http,$rootSc
         return retObj;
     };
 
-    var hibernateModal = '\
-                <div id="http-wrapper-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">\
-                    <div class="modal-dialog">\
-                        <div class="modal-content">\
-                            <div class="modal-header">\
-                                <button type="button" class="close" data-dismiss="modal"></button>\
-                                <h4 class="modal-title">Server error!</h4>\
-                            </div>\
-                            <div class="modal-body">It looks like the server is currently hibernating.  Please\
-                            try again in a minute or so.</div>\
-                            <div class="modal-footer">\
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>\
-                            </div>\
-                        </div>\
-                    </div>\
-                </div>';
-
-    return _http;
+    return $httpChild;
 }]);
+
+utilsModule.directive('utilsModal', function() {
+    return {
+        restrict:'E',
+        templateUrl: 'assets/javascripts/modules/utils/modal.html'
+    };
+});
+
+utilsModule.directive('utilsLoading', function() {
+    return {
+        restrict:'E',
+        templateUrl:'assets/javascripts/modules/utils/loadingbar.html'
+    };
+});

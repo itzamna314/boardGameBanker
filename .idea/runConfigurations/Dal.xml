@@ -1,5 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Dal" type="Specs2RunConfiguration" factoryName="Specs2">
+    <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+    <extension name="scalaCoverage" />
     <module name="boardgamebanker" />
     <setting name="path" value="DalSpec" />
     <setting name="package" value="" />

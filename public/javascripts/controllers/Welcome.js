@@ -1,16 +1,15 @@
 bgbControllers.controller('Welcome',[
     '$scope',
-    '$http',
     '$cookies',
     '$rootScope',
     '$location',
-    function($scope,$http,$cookies,$rootScope,$location) {
+    'httpWrapper',
+    function($scope,$cookies,$rootScope,$location,httpWrapper) {
         $rootScope.isActive = 'Welcome';
 
         /**************************** Public *********************************/
         $scope.findUser = function(query){
-            $rootScope.isLoading = true;
-            $http.get('ajax/getuser/' + query).success(function(data){
+            httpWrapper.get('ajax/getuser/' + query).success(function(data){
                 $rootScope.user = $scope.user = data;
 
                 if ( data.found ) {
@@ -32,7 +31,7 @@ bgbControllers.controller('Welcome',[
         };
 
         $scope.createUser = function(username,email){
-            $http.post('ajax/createuser',{username:username,email:email}).success(function(data){
+            httpWrapper.post('ajax/createuser',{username:username,email:email}).success(function(data){
                 $scope.result = data;
 
                 if ( !data.error ) {
@@ -54,7 +53,6 @@ bgbControllers.controller('Welcome',[
         $scope.resetUser = function(){
             $scope.user = $rootScope.user = null;
             $cookies.user = JSON.stringify({});
-            //$rootScope.isLoading = false;
         };
 
         $scope.loadUser = function () {
@@ -98,7 +96,5 @@ bgbControllers.controller('Welcome',[
 
         if ( $rootScope.isA === undefined )
             $rootScope.isA = true;
-
-        //$scope.isLoading = false;
     }
 ]);

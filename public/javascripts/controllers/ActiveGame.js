@@ -1,12 +1,11 @@
 bgbControllers.controller('ActiveGame',[
     '$scope',
-    '$http',
     '$rootScope',
     '$location',
     '$routeParams',
     'httpWrapper',
-    function($scope,$http,$rootScope,$location,$routeParams,httpWrapper) {
-        $http.timeout = 1000;
+    function($scope,$rootScope,$location,$routeParams,httpWrapper) {
+        httpWrapper.timeout = 1000;
 
         $scope.addPoints = function(numToAdd){
             $scope.game.myscore += numToAdd;
@@ -72,7 +71,7 @@ bgbControllers.controller('ActiveGame',[
         }
 
         function submitPoints(numPoints){
-            $http.post('ajax/gameaddpoints/' + $scope.game.id + '/' + $rootScope.user.id,{number:numPoints})
+            httpWrapper.post('ajax/gameaddpoints/' + $scope.game.id + '/' + $rootScope.user.id,{number:numPoints})
                 .success(function (data) {
                     $scope.storedPoints = 0;
                     $scope.game.myscore = _.find(data.players,'isMe').score;

@@ -1,10 +1,10 @@
 bgbControllers.controller('JoinGame',[
     '$scope',
-    '$http',
     '$rootScope',
     '$location',
     '$routeParams',
-    function($scope,$http,$rootScope,$location,$routeParams){
+    'httpWrapper',
+    function($scope,$rootScope,$location,$routeParams,httpWrapper){
         $rootScope.isActive = 'JoinGame';
 
         if ( $routeParams.token ) {
@@ -28,7 +28,7 @@ bgbControllers.controller('JoinGame',[
                 var joinToken = $rootScope.token || $scope.token;
                 $rootScope.token = $scope.token = null;
 
-                $http.post('ajax/joingame',{userId:$rootScope.user.id,token:joinToken}).success(function(){
+                httpWrapper.post('ajax/joingame',{userId:$rootScope.user.id,token:joinToken}).success(function(){
                     $location.path('/games');
                 }).error(function(data){
                     $scope.errorMessage = data.message;

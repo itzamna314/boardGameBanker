@@ -1,9 +1,9 @@
 bgbControllers.controller('GamesList',[
     '$scope',
-    '$http',
     '$rootScope',
     '$location',
-    function($scope,$http,$rootScope,$location) {
+    'httpWrapper',
+    function($scope,$rootScope,$location,httpWrapper) {
         $rootScope.isActive = 'GamesList';
 
         /************************ Public **********************************/
@@ -18,7 +18,7 @@ bgbControllers.controller('GamesList',[
             var confirmed = confirm("Really delete " + toDelete.name + "?");
             if ( confirmed ) {
                 toDelete.deleted = true;
-                $http.post('ajax/deletegame',{gameId:id,userId:$rootScope.user.id}).success(function () {
+                httpWrapper.post('ajax/deletegame',{gameId:id,userId:$rootScope.user.id}).success(function () {
                     updateGames();
                 });
             }
@@ -26,7 +26,7 @@ bgbControllers.controller('GamesList',[
 
         /******************* Private ************************************/
         function updateGames() {
-            $http.get('ajax/games/' + $rootScope.user.id).success(function (data) {
+            httpWrapper.get('ajax/games/' + $rootScope.user.id).success(function (data) {
                 $scope.games = data.games;
                 $scope.createdAny = _.some(data.games,function(g){
                     return g.creator.id == $rootScope.user.id;

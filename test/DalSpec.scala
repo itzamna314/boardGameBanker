@@ -3,6 +3,8 @@ import org.specs2.mutable._
 import org.specs2.runner._
 import org.junit.runner._
 import models._
+import org.specs2.specification.Scope
+import org.specs2.execute.{ AsResult, Result }
 
 import play.api.test._
 
@@ -64,6 +66,19 @@ class DalSpec extends Specification {
       val playerId = Dal.createPlayer(player)
     }
 
+    "bind a player to a user" in new resetDal {
+      // Try to bind user Kim to player 7 (unbound, UUID = 1)
+      val kimUser = Dal.findUser("kim@gmail.com")
+      Dal.bindPlayer(kimUser.get.id.get,"1") must_== ""
+      val gameDetails = Dal.getGame(1)
+      gameDetails.players(0).userId must_== kimUser.get.id.get
+      // Create a new player in game of thrones, then try to bind Kim to it.
+      // Should fail
+      val newPlayer = Player(None,1,None,"2")
+      Dal.createPlayer(newPlayer)
+      Dal.bindPlayer(kimUser.get.id.get,"2") must_== "PlayerExisted"
+    }
+
     "add points" in new resetDal {
       Dal.addPoints(2,1,1) must_!= 0
       Dal.addPoints(2,5,1,Some(1)) must_!= 0
@@ -77,6 +92,20 @@ class DalSpec extends Specification {
   }
 }
 
-trait resetDal extends WithApplication {
-  def before = Dal.resetTest()
+abstract class WithEnv(setup: => Unit, teardown: => Unit, val app: FakeApplication = FakeApplication())
+  extends Around
+  with Scope {
+  implicit def implicitApp = app
+  override def around[T: AsResult](t: => T): Result = {
+    Helpers.running(app)(AsResult.effectively{
+      setup
+      try {
+        t
+      } finally {
+        teardown
+      }
+    })
+  }
 }
+
+class resetDal() extends WithEnv(Dal.resetTest(),None) {}

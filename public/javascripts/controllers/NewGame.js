@@ -1,9 +1,9 @@
 bgbControllers.controller('NewGame',[
     '$scope',
-    '$http',
     '$rootScope',
     '$location',
-    function($scope,$http,$rootScope,$location){
+    'httpWrapper',
+    function($scope,$rootScope,$location,httpWrapper){
         $rootScope.isActive = 'NewGame';
 
         $scope.addPlayer = function(){
@@ -11,7 +11,7 @@ bgbControllers.controller('NewGame',[
         };
 
         $scope.createGame = function(){
-            $http.post('ajax/newgame',{title:$scope.title,players:$scope.players}).success(function(){
+            httpWrapper.post('ajax/newgame',{title:$scope.title,players:$scope.players}).success(function(){
                 $location.path('/games');
             });
         };

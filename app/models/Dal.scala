@@ -23,8 +23,9 @@ object Dal {
       val gamesQuery = for {
         p <- Models.players if p.userId === userId
         g <- Models.games if g.id === p.gameId
-      } yield g
-      val games: List[Game] = gamesQuery.list
+      } yield (g,p)
+      val queryList = gamesQuery.list
+      val games: List[Game] = queryList map {res => res._1}
       val s : Set[Game] = games.foldRight(Set[Game]())({ (g:Game,s:Set[Game]) =>
         if ( !s.contains(g) )
           s + g
@@ -166,6 +167,7 @@ object Dal {
             case false =>
               val updateQuery = for {p <- Models.players if p.token === uuid } yield p.userId
               updateQuery.update(Some(userId))
+
               ""
             case true =>
               "PlayerExisted"
@@ -200,7 +202,8 @@ object Dal {
       // Populate the test database
       play.api.db.slick.DB.withSession { implicit session =>
         if ( !MTable.getTables("games").list().isEmpty ) {
-          (Models.games.ddl ++ Models.users.ddl ++ Models.players.ddl).drop
+          (Models.games.ddl ++ Models.users.ddl ++ Models.players.ddl ++ Models.configs.ddl ++ Models.resources.ddl
+            ++ Models.playerResources.ddl ++ Models.userConfigs.ddl).drop
         }
 
         (Models.games.ddl ++ Models.users.ddl ++ Models.players.ddl ++ Models.configs.ddl ++ Models.resources.ddl
@@ -239,12 +242,13 @@ object Dal {
         )
 
         Models.playerResources ++= Seq(
-          Models.PlayerResource(Some(1),1,Some(1)),
-          Models.PlayerResource(Some(2),2,Some(1)),
-          Models.PlayerResource(Some(3),3,Some(1)),
-          Models.PlayerResource(Some(4),4,Some(1)),
-          Models.PlayerResource(Some(5),5,Some(1)),
-          Models.PlayerResource(Some(6),6,Some(1))
+          Models.PlayerResource(Some(1),1,None),
+          Models.PlayerResource(Some(2),2,None),
+          Models.PlayerResource(Some(3),3,None),
+          Models.PlayerResource(Some(4),4,None),
+          Models.PlayerResource(Some(5),5,None),
+          Models.PlayerResource(Some(6),6,None),
+          Models.PlayerResource(Some(7),7,None)
         )
       }
     }

@@ -47,8 +47,8 @@ bgbControllers.controller('ActiveGame',[
 
         $scope.commitTransaction = function(){
             $scope.game.myscore += $scope.currentTransaction;
-
             submitPoints($scope.currentTransaction);
+
             $scope.currentTransaction = 0;
             $scope.displayMode = 'Scoreboard';
         };
@@ -71,21 +71,14 @@ bgbControllers.controller('ActiveGame',[
         }
 
         function submitPoints(numPoints){
-            httpWrapper.post('ajax/gameaddpoints/' + $scope.game.id + '/' + $rootScope.user.id,{number:numPoints})
-                .success(function (data) {
-                    $scope.storedPoints = 0;
-                    $scope.game.myscore = _.find(data.players,'isMe').score;
-                    $scope.players = data.players;
-                })
-                .error(function(data){
-                    $rootScope.modalTitle = 'Failed to reach server!';
-                    $rootScope.modalBody = 'The server is probably hibernating.  Your update has been saved, ' +
-                        'and will be submitted as soon as the server wakes up.';
-
-                    $('#the-modal').modal();
-
-                    $scope.storedPoints += numPoints;
-                });
+            if ( numPoints != 0 ) {
+                httpWrapper.post('ajax/gameaddpoints/' + $scope.game.id + '/' + $rootScope.user.id, {number: numPoints})
+                    .success(function (data) {
+                        $scope.storedPoints = 0;
+                        $scope.game.myscore = _.find(data.players, 'isMe').score;
+                        $scope.players = data.players;
+                    });
+            }
         }
 
         if ( !$rootScope.user ){

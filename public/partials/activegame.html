@@ -66,11 +66,11 @@
         <div class="row" ng-show="!isA || displayMode=='Scoreboard'" hm-swipe-right="showTransaction()" hm-swipe-down="refreshScore">
             <div class="col-xs-12">
                 <table class="table table-striped">
-                    <tr>
+                    <tr class="player-score">
                         <th>Player</th>
                         <th>Score</th>
                     </tr>
-                    <tr ng-repeat="player in players | orderBy:'score':true">
+                    <tr ng-repeat="player in players | orderBy:'score':true" class="player-score">
                         <td ng-class="{creatorRow:player.isCreator,selfRow:player.isMe}">{{player.username}} ({{player.email}})</td>
                         <td ng-class="{creatorRow:player.isCreator,selfRow:player.isMe}">{{player.score}}</td>
                     </tr>

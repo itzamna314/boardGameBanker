@@ -4,22 +4,22 @@
 }
 
 .loading-bar-1 {
-    -webkit-animation:1s loading-1 infinite linear;
-    animation:1s loading-1 infinite linear;
+    -webkit-animation:2.5s loading-1 infinite ease-in-out;
+    animation:1s loading-1 infinite ease-in-out;
 }
 
 .loading-bar-2 {
-    -webkit-animation:1s loading-2 infinite linear;
+    -webkit-animation:2.5s loading-2 infinite ease-in-out;
     animation:1s loading-2 infinite linear;
 }
 
 .loading-bar-3 {
-    -webkit-animation:1s loading-3 infinite linear;
+    -webkit-animation:2.5s loading-3 infinite ease-in-out;
     animation:1s loading-3 infinite;
 }
 
 .loading-bar-4 {
-    -webkit-animation:1s loading-4 infinite linear;
+    -webkit-animation:2.5s loading-4 infinite ease-in-out;
     animation:1s loading-4 infinite linear;
 }
 
@@ -34,46 +34,84 @@
 }
 
 @-webkit-keyframes loading-1 {
-    0%,100%  { width:25%; }
-    50% { width:15%; }
+    0%,100%  { width:6%; }
+    50% { width:70%; }
 }
 
 @keyframes loading-1 {
-    0%,100%   { width:25%; }
-    50% { width:15%; }
+    0%,100%   { width:6%; }
+    50% { width:70%; }
 }
 
 @-webkit-keyframes loading-2 {
-    0%,100%  { width:15%; }
-    50% { width:30%; }
+    0%,100%  { width:9%; }
+    50% { width:15%; }
 }
 
 @keyframes loading-2 {
-    0%,100%   { width:15%; }
-    50% { width:30%; }
+    0%,100%   { width:9%; }
+    50% { width:15%; }
 }
 
 @-webkit-keyframes loading-3 {
-    0%,100%  { width:30%; }
-    50% { width:20%; }
+    0%,100%  { width:15%; }
+    50% { width:9%; }
 }
 
 @keyframes loading-3 {
-    0%,100%   { width:30%; }
-    50% { width:20%; }
+    0%,100%   { width:15%; }
+    50% { width:9%; }
 }
 
 @-webkit-keyframes loading-4 {
-    0%,100%  { width:30%; }
-    50% { width:35%; }
+    0%,100%  { width:70%; }
+    50% { width:6%; }
 }
 
 @keyframes loading-4 {
-    0%,100%   { width:30%; }
-    50% { width:35%; }
+    0%,100%   { width:70%; }
+    50% { width:6%; }
 }
 
 .loading-bar.ng-hide-add,
 .loading-bar.ng-hide-remove {
     display:block!important;
+}
+
+.player-score-wrapper {
+    background:white;
+    border:1px solid black;
+    list-style:none;
+    margin:0;
+    padding:0 10px;
+}
+
+.player-score {
+    line-height:40px;
+    list-style:none;
+    box-sizing:border-box;
+    /*display: block;*/
+    width:100%;
+}
+
+.player-score.ng-move,
+.player-score.ng-enter{
+    -webkit-transition:all linear 0.5s;
+    transition:all linear 0.5s;
+}
+
+.player-score.ng-move,
+.player-score.ng-enter {
+    opacity:0;
+}
+
+.player-score.ng-move.ng-move-active,
+.player-score.ng-enter.ng-enter-active {
+    opacity:1;
+}
+
+.player-score.ng-enter-stagger,
+.player-score.ng-move-stagger{
+    webkit-transition-delay:0.15s;
+    transition-delay:0.15s;
 }

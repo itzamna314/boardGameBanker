@@ -67,21 +67,21 @@ div.menu-bar {
 }
 
 .loading-bar-1{
-    width:25%;
+    width:6%;
     background-color: orange;
 }
 
 .loading-bar-2{
-    width:15%;
+    width:9%;
     background-color: mediumpurple;
 }
 
 .loading-bar-3{
-    width:30%;
+    width:15%;
     background-color: limegreen;
 }
 
 .loading-bar-4{
-    width:30%;
+    width:70%;
     background-color: deeppink;
 }

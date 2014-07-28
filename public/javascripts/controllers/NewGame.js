@@ -51,5 +51,14 @@ bgbControllers.controller('NewGame',[
 
         httpWrapper.timeout = 1000;
         $rootScope.isActive = 'NewGame';
+
+        $scope.newGameActive = 'Players';
+
+        $scope.icons = [
+            {name:'asterisk',class:'glyphicon glyphicon-asterisk'},
+            {name:'music',class:'glyphicon glyphicon-music'}
+        ];
+
+        $('body').addClass('with-bottom-nav');
     }
 ]);

@@ -29,6 +29,7 @@
         @if( !isTest ) {
             <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
             <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+            <link rel="stylesheet" href="@routes.Assets.at("stylesheets/jquery.minicolors.css")">
             <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
             <link rel="stylesheet" href="@routes.Assets.at("stylesheets/animations.css")">
         }else{
@@ -38,6 +39,7 @@
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
         <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+        <script src="@routes.Assets.at("javascripts/lib/jquery.minicolors.min.js")"></script>
 
         @if( isTest ) {
             <script type="text/javascript" src="@routes.Assets.at("javascripts/lib/jasmine-2.0.0/jasmine.js")"></script>
@@ -80,7 +82,7 @@
         }
     </head>
 
-    <body  ng-app="bgbApp">
+    <body ng-app="bgbApp">
     @if( !isTest ) {
             <div class="menu-bar container-fluid">
                 <div class="row">

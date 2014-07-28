@@ -9,6 +9,32 @@ div.menu-bar {
     margin-bottom:15px;
 }
 
+body.with-bottom-nav{
+    padding-bottom:50px;
+}
+
+.icon-dropdown-list {
+    margin:auto;
+    padding-left:5px;
+}
+
+.row.push-bottom {
+    margin-bottom:15px;
+}
+
+.row.push-top {
+    margin-top:15px;
+}
+
+.row.bump-bottom {
+    margin-bottom:5px;
+}
+
+.query-icons {
+    margin: 5px auto 5px auto;
+    width: 90%;
+}
+
 .table.table-striped > tbody > tr > td.creatorRow{
     background-color:lightgoldenrodyellow;
 }
@@ -19,6 +45,11 @@ div.menu-bar {
 
 .menu-item {
     width:24%;
+    margin-top:0;
+}
+
+.menu-item-3 {
+    width:33%;
     margin-top:0;
 }
 
@@ -84,4 +115,13 @@ div.menu-bar {
 .loading-bar-4{
     width:70%;
     background-color: deeppink;
+}
+
+
+.minicolors-theme-bootstrap .minicolors-input{
+    display:none;
+}
+
+.newgame-bottom-nav{
+    background-color: lightgray;
 }

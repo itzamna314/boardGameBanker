@@ -1,0 +1,15 @@
+<div class="btn-group">
+    <button type="button" class="btn btn-default dropdown-toggle icon-dropdown-btn" data-toggle="dropdown">
+        <span class="no-selection" >Avatar</span>
+        <span class="selected-icon"></span>
+        <span class="caret"></span>
+    </button>
+    <div class="dropdown-menu">
+        <ul class="list-inline icon-dropdown-list" role="menu">
+            <li><input type="text" class="query-icons form-control" ng-model="iconSearch" /></li>
+            <li class="icon-dropdown-item" ng-repeat="icon in icons | filter:iconSearch" data-class="{{icon.class}}">
+                <span ng-class="icon.class"></span>
+            </li>
+        </ul>
+    </div>
+</div>

@@ -5,8 +5,6 @@ bgbControllers.controller('Welcome',[
     '$location',
     'httpWrapper',
     function($scope,$cookies,$rootScope,$location,httpWrapper) {
-        $rootScope.isActive = 'Welcome';
-
         /**************************** Public *********************************/
         $scope.findUser = function(query){
             httpWrapper.get('ajax/getuser/' + query).success(function(data){
@@ -66,10 +64,6 @@ bgbControllers.controller('Welcome',[
                 $scope.user = $rootScope.user = null;
         };
 
-        $scope.setUi = function(uiType){
-            $rootScope.isA = uiType == 'A';
-        };
-
         /*********************** Private ******************************/
             // Look up current user from cookies.
             // Return user object if found in cookie, else null
@@ -94,7 +88,7 @@ bgbControllers.controller('Welcome',[
             $scope.user = $rootScope.user;
         }
 
-        if ( $rootScope.isA === undefined )
-            $rootScope.isA = true;
+        $rootScope.isActive = 'Welcome';
+        httpWrapper.timeout = 1000;
     }
 ]);

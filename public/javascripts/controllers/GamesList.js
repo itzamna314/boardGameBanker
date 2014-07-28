@@ -4,8 +4,6 @@ bgbControllers.controller('GamesList',[
     '$location',
     'httpWrapper',
     function($scope,$rootScope,$location,httpWrapper) {
-        $rootScope.isActive = 'GamesList';
-
         /************************ Public **********************************/
         $scope.gameDetail = function(id){
           $location.path('/games/active/' + id);
@@ -39,6 +37,9 @@ bgbControllers.controller('GamesList',[
             $location.path('/');
             return;
         }
+
+        $rootScope.isActive = 'GamesList';
+        httpWrapper.timeout = 1000;
 
         updateGames();
     }

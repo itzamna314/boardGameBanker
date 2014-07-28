@@ -5,20 +5,6 @@ bgbControllers.controller('JoinGame',[
     '$routeParams',
     'httpWrapper',
     function($scope,$rootScope,$location,$routeParams,httpWrapper){
-        $rootScope.isActive = 'JoinGame';
-
-        if ( $routeParams.token ) {
-            $rootScope.token = $routeParams.token;
-        }
-
-        if ( !$rootScope.user || !$rootScope.user.email ) {
-            $location.path('/');
-            return;
-        }
-
-        doJoin();
-
-
         $scope.joinGame = function(){
             doJoin();
         };
@@ -35,5 +21,19 @@ bgbControllers.controller('JoinGame',[
                 });
             }
         }
+
+        if ( $routeParams.token ) {
+            $rootScope.token = $routeParams.token;
+        }
+
+        if ( !$rootScope.user || !$rootScope.user.email ) {
+            $location.path('/');
+            return;
+        }
+
+        $rootScope.isActive = 'JoinGame';
+        httpWrapper.timeout = 1000;
+
+        doJoin();
     }
 ]);

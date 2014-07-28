@@ -5,14 +5,6 @@ bgbControllers.controller('ActiveGame',[
     '$routeParams',
     'httpWrapper',
     function($scope,$rootScope,$location,$routeParams,httpWrapper) {
-        httpWrapper.timeout = 1000;
-
-        $scope.addPoints = function(numToAdd){
-            $scope.game.myscore += numToAdd;
-
-            submitPoints(numToAdd);
-        };
-
         $scope.refreshScore = function(){
             if ( $scope.game && $scope.game.id )
                 getDetails($scope.game.id);
@@ -20,25 +12,6 @@ bgbControllers.controller('ActiveGame',[
             if ( $scope.storedPoints ) {
                 submitPoints($scope.storedPoints);
             }
-        };
-
-        $scope.showScoreboard = function($event){
-            if ( $event )
-                $event.stopPropagation();
-
-            $scope.displayMode = 'Scoreboard';
-        };
-
-        $scope.showTransaction = function($event){
-            if ( $event )
-                $event.stopPropagation();
-
-            $scope.displayMode = 'Transaction';
-            $scope.currentTransaction = 0;
-        };
-
-        $scope.showLogs = function(){
-            $scope.displayMode = 'Logs';
         };
 
         $scope.modifyTransaction = function(amount){
@@ -81,15 +54,16 @@ bgbControllers.controller('ActiveGame',[
             }
         }
 
-        if ( !$rootScope.user ){
+        if ( !$rootScope.user ) {
             $location.path('/');
             return;
         }
 
+        httpWrapper.timeout = 1000;
+        $scope.currentTransaction = 0;
         $scope.displayMode = 'Scoreboard';
+        $scope.storedPoints = 0;
 
         getDetails($routeParams.id);
-
-        $scope.storedPoints = 0;
     }
 ]);

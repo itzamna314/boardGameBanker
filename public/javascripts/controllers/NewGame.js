@@ -4,8 +4,6 @@ bgbControllers.controller('NewGame',[
     '$location',
     'httpWrapper',
     function($scope,$rootScope,$location,httpWrapper){
-        $rootScope.isActive = 'NewGame';
-
         $scope.addPlayer = function(){
             $scope.players.push(PlayerFactory.newPlayer());
         };
@@ -15,6 +13,12 @@ bgbControllers.controller('NewGame',[
                 $location.path('/games');
             });
         };
+
+        // Constructor
+        if ( !$rootScope.user || !$rootScope.user.email ){
+            $location.path('/');
+            return;
+        }
 
         var PlayerFactory = (function(){
             var idx = 0;
@@ -39,16 +43,13 @@ bgbControllers.controller('NewGame',[
             }
         })();
 
-        // Constructor
-        if ( !$rootScope.user || !$rootScope.user.email ){
-            $location.path('/');
-            return;
-        }
-
         var selfPlayer = PlayerFactory.init().newPlayer();
         selfPlayer.email = $rootScope.user.email;
         selfPlayer.isCreator = true;
         var firstPlayer = PlayerFactory.newPlayer();
         $scope.players = [selfPlayer,firstPlayer];
+
+        httpWrapper.timeout = 1000;
+        $rootScope.isActive = 'NewGame';
     }
 ]);

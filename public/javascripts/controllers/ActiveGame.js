@@ -5,6 +5,10 @@ bgbControllers.controller('ActiveGame',[
     '$routeParams',
     'httpWrapper',
     function($scope,$rootScope,$location,$routeParams,httpWrapper) {
+        // If normalized background color intensity ([0,1]) < textColorCutoff,
+        // set text color to white instead of black.
+        var textColorCutoff = 0.3;
+
         $scope.refreshScore = function(){
             if ( $scope.game && $scope.game.id )
                 getDetails($scope.game.id);
@@ -33,6 +37,12 @@ bgbControllers.controller('ActiveGame',[
                     $scope.players = data.players;
                     var mePlayer = _.find(data.players,'isMe');
                     $scope.game.myscore = mePlayer.score;
+
+                    _.each($scope.players,function(player){
+                        player.textColor = '#000000';
+                        if ( colorBrightness(player.color) < textColorCutoff )
+                            player.textColor = '#FFFFFF';
+                    });
                 })
                 .error(function(data){
                     $rootScope.modalTitle = 'Failed to reach server!';
@@ -52,6 +62,18 @@ bgbControllers.controller('ActiveGame',[
                         $scope.players = data.players;
                     });
             }
+        }
+
+        function colorBrightness(colorString)
+        {
+            if ( colorString[0] == '#' )
+                colorString = colorString.substr(1);
+
+            var r = parseInt(colorString.substr(0,2),16);
+            var g = parseInt(colorString.substr(2,2),16);
+            var b = parseInt(colorString.substr(4,2),16);
+
+            return (r + (g * 2) + b) / (255 * 3);
         }
 
         if ( !$rootScope.user ) {

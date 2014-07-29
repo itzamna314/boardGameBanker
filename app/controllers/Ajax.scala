@@ -247,14 +247,16 @@ object Ajax extends Controller {
     import play.api.Play.current
     import com.typesafe.plugin._
 
-    val mail = use[MailerPlugin].email
-    mail.setFrom("Board Game Banker <boardgamebanker@gmail.com>")
-    mail.setSubject("Care for a nice game of " + gameName + "?")
-    mail.setRecipient(email)
-    mail.sendHtml("<html><body><p>You have received an invitation to play " + gameName + " by " + creator.name +
-      "&lt;" + creator.email + "&gt;." + "To accept, " +
-      "<a href=\"" + url + "#/joingame/" + uuid + "\">click here</a> to go to board game banker.<br/><br/>" +
-      "Alternately, enter this code in the app:<br/><br/>" + uuid + ".</p></body></html>")
+    if ( !Dal.isTest ) {
+      val mail = use[MailerPlugin].email
+      mail.setFrom("Board Game Banker <boardgamebanker@gmail.com>")
+      mail.setSubject("Care for a nice game of " + gameName + "?")
+      mail.setRecipient(email)
+      mail.sendHtml("<html><body><p>You have received an invitation to play " + gameName + " by " + creator.name +
+        "&lt;" + creator.email + "&gt;." + "To accept, " +
+        "<a href=\"" + url + "#/joingame/" + uuid + "\">click here</a> to go to board game banker.<br/><br/>" +
+        "Alternately, enter this code in the app:<br/><br/>" + uuid + ".</p></body></html>")
+    }
 
   }
 

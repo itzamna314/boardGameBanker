@@ -225,12 +225,12 @@ object Dal {
         )
 
         Models.players ++= Seq(
-          Models.Player(Some(1),2,Some(1),"123456"),
-          Models.Player(Some(2),2,Some(2),"234567"),
-          Models.Player(Some(3),2,Some(3),"345678"),
-          Models.Player(Some(4),2,Some(4),"456789"),
-          Models.Player(Some(5),2,Some(5),"567890"),
-          Models.Player(Some(6),2,Some(6),"678901"),
+          Models.Player(Some(1),2,Some(1),"123456",Some("#00FF00"),Some("QuimmFTW"),Some("glyphicon glyphicon-music")),
+          Models.Player(Some(2),2,Some(2),"234567",Some("#00FFFF"),Some("SquishyIshy"),Some("glyphicon glyphicon-music")),
+          Models.Player(Some(3),2,Some(3),"345678",Some("#FFFF00"),Some("Yuuzhan"),Some("glyphicon glyphicon-music")),
+          Models.Player(Some(4),2,Some(4),"456789",Some("#550055"),Some("FishOfFuck"),Some("glyphicon glyphicon-music")),
+          Models.Player(Some(5),2,Some(5),"567890",Some("#FF0055"),Some("GeneYes"),Some("glyphicon glyphicon-music")),
+          Models.Player(Some(6),2,Some(6),"678901",Some("#FF0000"),Some("Octavian"),Some("glyphicon glyphicon-music")),
           Models.Player(Some(7),1,None,"1")
         )
 

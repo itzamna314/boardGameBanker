@@ -3,35 +3,36 @@
 
     <div class="container">
         <div class="row push-bottom">
-            <input class="form-control" placeholder="Game Title" ng-model="title" />
+            <div class="col-xs-10">
+                <input class="form-control" placeholder="Game Title" ng-model="title" />
+            </div>
         </div>
     </div>
 
     <div ng-switch on="newGameActive">
         <div class="container" ng-switch-when="Players">
-            <div class="row">
-                <h2>Players</h2>
-            </div>
             <div ng-repeat="player in players">
                 <div class="row bump-bottom">
-                    <div class="col-xs-10 panel-title">
+                    <div class="col-xs-9 panel-title">
                         <input class="form-control" placeholder="Player's e-mail" ng-model="player.email"
                                ng-disabled="player.isCreator" />
                     </div>
-                    <div class="col-xs-2">
+                    <div class="col-xs-1 text-right">
                         <button type="button" class="btn btn-default" data-toggle="collapse"
-                                data-target="#player-detail-{{$index}}">
-                            <span class="glyphicon glyphicon-collapse-down"></span>
+                                data-target="#player-detail-{{$index}}" ng-click="collapsed=!collapsed">
+                            <span class="glyphicon"
+                                  ng-class="{'glyphicon-collapse-down':!collapsed,'glyphicon-collapse-up':collapsed}">
+                            </span>
                         </button>
                     </div>
                 </div>
                 <div class="row nudge-bottom">
                     <div class="player-detail collapse" id="player-detail-{{$index}}">
-                        <div class="col-xs-4">
-                            <input class="form-control" placeholder="Player's name (optional)"
+                        <div class="col-xs-5">
+                            <input class="form-control" placeholder="Player's name"
                                    ng-model="player.name" />
                         </div>
-                        <div class="col-xs-1">
+                        <div class="col-xs-2">
                             <utils-mini-color ng-model="player.color"></utils-mini-color>
                         </div>
                         <div class="col-xs-2">
@@ -42,11 +43,10 @@
             </div>
 
             <div class="row push-top">
-                <div class="col-xs-4">
+                <div class="col-xs-6">
                     <button class="btn btn-default" ng-click="addPlayer()">Add Player</button>
                 </div>
-                <div class="col-xs-5"></div>
-                <div class="col-xs-2">
+                <div class="col-xs-4 text-right">
                     <button class="btn btn-default" ng-disabled="!title" ng-click="createGame()">Create</button>
                 </div>
             </div>

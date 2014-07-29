@@ -60,21 +60,21 @@
         </div>
         <div class="row">
             <div class="col-xs-12">
-                <table class="table table-striped">
+                <table class="table">
                     <tr class="player-score">
                         <th>Player</th>
-                        <th>Score</th>
+                        <th class="text-center">Score</th>
                     </tr>
                     <tr ng-repeat="player in players | orderBy:'score':true" class="player-score"
                         ng-class="{creatorRow:player.isCreator,selfRow:player.isMe}"
-                        ng-style="{'background-color':player.color}">
+                        ng-style="{'background-color':player.color,'color':player.textColor}">
                         <td>
                             <span ng-class="player.iconClass"></span>
                             <span>
                                 {{player.playerName || player.username}} ({{player.playerName ? player.username : player.email}})
                             </span>
                         </td>
-                        <td>
+                        <td class="text-center">
                             {{player.score}}
                         </td>
                     </tr>

@@ -204,11 +204,11 @@ object Dal {
       play.api.db.slick.DB.withSession { implicit session =>
         if ( !MTable.getTables("games").list().isEmpty ) {
           (Models.games.ddl ++ Models.users.ddl ++ Models.players.ddl ++ Models.configs.ddl ++ Models.resources.ddl
-            ++ Models.playerResources.ddl ++ Models.userConfigs.ddl).drop
+            ++ Models.playerResources.ddl ++ Models.userConfigs.ddl ++ Models.globalResources.ddl).drop
         }
 
         (Models.games.ddl ++ Models.users.ddl ++ Models.players.ddl ++ Models.configs.ddl ++ Models.resources.ddl
-          ++ Models.playerResources.ddl ++ Models.userConfigs.ddl).create
+          ++ Models.playerResources.ddl ++ Models.userConfigs.ddl ++ Models.globalResources.ddl).create
 
         Models.users ++= Seq(
           Models.User(Some(1),"Kim", "kim@gmail.com"),

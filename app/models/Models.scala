@@ -61,6 +61,25 @@ object Models {
 
   val playerResources = TableQuery[PlayerResourceTable]
 
+  case class GlobalResource(id:Option[Int],gameId:Int,resourceId:Option[Int] = None,value:Int = 0)
+
+  /*
+   * Table to store global resources.  This is where turns will be tracked.
+   */
+  class GlobalResourceTable(tag: Tag) extends Table[GlobalResource](tag,"game-resource"){
+    def id = column[Int]("gameresourceid",O.PrimaryKey, O.AutoInc)
+    def gameId = column[Int]("gameid",O.NotNull)
+    def resourceId = column[Int]("resourceid",O.Nullable)
+    def value = column[Int]("value",O.Default(0))
+
+    def playerFk = foreignKey("gameresource-game",gameId,players)(_.id)
+    def resourceFk = foreignKey("gameresource-resource",resourceId,resources)(_.id)
+
+    def * = (id.?,gameId,resourceId.?,value) <> (GlobalResource.tupled,GlobalResource.unapply)
+  }
+
+  val globalResources = TableQuery[GlobalResourceTable]
+
   case class Game(id:Option[Int],name:String,creatorId:Int,configId:Option[Int] = None,
                   created:Timestamp = new java.sql.Timestamp(Calendar.getInstance().getTime.getTime), turn:Int = 0)
 

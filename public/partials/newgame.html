@@ -10,70 +10,86 @@
     </div>
 
     <div ng-switch on="newGameActive">
-        <div class="container" ng-switch-when="Players">
-            <div ng-repeat="player in players">
-                <div class="row bump-bottom">
-                    <div class="col-xs-9 panel-title">
-                        <input class="form-control" placeholder="Player's e-mail" ng-model="player.email"
-                               ng-disabled="player.isCreator" />
-                    </div>
-                    <div class="col-xs-1 text-right">
-                        <button type="button" class="btn btn-default" data-toggle="collapse"
-                                data-target="#player-detail-{{$index}}" ng-click="collapsed=!collapsed">
-                            <span class="glyphicon"
-                                  ng-class="{'glyphicon-collapse-down':!collapsed,'glyphicon-collapse-up':collapsed}">
-                            </span>
-                        </button>
-                    </div>
-                </div>
-                <div class="row nudge-bottom">
-                    <div class="player-detail collapse" id="player-detail-{{$index}}">
-                        <div class="col-xs-5">
-                            <input class="form-control" placeholder="Player's name"
-                                   ng-model="player.name" />
+        <div class="container">
+            <div class="container transition-switch-left" id="switch-players" ng-switch-when="players">
+                <!-- hacky way to capture gestures on entire screen.  Works as long as overflow:hidden is on -->
+                <div style="height:5000px;" ng-swipe-left="activate('settings')">
+                    <div ng-repeat="player in players">
+                        <div class="row bump-bottom">
+                            <div class="col-xs-9 panel-title">
+                                <input class="form-control" placeholder="Player's e-mail" ng-model="player.email"
+                                       ng-disabled="player.isCreator" />
+                            </div>
+                            <div class="col-xs-1 text-right">
+                                <button type="button" class="btn btn-default" data-toggle="collapse"
+                                        data-target="#player-detail-{{$index}}" ng-click="collapsed=!collapsed">
+                                    <span class="glyphicon"
+                                          ng-class="{'glyphicon-collapse-down':!collapsed,'glyphicon-collapse-up':collapsed}">
+                                    </span>
+                                </button>
+                            </div>
                         </div>
-                        <div class="col-xs-2">
-                            <utils-mini-color ng-model="player.color"></utils-mini-color>
-                        </div>
-                        <div class="col-xs-2">
-                            <utils-icon-select ng-model="player.iconClass"></utils-icon-select>
+                        <div class="row nudge-bottom">
+                            <div class="player-detail collapse" id="player-detail-{{$index}}">
+                                <div class="col-xs-5">
+                                    <input class="form-control" placeholder="Player's name"
+                                           ng-model="player.name" />
+                                </div>
+                                <div class="col-xs-2">
+                                    <utils-mini-color ng-model="player.color"></utils-mini-color>
+                                </div>
+                                <div class="col-xs-2">
+                                    <utils-icon-select ng-model="player.iconClass"></utils-icon-select>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <div class="row push-top">
-                <div class="col-xs-6">
-                    <button class="btn btn-default" ng-click="addPlayer()">Add Player</button>
-                </div>
-                <div class="col-xs-4 text-right">
-                    <button class="btn btn-default" ng-disabled="!title" ng-click="createGame()">Create</button>
+                    <div class="row push-top">
+                        <div class="col-xs-6">
+                            <button class="btn btn-default" ng-click="addPlayer()">Add Player</button>
+                        </div>
+                        <div class="col-xs-4 text-right">
+                            <button class="btn btn-default" ng-disabled="!title" ng-click="createGame()">Create</button>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="container" ng-switch-when="Settings">
-            <div class="row">
-                <h2>Settings</h2>
+            <div class="container transition-switch-left" id="switch-settings" ng-switch-when="settings">
+                <!-- hacky way to capture gestures on entire screen.  Works as long as overflow:hidden is on -->
+                <div style="height:5000px;" ng-swipe-left="activate('resources')" ng-swipe-right="activate('players')">
+                    <div class="row">
+                        <h2>Settings</h2>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="container" ng-switch-when="Resources">
-            <div class="row">
-                <h2>Resources</h2>
+            <div class="container transition-switch-left" id="switch-resources" ng-switch-when="resources">
+                <div style="height:5000px;" ng-swipe-left="activate('resources')" ng-swipe-right="activate('settings')">
+                    <div class="row">
+                        <h2>Resources</h2>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <nav class="row navbar-fixed-bottom newgame-bottom-nav">
         <div class="container">
-            <ul class="nav nav-pills">
-                <li class="menu-item-3 {{newGameActive=='Players' ? 'active' : ''}}">
-                    <a class="text-center" ng-click="newGameActive='Players'"><span class="glyphicon glyphicon-user"></span></a>
+            <ul class="nav nav-pills nav-bottom">
+                <li class="menu-item-3 {{newGameActive=='players' ? 'active' : ''}}">
+                    <a class="text-center" ng-click="activate('players')">
+                        <span class="glyphicon glyphicon-user"></span>
+                    </a>
                 </li>
-                <li class="menu-item-3 {{newGameActive=='Settings' ? 'active' : ''}}">
-                    <a class="text-center" ng-click="newGameActive='Settings'"><span class="glyphicon glyphicon-cog"></span></a>
+                <li class="menu-item-3 {{newGameActive=='settings' ? 'active' : ''}}">
+                    <a class="text-center" ng-click="activate('settings')">
+                        <span class="glyphicon glyphicon-cog"></span>
+                    </a>
                 </li>
-                <li class="menu-item-3 {{newGameActive=='Resources' ? 'active' : ''}}">
-                    <a class="text-center" ng-click="newGameActive='Resources'"><span class="glyphicon glyphicon-tree-conifer"></span></a>
+                <li class="menu-item-3 {{newGameActive=='resources' ? 'active' : ''}}">
+                    <a class="text-center" ng-click="activate('resources')">
+                        <span class="glyphicon glyphicon-tree-conifer"></span>
+                    </a>
                 </li>
             </ul>
         </div>

@@ -1,3 +1,7 @@
+.app-body{
+    overflow:hidden;
+}
+
 div.row.scoreboard {
     padding-bottom:5px;
     margin-left:0;
@@ -7,6 +11,10 @@ div.row.scoreboard {
 div.menu-bar {
     background-color:lightgray;
     margin-bottom:15px;
+}
+
+ul.nav-bottom{
+    width:95%;
 }
 
 body.with-bottom-nav{
@@ -53,7 +61,7 @@ body.with-bottom-nav{
 }
 
 .menu-item-3 {
-    width:30%;
+    width:33%;
     margin-top:0;
 }
 

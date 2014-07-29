@@ -4,6 +4,8 @@ bgbControllers.controller('NewGame',[
     '$location',
     'httpWrapper',
     function($scope,$rootScope,$location,httpWrapper){
+        var PlayerFactory, selfPlayer, firstPlayer, sections;
+
         $scope.addPlayer = function(){
             $scope.players.push(PlayerFactory.newPlayer());
         };
@@ -14,13 +16,33 @@ bgbControllers.controller('NewGame',[
             });
         };
 
+        $scope.activate = function(section){
+            var oldSwitch = $('#switch-' + $scope.newGameActive);
+            var newSwitch = $('#switch-' + section);
+
+            oldSwitch.removeClass('transition-switch-left transition-switch-right');
+
+            if ( sections[section] > sections[$scope.newGameActive] )   // Moving right, transition left
+            {
+                oldSwitch.addClass('transition-switch-left');
+                newSwitch.addClass('transition-switch-left');
+            }
+            else
+            {
+                oldSwitch.addClass('transition-switch-right');
+                newSwitch.addClass('transition-switch-right');
+            }
+
+            $scope.newGameActive = section;
+        };
+
         // Constructor
         if ( !$rootScope.user || !$rootScope.user.email ){
             $location.path('/');
             return;
         }
 
-        var PlayerFactory = (function(){
+        PlayerFactory = (function(){
             var idx = 0;
 
             function Player(){
@@ -43,21 +65,23 @@ bgbControllers.controller('NewGame',[
             }
         })();
 
-        var selfPlayer = PlayerFactory.init().newPlayer();
+        selfPlayer = PlayerFactory.init().newPlayer();
         selfPlayer.email = $rootScope.user.email;
         selfPlayer.isCreator = true;
-        var firstPlayer = PlayerFactory.newPlayer();
+
+        firstPlayer = PlayerFactory.newPlayer();
         $scope.players = [selfPlayer,firstPlayer];
 
         httpWrapper.timeout = 1000;
         $rootScope.isActive = 'NewGame';
 
-        $scope.newGameActive = 'Players';
+        $scope.newGameActive = 'players';
 
-        $scope.icons = [
-            {name:'asterisk',class:'glyphicon glyphicon-asterisk'},
-            {name:'music',class:'glyphicon glyphicon-music'}
-        ];
+        sections = {
+            players:1,
+            settings:2,
+            resources:3
+        };
 
         $('body').addClass('with-bottom-nav');
     }

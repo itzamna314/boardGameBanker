@@ -99,11 +99,15 @@ object Ajax extends Controller {
     reqObj match {
       case Some(req : createGameRequest) =>
         val gameId = Dal.createGame(Game(None,req.name,req.creator.id.get))
-        Dal.createPlayer(Player(None,gameId,req.creator.id,UUID.randomUUID().toString))
         req.players foreach { p=>
           val uuid = UUID.randomUUID().toString
-          Dal.createPlayer(Player(None,gameId,None,uuid))
-          notifyPlayer(p.email,req.creator,uuid,req.name,routes.Application.index().absoluteURL())
+
+          if ( p.email == req.creator.email )
+            Dal.createPlayer(Player(None,gameId,req.creator.id,uuid,p.color,p.name,p.icon))
+          else {
+            Dal.createPlayer(Player(None, gameId, None, uuid,p.color,p.name,p.icon))
+            notifyPlayer(p.email, req.creator, uuid, req.name, routes.Application.index().absoluteURL())
+          }
         }
         Ok(Json.obj("error" -> JsNull,"message" -> ""))
       case _ =>
@@ -163,7 +167,8 @@ object Ajax extends Controller {
   }
 
   private case class createGameRequest(name:String,creator:User,players:Array[createGameRequestPlayer])
-  private case class createGameRequestPlayer(email:String)
+  private case class createGameRequestPlayer(email:String, color:Option[String] = None,
+                                             name:Option[String] = None, icon:Option[String] = None)
   private case class joinGameRequest(userId:Int,uuid:String)
 
   private def jsonResponse(error:Option[String],message:String = "") : SimpleResult = {
@@ -185,15 +190,15 @@ object Ajax extends Controller {
 
         if ( gameName.isDefined && players.isDefined ) {
           val playersArr = players.get filter { p =>
-            val isCreator = (p \ "isCreator").asOpt[Boolean].getOrElse(false)
-
-            (p \ "email").asOpt[String] match {
-              case Some(_) => !isCreator
-              case None => false
-            }
+            (p \ "email").asOpt[String].isDefined
           } map {
             p =>
-              createGameRequestPlayer((p \ "email").as[String])
+              createGameRequestPlayer(
+                email = (p \ "email").as[String],
+                color = (p \ "color").asOpt[String],
+                icon = (p \ "iconClass").asOpt[String],
+                name = (p \ "name").asOpt[String]
+              )
           }
 
           val creator : Seq[User] = players.get filter { p =>
@@ -278,7 +283,10 @@ object Ajax extends Controller {
           "username" -> player.userName,
           "email" -> player.email,
           "playerId" -> player.id,
+          "playerName" -> player.playerName,
           "score" -> score,
+          "color" -> player.color,
+          "iconClass" -> player.icon,
           "isCreator" -> JsBoolean(player.userId == gameState.creatorId),
           "isMe" -> JsBoolean(player.userId == userId),
           "resources" -> resources.toSeq

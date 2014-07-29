@@ -34,43 +34,43 @@
 }
 
 @-webkit-keyframes loading-1 {
-    0%,100%  { width:6%; }
-    50% { width:70%; }
+    0%,100%  { width:5%; }
+    50% { width:55%; }
 }
 
 @keyframes loading-1 {
-    0%,100%   { width:6%; }
-    50% { width:70%; }
+    0%,100%   { width:5%; }
+    50% { width:55%; }
 }
 
 @-webkit-keyframes loading-2 {
-    0%,100%  { width:9%; }
-    50% { width:15%; }
+    0%,100%  { width:15%; }
+    50% { width:25%; }
 }
 
 @keyframes loading-2 {
-    0%,100%   { width:9%; }
-    50% { width:15%; }
+    0%,100%   { width:15%; }
+    50% { width:25%; }
 }
 
 @-webkit-keyframes loading-3 {
-    0%,100%  { width:15%; }
-    50% { width:9%; }
+    0%,100%  { width:25%; }
+    50% { width:15%; }
 }
 
 @keyframes loading-3 {
-    0%,100%   { width:15%; }
-    50% { width:9%; }
+    0%,100%   { width:25%; }
+    50% { width:15%; }
 }
 
 @-webkit-keyframes loading-4 {
-    0%,100%  { width:70%; }
-    50% { width:6%; }
+    0%,100%  { width:55%; }
+    50% { width:5%; }
 }
 
 @keyframes loading-4 {
-    0%,100%   { width:70%; }
-    50% { width:6%; }
+    0%,100%   { width:55%; }
+    50% { width:5%; }
 }
 
 .loading-bar.ng-hide-add,

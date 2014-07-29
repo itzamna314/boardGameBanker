@@ -18,6 +18,14 @@ body.with-bottom-nav{
     padding-left:5px;
 }
 
+.row.bump-bottom {
+    margin-bottom:5px;
+}
+
+.row.nudge-bottom {
+    margin-bottom:10px;
+}
+
 .row.push-bottom {
     margin-bottom:15px;
 }
@@ -26,20 +34,16 @@ body.with-bottom-nav{
     margin-top:15px;
 }
 
-.row.bump-bottom {
-    margin-bottom:5px;
-}
-
 .query-icons {
     margin: 5px auto 5px auto;
     width: 90%;
 }
 
-.table.table-striped > tbody > tr > td.creatorRow{
+.creatorRow{
     background-color:lightgoldenrodyellow;
 }
 
-.table.table-striped > tbody > tr > td.selfRow{
+.selfRow{
     background-color:lightgreen;
 }
 
@@ -49,7 +53,7 @@ body.with-bottom-nav{
 }
 
 .menu-item-3 {
-    width:33%;
+    width:30%;
     margin-top:0;
 }
 
@@ -98,25 +102,24 @@ body.with-bottom-nav{
 }
 
 .loading-bar-1{
-    width:6%;
+    width:5%;
     background-color: orange;
 }
 
 .loading-bar-2{
-    width:9%;
+    width:15%;
     background-color: mediumpurple;
 }
 
 .loading-bar-3{
-    width:15%;
+    width:25%;
     background-color: limegreen;
 }
 
 .loading-bar-4{
-    width:70%;
+    width:55%;
     background-color: deeppink;
 }
-
 
 .minicolors-theme-bootstrap .minicolors-input{
     display:none;
@@ -124,4 +127,13 @@ body.with-bottom-nav{
 
 .newgame-bottom-nav{
     background-color: lightgray;
+}
+
+/* Hack to fix bootstrap collapse animations */
+.player-detail.collapse{
+    height:0!important;
+}
+
+.player-detail.collapse.in{
+    height:34px!important;
 }

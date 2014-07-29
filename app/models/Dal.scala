@@ -41,7 +41,7 @@ object Dal {
 
   case class resourceState(id:Option[Int],value:Int)
   case class playerState(id:Int,userId:Int,playerName:Option[String],userName:String,email:String,
-                         resources:List[resourceState])
+                         resources:List[resourceState],color:Option[String] = None,icon:Option[String] = None)
   case class gameState(id:Int,name:String,creatorId:Int,created:String,players:List[playerState])
 
   def getGame(gameId:Int) : gameState = {
@@ -67,7 +67,8 @@ object Dal {
         val user = firstRow._3
         val player = firstRow._2
 
-        playerState(player.id.get,user.id.get,player.name,user.name,user.email,resourceStates(player.id.get))
+        playerState(player.id.get,user.id.get,player.name,user.name,user.email,resourceStates(player.id.get),
+          player.color,player.iconClass)
       }
 
       val game = queryResult(0)._1

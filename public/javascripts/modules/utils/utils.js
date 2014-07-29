@@ -197,7 +197,12 @@ utilsModule.directive('utilsIconSelect',function() {
                 items.click(function()
                 {
                     var $this = $(this);
-                    selectIcon($this.attr('data-class'));
+                    var iconClass = $this.attr('data-class');
+                    selectIcon(iconClass);
+
+                    scope.$apply(function(){
+                        ngModel.$setViewValue(iconClass,'change');
+                    });
                 });
             }
         });

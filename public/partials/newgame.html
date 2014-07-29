@@ -12,19 +12,32 @@
             <div class="row">
                 <h2>Players</h2>
             </div>
-            <div class="row bump-bottom" ng-repeat="player in players">
-                <div class="col-xs-4">
-                    <input class="form-control" placeholder="Player's e-mail" ng-model="player.email"
-                           ng-disabled="player.isCreator" />
+            <div ng-repeat="player in players">
+                <div class="row bump-bottom">
+                    <div class="col-xs-10 panel-title">
+                        <input class="form-control" placeholder="Player's e-mail" ng-model="player.email"
+                               ng-disabled="player.isCreator" />
+                    </div>
+                    <div class="col-xs-2">
+                        <button type="button" class="btn btn-default" data-toggle="collapse"
+                                data-target="#player-detail-{{$index}}">
+                            <span class="glyphicon glyphicon-collapse-down"></span>
+                        </button>
+                    </div>
                 </div>
-                <div class="col-xs-4">
-                    <input class="form-control" placeholder="Player's name (optional)" ng-model="player.name" />
-                </div>
-                <div class="col-xs-1">
-                    <utils-mini-color ng-model="player.color"></utils-mini-color>
-                </div>
-                <div class="col-xs-2">
-                    <utils-icon-select ng-model="player.iconClass"></utils-icon-select>
+                <div class="row nudge-bottom">
+                    <div class="player-detail collapse" id="player-detail-{{$index}}">
+                        <div class="col-xs-4">
+                            <input class="form-control" placeholder="Player's name (optional)"
+                                   ng-model="player.name" />
+                        </div>
+                        <div class="col-xs-1">
+                            <utils-mini-color ng-model="player.color"></utils-mini-color>
+                        </div>
+                        <div class="col-xs-2">
+                            <utils-icon-select ng-model="player.iconClass"></utils-icon-select>
+                        </div>
+                    </div>
                 </div>
             </div>
 

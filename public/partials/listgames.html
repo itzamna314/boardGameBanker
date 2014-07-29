@@ -14,8 +14,11 @@
                 <td>{{ game.name }}</td>
                 <td>{{ game.creator.username }}</td>
                 <td>{{ game.created }}</td>
-                <td ng-show="game.creator.id == user.id">
-                    <button class="btn btn-danger" ng-click="deleteGame(game.id,$event)">Delete</button>
+                <td>
+                    <button ng-show="game.creator.id == user.id"
+                            class="btn btn-danger" ng-click="deleteGame(game.id,$event)">
+                        Delete
+                    </button>
                 </td>
             </tr>
         </table>

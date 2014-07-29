@@ -65,9 +65,18 @@
                         <th>Player</th>
                         <th>Score</th>
                     </tr>
-                    <tr ng-repeat="player in players | orderBy:'score':true" class="player-score">
-                        <td ng-class="{creatorRow:player.isCreator,selfRow:player.isMe}">{{player.username}} ({{player.email}})</td>
-                        <td ng-class="{creatorRow:player.isCreator,selfRow:player.isMe}">{{player.score}}</td>
+                    <tr ng-repeat="player in players | orderBy:'score':true" class="player-score"
+                        ng-class="{creatorRow:player.isCreator,selfRow:player.isMe}"
+                        ng-style="{'background-color':player.color}">
+                        <td>
+                            <span ng-class="player.iconClass"></span>
+                            <span>
+                                {{player.playerName || player.username}} ({{player.playerName ? player.username : player.email}})
+                            </span>
+                        </td>
+                        <td>
+                            {{player.score}}
+                        </td>
                     </tr>
                 </table>
             </div>

@@ -21,6 +21,7 @@ bgbControllers.controller('NewGame',[
             var newSwitch = $('#switch-' + section);
 
             oldSwitch.removeClass('transition-switch-left transition-switch-right');
+            newSwitch.removeClass('transition-switch-left transition-switch-right');
 
             if ( sections[section] > sections[$scope.newGameActive] )   // Moving right, transition left
             {

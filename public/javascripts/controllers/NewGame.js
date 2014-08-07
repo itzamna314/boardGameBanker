@@ -85,5 +85,11 @@ bgbControllers.controller('NewGame',[
         };
 
         $('body').addClass('with-bottom-nav');
+        var defaultResource = new Resource();
+        defaultResource.resourceId = -1;
+        defaultResource.name = 'Points';
+        defaultResource.startValue = 0;
+        defaultResource.visibility = 'public';
+        $scope.resources = [defaultResource];
     }
 ]);

@@ -9,10 +9,10 @@
         </div>
     </div>
 
-    <div class="container">
-        <div class="transition-switch-left" id="switch-players" ng-show="newGameActive == 'players'">
-            <div ng-swipe-left="activate('settings')">
-                <div ng-repeat="player in players">
+    <div class="container full-page">
+        <div class="full-page transition-switch-left" id="switch-players" ng-show="newGameActive == 'players'"
+             ng-swipe-left="activate('settings')">
+            <div ng-repeat="player in players">
                     <div class="row bump-bottom">
                         <div class="col-xs-9 panel-title">
                             <input class="form-control" placeholder="Player's e-mail" ng-model="player.email"
@@ -43,7 +43,7 @@
                     </div>
                 </div>
 
-                <div class="row push-top">
+            <div class="row push-top">
                     <div class="col-xs-6">
                         <button class="btn btn-default" ng-click="addPlayer()">Add Player</button>
                     </div>
@@ -51,20 +51,17 @@
                         <button class="btn btn-default" ng-disabled="!title" ng-click="createGame()">Create</button>
                     </div>
                 </div>
-            </div>
         </div>
-        <div class="transition-switch-left" id="switch-settings" ng-show="newGameActive == 'settings'">
-            <div ng-swipe-left="activate('resources')" ng-swipe-right="activate('players')">
-                <div class="row">
+        <div class="full-page transition-switch-left" id="switch-settings" ng-show="newGameActive == 'settings'"
+             ng-swipe-left="activate('resources')" ng-swipe-right="activate('players')">
+            <div class="row">
                     <h2>Settings</h2>
                 </div>
-            </div>
         </div>
-        <div class="transition-switch-left" id="switch-resources" ng-show="newGameActive == 'resources'">
-            <div ng-swipe-left="activate('resources')" ng-swipe-right="activate('settings')">
-                <div class="row">
-                    <h2>Resources</h2>
-                </div>
+        <div class="full-page transition-switch-left" id="switch-resources" ng-show="newGameActive == 'resources'"
+             ng-swipe-right="activate('settings')">
+            <div class="row">
+                <h2>Resources</h2>
             </div>
         </div>
     </div>

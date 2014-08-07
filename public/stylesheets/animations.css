@@ -131,8 +131,8 @@
 .transition-switch-right.ng-hide-remove,
 .transition-switch-right.ng-hide-remove-active{
     display:block!important;
-    -webkit-transition:all linear 1s;
-    transition:all linear 1s;
+    -webkit-transition:all ease-out 1s;
+    transition:all ease-out 1s;
 }
 
 
@@ -144,14 +144,16 @@
     opacity:1;
 }
 
-.transition-switch-left.ng-hide,
-.transition-switch-right.ng-hide-remove{
-    left:-600px;
+.transition-switch-left.ng-hide
+,.transition-switch-right.ng-hide.ng-hide-remove
+{
+    left:-500px;
     opacity:0;
 }
 
-.transition-switch-right.ng-hide,
-.transition-switch-left.ng-hide-remove{
-    left:150%;
+.transition-switch-right.ng-hide
+,.transition-switch-left.ng-hide.ng-hide-remove
+ {
+    left:135%;
     opacity:0;
 }

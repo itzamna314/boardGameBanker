@@ -150,3 +150,8 @@ body.with-bottom-nav{
 .player-detail.collapse.in{
     height:34px!important;
 }
+
+.full-page{
+    height:100%;
+    width:100%;
+}

@@ -5,10 +5,8 @@
 var utilsModule = angular.module('utilsModule',[]);
 
 utilsModule.factory('httpWrapper', ['$http','$rootScope', function($http,$rootScope) {
-    //var _http = function(){};
-    //_http.prototype = $http.prototype;
-
     var _http = Object.create($http);
+    _http.timeout = 1000;
     _http.baseGet = _http.get;
     _http.basePost = _http.post;
 

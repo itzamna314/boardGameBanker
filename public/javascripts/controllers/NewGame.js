@@ -4,10 +4,16 @@ bgbControllers.controller('NewGame',[
     '$location',
     'httpWrapper',
     function($scope,$rootScope,$location,httpWrapper){
-        var PlayerFactory, selfPlayer, firstPlayer, sections;
+        var PlayerFactory, ResourceFactory, selfPlayer, firstPlayer, sections, scoreResource;
 
         $scope.addPlayer = function(){
             $scope.players.push(PlayerFactory.newPlayer());
+        };
+
+        $scope.addResource = function(resourceType){
+            var res = ResourceFactory.newResource();
+            res.type = resourceType;
+            $scope.resources.push(res);
         };
 
         $scope.createGame = function(){
@@ -66,12 +72,48 @@ bgbControllers.controller('NewGame',[
             }
         })();
 
+        ResourceFactory = (function(){
+            var idx = 0;
+
+            function Resource(){
+                this.idx = null;
+                this.type = null;
+                this.name = null;
+                this.iconClass = null;
+                this.color = null;
+                this.visibility = null;
+                this.initialValue = null;
+                this.winCondition = null;
+                this.conditionValue = null;
+            }
+
+            return {
+                newResource:function(){
+                    var resource = new Resource();
+                    resource.idx = idx;
+                    idx++;
+                    return resource;
+                },
+                init:function(){
+                    idx = 0;
+                    return this;
+                }
+            }
+        })();
+
         selfPlayer = PlayerFactory.init().newPlayer();
         selfPlayer.email = $rootScope.user.email;
         selfPlayer.isCreator = true;
 
         firstPlayer = PlayerFactory.newPlayer();
         $scope.players = [selfPlayer,firstPlayer];
+
+        scoreResource = ResourceFactory.init().newResource();
+        scoreResource.type = 'player';
+        scoreResource.name = 'Score';
+        scoreResource.initialValue = 0;
+        $scope.playerResources = [scoreResource];
+
 
         httpWrapper.timeout = 1000;
         $rootScope.isActive = 'NewGame';

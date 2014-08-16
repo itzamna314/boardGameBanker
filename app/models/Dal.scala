@@ -133,9 +133,21 @@ object Dal {
     }
   }
 
-  def createGame(g:Game, configId: Option[Int] = None) : Int = {
+  def listConfigs() : List[Config] = {
+    play.api.db.slick.DB.withSession { implicit session =>
+      Models.configs.list()
+    }
+  }
+
+  def createGame(g:Game) : Int = {
     play.api.db.slick.DB.withSession { implicit session =>
       (Models.games returning Models.games.map(_.id)) += g
+    }
+  }
+
+  def createResource(r:Resource) : Int = {
+    play.api.db.slick.DB.withSession { implicit session =>
+      (Models.resources returning Models.resources.map(_.id)) += r
     }
   }
 
@@ -151,8 +163,8 @@ object Dal {
           val resource = Models.PlayerResource(None,playerId,None)
           Models.playerResources += resource
         case Some(cId) =>
-          val resources = Models.resources.filter(_.configId === cId).list
-          resources foreach { res =>
+          val r = Models.resources.filter(_.configId === cId).filter(_.resourceType === "player").list
+          r foreach { res =>
             Models.playerResources += Models.PlayerResource(None,playerId,res.id)
           }
       }

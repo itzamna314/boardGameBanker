@@ -48,6 +48,13 @@ class DalSpec extends Specification {
       cyril must_== Some(User(Some(7),"Cyril Figgis","elcontante@sanmarcos.com"))
     }
 
+    "create a config" in new resetDal {
+      Dal.createConfig(None)
+      Dal.createConfig(Some("FooBar"))
+
+      Dal.listConfigs().length must_== 3
+    }
+
     "create a game" in new resetDal {
       val game = Game(None,"Shoots & Ladders",1)
       val gameId = Dal.createGame(game)

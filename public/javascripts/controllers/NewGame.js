@@ -18,7 +18,17 @@ bgbControllers.controller('NewGame',[
         };
 
         $scope.createGame = function(){
-            httpWrapper.post('ajax/newgame',{title:$scope.title,players:$scope.players}).success(function(){
+            var playerRes = $scope.playerResources
+            playerRes = _.map(playerRes, function(pr){
+                pr.visibility = pr.visibility.id;
+                return pr;
+            });
+
+            httpWrapper.post('ajax/newgame',{
+                title:$scope.title,
+                players:$scope.players,
+                playerResources:$scope.playerResources
+            }).success(function(){
                 $location.path('/games');
             });
         };
@@ -49,6 +59,17 @@ bgbControllers.controller('NewGame',[
             $location.path('/');
             return;
         }
+
+        sections = {
+                    players:1,
+                    settings:2,
+                    resources:3
+                };
+
+        $scope.visibilities = [
+            {name:'Visible', id:'visible'},
+            {name:'Hidden', id:'hidden'}
+        ];
 
         PlayerFactory = (function(){
             var idx = 0;
@@ -82,7 +103,7 @@ bgbControllers.controller('NewGame',[
                 this.name = null;
                 this.iconClass = null;
                 this.color = null;
-                this.visibility = null;
+                this.visibility = $scope.visibilities[0];
                 this.initialValue = null;
                 this.winCondition = null;
                 this.conditionValue = null;
@@ -101,17 +122,6 @@ bgbControllers.controller('NewGame',[
                 }
             }
         })();
-
-        sections = {
-            players:1,
-            settings:2,
-            resources:3
-        };
-
-        $scope.visibilities = [
-            {name:'Visible', id:'0'},
-            {name:'Hidden', id:'1'}
-        ];
 
         selfPlayer = PlayerFactory.init().newPlayer();
         selfPlayer.email = $rootScope.user.email;

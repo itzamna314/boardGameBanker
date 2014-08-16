@@ -103,7 +103,14 @@ object Ajax extends Controller {
           case Some(cId) =>
             cId
           case None =>
-            Dal.createConfig()
+            val confId = Dal.createConfig()
+            // Create a resource for each id, if we just created a new config
+            req.playerResources foreach { pr =>
+              val r = Resource(None, pr.name, pr.icon, pr.color, confId, "player", pr.visibility, None, None, None)
+              Dal.createResource(r)
+            }
+
+            confId
         }
 
         val gameId = Dal.createGame(Game(None,req.name,req.creator.id.get, Some(configId)))
@@ -116,10 +123,6 @@ object Ajax extends Controller {
             Dal.createPlayer(Player(None, gameId, None, uuid,p.color,p.name,p.icon))
             notifyPlayer(p.email, req.creator, uuid, req.name, routes.Application.index().absoluteURL())
           }
-        }
-
-        req.playerResources foreach { pr =>
-
         }
 
         Ok(Json.obj("error" -> JsNull,"message" -> ""))
@@ -184,7 +187,7 @@ object Ajax extends Controller {
   creator:User,
   players:Array[createGameRequestPlayer],
   configId:Option[Int],
-  playerResources:Array[createGameRequestPlayerResource])
+  playerResources:List[createGameRequestPlayerResource])
   private case class createGameRequestPlayer(
     email:String,
     color:Option[String] = None,
@@ -192,6 +195,7 @@ object Ajax extends Controller {
     icon:Option[String] = None)
   private case class createGameRequestPlayerResource(
     name:String,
+    visibility:String,
     color:Option[String] = None,
     icon:Option[String] = None)
   private case class joinGameRequest(userId:Int,uuid:String)
@@ -228,11 +232,18 @@ object Ajax extends Controller {
               )
           }
 
-          val playerResourcesArr : Array[createGameRequestPlayerResource]= playerResources match {
+          val playerResourcesArr : List[createGameRequestPlayerResource]= playerResources match {
             case Some(arr) =>
-              Array[createGameRequestPlayerResource]()
+              (arr map { pr =>
+                createGameRequestPlayerResource(
+                  name = (pr \ "name").as[String],
+                  visibility = (pr \ "visibility").as[String],
+                  color = (pr \ "color").asOpt[String],
+                  icon = (pr \ "iconClass").asOpt[String]
+                )
+              }).toList
             case None =>
-              Array[createGameRequestPlayerResource]()
+              List[createGameRequestPlayerResource]()
           }
 
           val creator : Seq[User] = players.get filter { p =>

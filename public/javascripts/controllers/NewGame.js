@@ -101,6 +101,17 @@ bgbControllers.controller('NewGame',[
             }
         })();
 
+        sections = {
+            players:1,
+            settings:2,
+            resources:3
+        };
+
+        $scope.visibilities = [
+            {name:'Visible', id:'0'},
+            {name:'Hidden', id:'1'}
+        ];
+
         selfPlayer = PlayerFactory.init().newPlayer();
         selfPlayer.email = $rootScope.user.email;
         selfPlayer.isCreator = true;
@@ -112,6 +123,7 @@ bgbControllers.controller('NewGame',[
         scoreResource.type = 'player';
         scoreResource.name = 'Score';
         scoreResource.initialValue = 0;
+        scoreResource.visibility = $scope.visibilities[0];
         $scope.playerResources = [scoreResource];
 
 
@@ -119,12 +131,6 @@ bgbControllers.controller('NewGame',[
         $rootScope.isActive = 'NewGame';
 
         $scope.newGameActive = 'players';
-
-        sections = {
-            players:1,
-            settings:2,
-            resources:3
-        };
 
         $('body').addClass('with-bottom-nav');
         var defaultResource = new Resource();

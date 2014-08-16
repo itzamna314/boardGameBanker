@@ -13,7 +13,8 @@ bgbControllers.controller('NewGame',[
         $scope.addResource = function(resourceType){
             var res = ResourceFactory.newResource();
             res.type = resourceType;
-            $scope.resources.push(res);
+            if ( resourceType == 'player' )
+                $scope.playerResources.push(res);
         };
 
         $scope.createGame = function(){

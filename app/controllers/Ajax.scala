@@ -98,7 +98,15 @@ object Ajax extends Controller {
 
     reqObj match {
       case Some(req : createGameRequest) =>
-        val gameId = Dal.createGame(Game(None,req.name,req.creator.id.get))
+
+        val configId = req.configId match {
+          case Some(cId) =>
+            cId
+          case None =>
+            Dal.createConfig()
+        }
+
+        val gameId = Dal.createGame(Game(None,req.name,req.creator.id.get, Some(configId)))
         req.players foreach { p=>
           val uuid = UUID.randomUUID().toString
 
@@ -109,6 +117,11 @@ object Ajax extends Controller {
             notifyPlayer(p.email, req.creator, uuid, req.name, routes.Application.index().absoluteURL())
           }
         }
+
+        req.playerResources foreach { pr =>
+
+        }
+
         Ok(Json.obj("error" -> JsNull,"message" -> ""))
       case _ =>
         BadRequest(Json.obj("error" -> "IllegalJSON","message" -> ("Received: " + request.body)))
@@ -166,9 +179,21 @@ object Ajax extends Controller {
       NotFound("")
   }
 
-  private case class createGameRequest(name:String,creator:User,players:Array[createGameRequestPlayer])
-  private case class createGameRequestPlayer(email:String, color:Option[String] = None,
-                                             name:Option[String] = None, icon:Option[String] = None)
+  private case class createGameRequest(
+  name:String,
+  creator:User,
+  players:Array[createGameRequestPlayer],
+  configId:Option[Int],
+  playerResources:Array[createGameRequestPlayerResource])
+  private case class createGameRequestPlayer(
+    email:String,
+    color:Option[String] = None,
+    name:Option[String] = None,
+    icon:Option[String] = None)
+  private case class createGameRequestPlayerResource(
+    name:String,
+    color:Option[String] = None,
+    icon:Option[String] = None)
   private case class joinGameRequest(userId:Int,uuid:String)
 
   private def jsonResponse(error:Option[String],message:String = "") : SimpleResult = {
@@ -187,6 +212,8 @@ object Ajax extends Controller {
       case Some(j:JsObject) =>
         val gameName = (j \ "title").asOpt[String]
         val players = (j \ "players").asOpt[Array[JsObject]]
+        val playerResources = (j \ "playerResources").asOpt[Array[JsObject]]
+        val configId = (j \ "configId").asOpt[Int]
 
         if ( gameName.isDefined && players.isDefined ) {
           val playersArr = players.get filter { p =>
@@ -199,6 +226,13 @@ object Ajax extends Controller {
                 icon = (p \ "iconClass").asOpt[String],
                 name = (p \ "name").asOpt[String]
               )
+          }
+
+          val playerResourcesArr : Array[createGameRequestPlayerResource]= playerResources match {
+            case Some(arr) =>
+              Array[createGameRequestPlayerResource]()
+            case None =>
+              Array[createGameRequestPlayerResource]()
           }
 
           val creator : Seq[User] = players.get filter { p =>
@@ -215,7 +249,7 @@ object Ajax extends Controller {
           } filter(_.isDefined) map (_.get)
 
           if ( creator.length == 1 )
-            Some(createGameRequest(gameName.get,creator(0),playersArr))
+            Some(createGameRequest(gameName.get,creator(0),playersArr, configId, playerResourcesArr))
           else
             None
         }

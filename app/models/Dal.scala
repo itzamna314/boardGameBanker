@@ -126,7 +126,14 @@ object Dal {
     }
   }
 
-  def createGame(g:Game) : Int = {
+  def createConfig(name:Option[String] = None) : Int = {
+    play.api.db.slick.DB.withSession { implicit session =>
+      val c = Config(None,name.getOrElse(""))
+      (Models.configs returning Models.configs.map(_.id)) += c
+    }
+  }
+
+  def createGame(g:Game, configId: Option[Int] = None) : Int = {
     play.api.db.slick.DB.withSession { implicit session =>
       (Models.games returning Models.games.map(_.id)) += g
     }
@@ -239,7 +246,7 @@ object Dal {
         )
 
         Models.resources ++= Seq(
-          Models.Resource(Some(1),"Sheep",None,None,1,"visible",None,None,None)
+          Models.Resource(Some(1),"Sheep",None,None,1,"player","visible",None,None,None)
         )
 
         Models.playerResources ++= Seq(

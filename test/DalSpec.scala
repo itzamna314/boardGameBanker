@@ -49,14 +49,15 @@ class DalSpec extends Specification {
     }
 
     "create a config" in new resetDal {
+      val initialLength = Dal.listConfigs().length
       Dal.createConfig(None)
       Dal.createConfig(Some("FooBar"))
 
-      Dal.listConfigs().length must_== 3
+      Dal.listConfigs().length must_== initialLength + 2
     }
 
     "create a game" in new resetDal {
-      val game = Game(None,"Shoots & Ladders",1)
+      val game = Game(None,"Shoots & Ladders",1,1)
       val gameId = Dal.createGame(game)
       Dal.createPlayer(Player(None,gameId,Some(1),"12345"))
       val games = Dal.listGames(1)
@@ -95,6 +96,27 @@ class DalSpec extends Specification {
       Dal.deleteGame(2,6)
       val games = Dal.listGames(6)
       games.length must_== 0
+    }
+
+    "get game detail with multiple resources" in new resetDal {
+      // First, bind a user to the open player slot so this is a valid
+      // game.
+      val kimUser = Dal.findUser("kim@gmail.com")
+      Dal.bindPlayer(kimUser.get.id.get,"1") must_== ""
+      val game = Dal.getGame(1)
+      game.players.length must_== 1
+      game.players(0).resources.length must_== 3
+      game.players(0).resources(0).id must_== 4
+      game.players(0).resources(1).id must_== 3
+      game.players(0).resources(2).id must_== 2
+
+      game.playerResources.length must_== 3
+      game.playerResources(0).id must_== game.players(0).resources(0).id
+      game.playerResources(0).name must_== "Influence"
+      game.playerResources(1).id must_== game.players(0).resources(1).id
+      game.playerResources(1).name must_== "Castles"
+      game.playerResources(2).id must_== game.players(0).resources(2).id
+      game.playerResources(2).name must_== "Supply"
     }
   }
 }

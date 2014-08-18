@@ -39,26 +39,38 @@ object Dal {
     }
   }
 
-  case class resourceState(id:Option[Int],value:Int)
+  case class resourceState(id:Int,value:Int)
+  case class resourceDefinition(id:Int, name:String, color:Option[String] = None, icon: Option[String] = None)
+  // TODO: Separate player state from player definition
+  // state contains only resource states and player id.
+  // defnition contains everything else
   case class playerState(id:Int,userId:Int,playerName:Option[String],userName:String,email:String,
                          resources:List[resourceState],color:Option[String] = None,icon:Option[String] = None)
-  case class gameState(id:Int,name:String,creatorId:Int,created:String,players:List[playerState])
+  case class gameState(id:Int,name:String,creatorId:Int,created:String,players:List[playerState],
+                        playerResources:List[resourceDefinition])
 
   def getGame(gameId:Int) : gameState = {
     play.api.db.slick.DB.withSession { implicit session =>
       val gameQuery = for {
-        p <- Models.players if p.gameId === gameId
-        g <- Models.games if g.id === p.gameId
+        g <- Models.games if g.id === gameId
+        p <- Models.players if p.gameId === g.id
         u <- Models.users if u.id === p.userId
         pr <- Models.playerResources if pr.playerId === p.id
-      } yield (g,p,u,pr)
+        r <- Models.resources if pr.resourceId === r.id
+      } yield (g,p,u,pr,r)
       val queryResult = gameQuery.list
 
       val playerGroups = queryResult groupBy { rawQuery => rawQuery._2.id }
 
+      val resourceDefinitions = queryResult groupBy { rawQuery => rawQuery._5.id } map { grouped =>
+        val resource = grouped._2.take(1).toList(0)._5
+        resourceDefinition(resource.id.get, resource.name, resource.color, resource.iconClass)
+      }
+
       val resourceStates = playerGroups map { groupedQuery =>
-        groupedQuery._1.get -> (groupedQuery._2 map { rawQuery  =>
-          resourceState(rawQuery._4.resourceId,rawQuery._4.value)
+        groupedQuery._1.get -> (groupedQuery._2 groupBy { raw => raw._5.id } map {rawQuery =>
+          val resState = rawQuery._2.take(1).toList(0)
+          resourceState(resState._5.id.get, resState._4.value)
         })
       }
 
@@ -67,12 +79,13 @@ object Dal {
         val user = firstRow._3
         val player = firstRow._2
 
-        playerState(player.id.get,user.id.get,player.name,user.name,user.email,resourceStates(player.id.get),
+        playerState(player.id.get,user.id.get,player.name,user.name,user.email,resourceStates(player.id.get).toList,
           player.color,player.iconClass)
       }
 
       val game = queryResult(0)._1
-      gameState(game.id.get,game.name,game.creatorId,game.created.toString,playerStates.toList)
+      gameState(game.id.get,game.name,game.creatorId,game.created.toString,playerStates.toList,
+        resourceDefinitions.toList)
     }
   }
 
@@ -158,15 +171,9 @@ object Dal {
 
       val game = Models.games.filter(_.id === p.gameId).first()
 
-      game.configId match {
-        case None =>
-          val resource = Models.PlayerResource(None,playerId,None)
-          Models.playerResources += resource
-        case Some(cId) =>
-          val r = Models.resources.filter(_.configId === cId).filter(_.resourceType === "player").list
-          r foreach { res =>
-            Models.playerResources += Models.PlayerResource(None,playerId,res.id)
-          }
+      val r = Models.resources.filter(_.configId === game.configId).filter(_.resourceType === "player").list
+      r foreach { res =>
+        Models.playerResources += Models.PlayerResource(None, playerId, res.id.get)
       }
 
       playerId
@@ -238,9 +245,14 @@ object Dal {
           Models.User(Some(6),"Ryan", "ryan@gmail.com")
         )
 
+        Models.configs ++= Seq(
+          Models.Config(Some(1),"Default"),
+          Models.Config(Some(2),"Game Of Thrones")
+        )
+
         Models.games ++= Seq(
-          Models.Game(Some(1),"Game of Thrones",3),
-          Models.Game(Some(2),"Smallworld",6)
+          Models.Game(Some(1),"Game of Thrones",3,2),
+          Models.Game(Some(2),"Smallworld",6,1)
         )
 
         Models.players ++= Seq(
@@ -253,22 +265,23 @@ object Dal {
           Models.Player(Some(7),1,None,"1")
         )
 
-        Models.configs ++= Seq(
-          Models.Config(Some(1),"Default")
-        )
-
         Models.resources ++= Seq(
-          Models.Resource(Some(1),"Sheep",None,None,1,"player","visible",None,None,None)
+          Models.Resource(Some(1),"Sheep",None,None,1,"player","visible",None,None,None),
+          Models.Resource(Some(2),"Supply",None,None,2,"player","visible",None,None,None),
+          Models.Resource(Some(3),"Castles",None,None,2,"player","visible",None,None,None),
+          Models.Resource(Some(4),"Influence",None,None,2,"player","visible",None,None,None)
         )
 
         Models.playerResources ++= Seq(
-          Models.PlayerResource(Some(1),1,None),
-          Models.PlayerResource(Some(2),2,None),
-          Models.PlayerResource(Some(3),3,None),
-          Models.PlayerResource(Some(4),4,None),
-          Models.PlayerResource(Some(5),5,None),
-          Models.PlayerResource(Some(6),6,None),
-          Models.PlayerResource(Some(7),7,None)
+          Models.PlayerResource(Some(1),1,1),
+          Models.PlayerResource(Some(2),2,1),
+          Models.PlayerResource(Some(3),3,1),
+          Models.PlayerResource(Some(4),4,1),
+          Models.PlayerResource(Some(5),5,1),
+          Models.PlayerResource(Some(6),6,1),
+          Models.PlayerResource(Some(7),7,2),
+          Models.PlayerResource(Some(7),7,3),
+          Models.PlayerResource(Some(7),7,4)
         )
       }
     }

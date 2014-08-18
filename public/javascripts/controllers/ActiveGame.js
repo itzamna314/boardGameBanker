@@ -35,8 +35,9 @@ bgbControllers.controller('ActiveGame',[
                 .success(function (data) {
                     $scope.game = data.game;
                     $scope.players = data.players;
+                    $scope.playerResources = data.playerResources;
+
                     var mePlayer = _.find(data.players,'isMe');
-                    $scope.game.myscore = mePlayer.score;
 
                     _.each($scope.players,function(player){
                         player.textColor = '#000000';

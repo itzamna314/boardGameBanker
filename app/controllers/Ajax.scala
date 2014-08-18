@@ -113,7 +113,7 @@ object Ajax extends Controller {
             confId
         }
 
-        val gameId = Dal.createGame(Game(None,req.name,req.creator.id.get, Some(configId)))
+        val gameId = Dal.createGame(Game(None,req.name,req.creator.id.get, configId))
         req.players foreach { p=>
           val uuid = UUID.randomUUID().toString
 
@@ -311,13 +311,6 @@ object Ajax extends Controller {
     if ( gameState.players.length > 0 ) {
 
       val playersJson = gameState.players map { player =>
-        // Only set score if this is a simple, single-resource game
-        val score : Option[Int] = player.resources.length match {
-          case 1 =>
-            Some(player.resources(0).value)
-          case _ =>
-            None
-        }
 
         val resources = player.resources map { playerRes =>
           Json.obj(
@@ -331,7 +324,6 @@ object Ajax extends Controller {
           "email" -> player.email,
           "playerId" -> player.id,
           "playerName" -> player.playerName,
-          "score" -> score,
           "color" -> player.color,
           "iconClass" -> player.icon,
           "isCreator" -> JsBoolean(player.userId == gameState.creatorId),
@@ -346,7 +338,20 @@ object Ajax extends Controller {
         "id" -> gameState.id
       )
 
-      Json.obj("game" -> gameJson, "players" -> Json.toJson(playersJson.toSeq))
+      val playerResourcesJson = gameState.playerResources map { pr =>
+        Json.obj(
+          "id" -> pr.id,
+          "name" -> pr.name,
+          "color" -> pr.color,
+          "icon" -> pr.icon
+        )
+      }
+
+      Json.obj(
+        "game" -> gameJson,
+        "players" -> Json.toJson(playersJson.toSeq),
+        "playerResourceDefinition" -> Json.toJson(playerResourcesJson.toSeq)
+      )
     } else {
       Json.obj("error" -> "NoPlayers","message" -> "found no players")
     }

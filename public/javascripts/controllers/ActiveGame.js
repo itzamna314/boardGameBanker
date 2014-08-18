@@ -18,16 +18,20 @@ bgbControllers.controller('ActiveGame',[
             }
         };
 
-        $scope.modifyTransaction = function(amount){
-            $scope.currentTransaction += amount;
+        $scope.modifyTransaction = function(resourceId, amount){
+            if ( $scope.myResources[resourceId].transaction === undefined )
+                $scope.myResources[resourceId].transaction = 0;
+
+            $scope.myResources[resourceId].transaction += amount;
         };
 
-        $scope.commitTransaction = function(){
-            $scope.game.myscore += $scope.currentTransaction;
-            submitPoints($scope.currentTransaction);
+        $scope.commitTransaction = function(resId){
+            $scope.myResources[resId].score +=
+                $scope.myResources[resId].transaction;
 
-            $scope.currentTransaction = 0;
-            $scope.displayMode = 'Scoreboard';
+            submitPoints();
+
+            $scope.myResources[resId].transaction = 0;
         };
 
         function getDetails(gameId){
@@ -35,15 +39,30 @@ bgbControllers.controller('ActiveGame',[
                 .success(function (data) {
                     $scope.game = data.game;
                     $scope.players = data.players;
-                    $scope.playerResources = data.playerResources;
+                    // Store resource descriptors as {id -> resourceObj}
+                    $scope.playerResourceDefinitions = _.object(
+                        _.pluck(data.playerResourceDefinition, 'id'),
+                        data.playerResourceDefinition
+                    );
+
+                    // Add in button descriptors.  We will want to get these from the server eventually, as they
+                    // will be configurable.
+                    _.forEach($scope.playerResourceDefinitions, function(pr) {
+                        pr.buttonsNegative = [1,5,10,50,100,1000];
+                        pr.buttonsPositive = [1,5,10,50,100,1000];
+                    });
+
+                    _.forEach($scope.players,function(player){
+                        player.textColor = '#000000';
+                        if ( player.color != null && colorBrightness(player.color) < textColorCutoff )
+                            player.textColor = '#FFFFFF';
+
+                        // Store player resource values as {id -> scoreObj}
+                        player.resources = _.object(_.pluck(player.resources, 'id'), player.resources);
+                    });
 
                     var mePlayer = _.find(data.players,'isMe');
-
-                    _.each($scope.players,function(player){
-                        player.textColor = '#000000';
-                        if ( colorBrightness(player.color) < textColorCutoff )
-                            player.textColor = '#FFFFFF';
-                    });
+                    $scope.myResources = mePlayer.resources;
                 })
                 .error(function(data){
                     $rootScope.modalTitle = 'Failed to reach server!';
@@ -54,15 +73,14 @@ bgbControllers.controller('ActiveGame',[
                 });
         }
 
-        function submitPoints(numPoints){
-            if ( numPoints != 0 ) {
-                httpWrapper.post('ajax/gameaddpoints/' + $scope.game.id + '/' + $rootScope.user.id, {number: numPoints})
-                    .success(function (data) {
-                        $scope.storedPoints = 0;
-                        $scope.game.myscore = _.find(data.players, 'isMe').score;
-                        $scope.players = data.players;
-                    });
-            }
+        function submitPoints(){
+            httpWrapper.post('ajax/gameaddpoints/' + $scope.game.id + '/' + $rootScope.user.id, {
+                resources: $scope.myResources
+            })
+            .success(function (data) {
+                $scope.storedPoints = 0;
+                $scope.players = data.players;
+            });
         }
 
         function colorBrightness(colorString)

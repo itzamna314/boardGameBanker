@@ -2,83 +2,77 @@
     <utils-loading></utils-loading>
     <div class="container">
         <div class="row">
-            <div class="col-xs-4">
-                <div class="row scoreboard">
-                    <button class="btn btn-default btn-block" ng-click="modifyTransaction(-1)">-1</button>
-                </div>
-                <div class="row scoreboard">
-                    <button class="btn btn-default btn-block" ng-click="modifyTransaction(-5)">-5</button>
-                </div>
-                <div class="row scoreboard">
-                    <button class="btn btn-default btn-block" ng-click="modifyTransaction(-10)">-10</button>
-                </div>
-                <div class="row scoreboard">
-                    <button class="btn btn-default btn-block" ng-click="modifyTransaction(-50)">-50</button>
-                </div>
-                <div class="row scoreboard">
-                    <button class="btn btn-default btn-block" ng-click="modifyTransaction(-100)">-100</button>
-                </div>
-                <div class="row scoreboard">
-                    <button class="btn btn-default btn-block" ng-click="modifyTransaction(-1000)">-1000</button>
-                </div>
-            </div>
-            <div class="col-xs-4">
-                <div class="row">
-                    <h1 class="text-center">{{game.myscore}}</h1>
-                </div>
-                <div class="row" ng-show="currentTransaction != 0">
-                    <h1 class="text-center {{currentTransaction > 0 ? 'transaction-positive' : currentTransaction < 0 ? 'transaction-negative' : ''}}">
-                        {{currentTransaction}}
-                    </h1>
-                </div>
-                <div class="row" ng-show="currentTransaction != 0">
-                    <div class="text-center">
-                        <button class="btn btn-success" ng-click="commitTransaction()">Submit</button>
+            <div id="resource-carousel" class="carousel slide" data-ride="carousel">
+                <ol class="carousel-indicators">
+                    <li ng-repeat="(id,res) in playerResourceDefinitions"
+                        data-slide-to="{{$index}}"
+                        ng-class="{active:$first}"
+                        data-target="#resource-carousel">
+                    </li>
+                </ol>
+                <div class="carousel-inner">
+                    <div ng-repeat="(resId,res) in playerResourceDefinitions" ng-class="{active: $first, item : true}">
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <div ng-repeat="val in res.buttonsNegative" class="row scoreboard">
+                                    <button class="btn btn-default btn-block" ng-click="modifyTransaction(resId, -1 * val)">
+                                        {{-1 * val}}
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="row">
+                                    <h5 class="text-center">{{res.name}}</h5>
+                                </div>
+                                <div class="row">
+                                    <h1 class="text-center">{{myResources[resId].score}}</h1>
+                                </div>
+                                <div class="row" ng-show="myResources[resId].transaction != 0">
+                                    <h1 class="text-center"
+                                        ng-class="{'transaction-positive': myResources[resId].transaction > 0,
+                                                   'transaction-negative': myResources[resId].transaction < 0}">
+                                        {{myResources[resId].transaction}}
+                                    </h1>
+                                </div>
+                                <div class="row" ng-show="myResources[resId].transaction != undefined && myResources[resId].transaction != 0">
+                                    <div class="text-center">
+                                        <button class="btn btn-success" ng-click="commitTransaction(resId)">Submit</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div ng-repeat="val in res.buttonsPositive" class="row scoreboard">
+                                    <button class="btn btn-default btn-block" ng-click="modifyTransaction(resId, val)">
+                                        {{val}}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <table class="table">
+                                    <tr class="player-score">
+                                        <th>Player</th>
+                                        <th class="text-center">Score</th>
+                                    </tr>
+                                    <tr ng-repeat="player in players | orderBy:'score':true" class="player-score"
+                                        ng-class="{creatorRow:player.isCreator,selfRow:player.isMe}"
+                                        ng-style="{'background-color':player.color,'color':player.textColor}">
+                                        <td>
+                                            <span ng-class="player.iconClass"></span>
+                                        <span>
+                                            {{player.playerName || player.username}} ({{player.playerName ? player.username : player.email}})
+                                        </span>
+                                        </td>
+                                        <td class="text-center">
+                                            {{player.score}}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-xs-4">
-                <div class="row scoreboard">
-                    <button class="btn btn-default btn-block" ng-click="modifyTransaction(1)">+1</button>
-                </div>
-                <div class="row scoreboard">
-                    <button class="btn btn-default btn-block" ng-click="modifyTransaction(5)">+5</button>
-                </div>
-                <div class="row scoreboard">
-                    <button class="btn btn-default btn-block"  ng-click="modifyTransaction(10)">+10</button>
-                </div>
-                <div class="row scoreboard">
-                    <button class="btn btn-default btn-block" ng-click="modifyTransaction(50)">+50</button>
-                </div>
-                <div class="row scoreboard">
-                    <button class="btn btn-default btn-block" ng-click="modifyTransaction(100)">+100</button>
-                </div>
-                <div class="row scoreboard">
-                    <button class="btn btn-default btn-block" ng-click="modifyTransaction(1000)">+1000</button>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-12">
-                <table class="table">
-                    <tr class="player-score">
-                        <th>Player</th>
-                        <th class="text-center">Score</th>
-                    </tr>
-                    <tr ng-repeat="player in players | orderBy:'score':true" class="player-score"
-                        ng-class="{creatorRow:player.isCreator,selfRow:player.isMe}"
-                        ng-style="{'background-color':player.color,'color':player.textColor}">
-                        <td>
-                            <span ng-class="player.iconClass"></span>
-                            <span>
-                                {{player.playerName || player.username}} ({{player.playerName ? player.username : player.email}})
-                            </span>
-                        </td>
-                        <td class="text-center">
-                            {{player.score}}
-                        </td>
-                    </tr>
-                </table>
             </div>
         </div>
         <div class="row">

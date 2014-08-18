@@ -35,7 +35,6 @@ object Ajax extends Controller {
   }
 
   def gameDetail(gameId:String,userId:String) = Action {
-
     val gameState = getGameState(gameId.toInt,userId.toInt)
     val players = (gameState \ "players").asOpt[List[JsObject]]
 

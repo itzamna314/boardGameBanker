@@ -43,7 +43,7 @@ object Dal {
   case class resourceDefinition(id:Int, name:String, color:Option[String] = None, icon: Option[String] = None)
   // TODO: Separate player state from player definition
   // state contains only resource states and player id.
-  // defnition contains everything else
+  // definition contains everything else
   case class playerState(id:Int,userId:Int,playerName:Option[String],userName:String,email:String,
                          resources:List[resourceState],color:Option[String] = None,icon:Option[String] = None)
   case class gameState(id:Int,name:String,creatorId:Int,created:String,players:List[playerState],

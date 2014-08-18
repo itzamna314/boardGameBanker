@@ -124,10 +124,10 @@ object Models {
   class ResourceTable(tag: Tag) extends Table[Resource](tag,"resource") {
     def id = column[Int]("resourceid", O.PrimaryKey, O.AutoInc)
     def name = column[String]("name", O.NotNull)
+    def configId = column[Int]("configid",O.NotNull)
     def iconClass = column[String]("icon",O.Nullable)
     def color = column[String]("color",O.Nullable)
     def resourceType = column[String]("resourcetype", O.Default("player"))
-    def configId = column[Int]("configid",O.NotNull)
     def visibility = column[String]("visibility",O.Default("visible"))
     def startValue = column[Int]("startvalue",O.Nullable)
     def winCondition = column[String]("wincondition",O.Nullable)
@@ -147,6 +147,7 @@ object Models {
     def id = column[Int]("userconfigid", O.PrimaryKey, O.AutoInc)
     def userId = column[Int]("userid", O.NotNull)
     def configId = column[Int]("configid", O.NotNull)
+
     def userFk  = foreignKey("userconfig-user",userId,users)(_.id)
     def configFk = foreignKey("userconfig-config",configId,configs)(_.id)
 

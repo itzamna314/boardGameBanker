@@ -13,35 +13,34 @@
         <div class="full-page transition-switch-left" id="switch-players" ng-show="newGameActive == 'players'"
              ng-swipe-left="activate('settings')">
             <div ng-repeat="player in players">
-                    <div class="row bump-bottom">
-                        <div class="col-xs-9 panel-title">
-                            <input class="form-control" placeholder="Player's e-mail" ng-model="player.email"
-                                   ng-disabled="player.isCreator" />
-                        </div>
-                        <div class="col-xs-1 text-right">
-                            <button type="button" class="btn btn-default" data-toggle="collapse"
-                                    data-target="#player-detail-{{$index}}" ng-click="collapsed=!collapsed">
-                                <span class="glyphicon"
-                                      ng-class="{'glyphicon-collapse-down':!collapsed,'glyphicon-collapse-up':collapsed}">
-                                </span>
-                            </button>
-                        </div>
+                <div class="row bump-bottom">
+                    <div class="col-xs-9 panel-title">
+                        <input class="form-control" placeholder="Player's e-mail address" ng-model="player.email" />
                     </div>
-                    <div class="row nudge-bottom">
-                        <div class="player-detail collapse" id="player-detail-{{$index}}">
-                            <div class="col-xs-5">
-                                <input class="form-control" placeholder="Player's name"
-                                       ng-model="player.name" />
-                            </div>
-                            <div class="col-xs-2">
-                                <utils-mini-color ng-model="player.color"></utils-mini-color>
-                            </div>
-                            <div class="col-xs-2">
-                                <utils-icon-select ng-model="player.iconClass"></utils-icon-select>
-                            </div>
+                    <div class="col-xs-1 text-right">
+                        <button type="button" class="btn btn-default" data-toggle="collapse"
+                                data-target="#player-detail-{{$index}}" ng-click="collapsed=!collapsed">
+                            <span class="glyphicon"
+                                  ng-class="{'glyphicon-collapse-down':!collapsed,'glyphicon-collapse-up':collapsed}">
+                            </span>
+                        </button>
+                    </div>
+                </div>
+                <div class="row nudge-bottom">
+                    <div class="player-resource-detail collapse" id="player-detail-{{$index}}">
+                        <div class="col-xs-5">
+                            <input class="form-control" placeholder="Player's name"
+                                   ng-model="player.name" />
+                        </div>
+                        <div class="col-xs-2">
+                            <utils-mini-color ng-model="player.color"></utils-mini-color>
+                        </div>
+                        <div class="col-xs-2">
+                            <utils-icon-select ng-model="player.iconClass"></utils-icon-select>
                         </div>
                     </div>
                 </div>
+            </div>
 
             <div class="row push-top">
                     <div class="col-xs-6">
@@ -60,8 +59,41 @@
         </div>
         <div class="full-page transition-switch-left" id="switch-resources" ng-show="newGameActive == 'resources'"
              ng-swipe-right="activate('settings')">
-            <div class="row">
-                <h2>Resources</h2>
+            <div ng-repeat="resource in playerResources">
+                <div class="row bump-bottom">
+                    <div class="col-xs-9 panel-title">
+                        <input class="form-control" placeholder="Resource name" ng-model="resource.name" />
+                    </div>
+                    <div class="col-xs-1 text-right">
+                        <button type="button" class="btn btn-default" data-toggle="collapse"
+                                data-target="#player-resource-detail-{{$index}}" ng-click="collapsed=!collapsed">
+                            <span class="glyphicon"
+                                  ng-class="{'glyphicon-collapse-down':!collapsed,'glyphicon-collapse-up':collapsed}">
+                            </span>
+                        </button>
+                    </div>
+                </div>
+                <div class="row nudge-bottom">
+                    <div class="player-resource-detail collapse" id="player-resource-detail-{{$index}}">
+                        <div class="col-xs-5">
+                            <select class="form-control" ng-model="resource.visibility"
+                                    ng-options="vis.name for vis in visibilities" >
+                            </select>
+                        </div>
+                        <div class="col-xs-2">
+                            <utils-mini-color ng-model="player.color"></utils-mini-color>
+                        </div>
+                        <div class="col-xs-2">
+                            <utils-icon-select ng-model="player.iconClass"></utils-icon-select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row push-top">
+                <div class="col-xs-6">
+                    <button class="btn btn-default" ng-click="addResource('player')">Add Resource</button>
+                </div>
             </div>
         </div>
     </div>

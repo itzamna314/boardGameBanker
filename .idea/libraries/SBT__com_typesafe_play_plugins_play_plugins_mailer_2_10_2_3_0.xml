@@ -3,11 +3,7 @@
     <CLASSES>
       <root url="jar://$USER_HOME$/.ivy2/cache/com.typesafe.play.plugins/play-plugins-mailer_2.10/jars/play-plugins-mailer_2.10-2.3.0.jar!/" />
     </CLASSES>
-    <JAVADOC>
-      <root url="jar://$USER_HOME$/.ivy2/cache/com.typesafe.play.plugins/play-plugins-mailer_2.10/docs/play-plugins-mailer_2.10-2.3.0-javadoc.jar!/" />
-    </JAVADOC>
-    <SOURCES>
-      <root url="jar://$USER_HOME$/.ivy2/cache/com.typesafe.play.plugins/play-plugins-mailer_2.10/srcs/play-plugins-mailer_2.10-2.3.0-sources.jar!/" />
-    </SOURCES>
+    <JAVADOC />
+    <SOURCES />
   </library>
 </component>

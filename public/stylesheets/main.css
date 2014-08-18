@@ -65,6 +65,7 @@ body.with-bottom-nav{
     margin-top:0;
 }
 
+/* foo bar */
 .menu-item-3 {
     width:32%;
     margin-top:0;
@@ -154,4 +155,29 @@ body.with-bottom-nav{
 .full-page{
     height:100%;
     width:100%;
+}
+
+/* Resource carousel */
+#resource-carousel .carousel-indicators{
+    top: 0px;
+    z-index:-100;
+}
+
+#resource-carousel .carousel-indicators .active {
+    margin:1px;
+    width:10px;
+    height:10px;
+    background-color: Black;
+}
+
+#resource-carousel li {
+    border-color: black;
+}
+
+#resource-carousel h1 {
+    margin-top:5px;
+}
+
+#resource-carousel h5 {
+    margin-top:20px;
 }

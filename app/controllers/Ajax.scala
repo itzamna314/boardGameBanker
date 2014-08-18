@@ -48,6 +48,21 @@ object Ajax extends Controller {
   }
 
   def addPoints(gameId:String,userId:String) = Action(parse.json) { implicit request =>
+    val reqJson = request.body.asOpt[JsObject]
+    val reqObj = parseSubmitPointsRequest(reqJson)
+
+    reqObj match {
+      case Some(req) =>
+        req.resources foreach { r =>
+          Dal.addPoints(gameId.toInt, userId.toInt, r.newValue, r.resourceId)
+        }
+
+        Ok(getGameState(gameId.toInt,userId.toInt))
+      case None =>
+        BadRequest(Json.obj("error" -> "IllegalUpdate","message" -> ("Game ID: " + gameId + ", User ID: " + userId)))
+    }
+
+    /*
     val numberOfPoints = (request.body \ "number").asOpt[Int].getOrElse(0)
     val resourceId = (request.body \ "resourceId").asOpt[Int]
     if (numberOfPoints != 0 &&
@@ -56,6 +71,7 @@ object Ajax extends Controller {
     } else {
       BadRequest(Json.obj("error" -> "IllegalUpdate","message" -> ("Game ID: " + gameId + ", User ID: " + userId)))
     }
+    */
   }
 
   def findUser(emailOrUsername:String) = Action {
@@ -98,7 +114,22 @@ object Ajax extends Controller {
 
     reqObj match {
       case Some(req : createGameRequest) =>
-        val gameId = Dal.createGame(Game(None,req.name,req.creator.id.get))
+
+        val configId = req.configId match {
+          case Some(cId) =>
+            cId
+          case None =>
+            val confId = Dal.createConfig()
+            // Create a resource for each id, if we just created a new config
+            req.playerResources foreach { pr =>
+              val r = Resource(None, pr.name, pr.icon, pr.color, confId, "player", pr.visibility, None, None, None)
+              Dal.createResource(r)
+            }
+
+            confId
+        }
+
+        val gameId = Dal.createGame(Game(None,req.name,req.creator.id.get, configId))
         req.players foreach { p=>
           val uuid = UUID.randomUUID().toString
 
@@ -109,6 +140,7 @@ object Ajax extends Controller {
             notifyPlayer(p.email, req.creator, uuid, req.name, routes.Application.index().absoluteURL())
           }
         }
+
         Ok(Json.obj("error" -> JsNull,"message" -> ""))
       case _ =>
         BadRequest(Json.obj("error" -> "IllegalJSON","message" -> ("Received: " + request.body)))
@@ -166,10 +198,27 @@ object Ajax extends Controller {
       NotFound("")
   }
 
-  private case class createGameRequest(name:String,creator:User,players:Array[createGameRequestPlayer])
-  private case class createGameRequestPlayer(email:String, color:Option[String] = None,
-                                             name:Option[String] = None, icon:Option[String] = None)
+  private case class createGameRequest(
+  name:String,
+  creator:User,
+  players:Array[createGameRequestPlayer],
+  configId:Option[Int],
+  playerResources:List[createGameRequestPlayerResource])
+  private case class createGameRequestPlayer(
+    email:String,
+    color:Option[String] = None,
+    name:Option[String] = None,
+    icon:Option[String] = None)
+  private case class createGameRequestPlayerResource(
+    name:String,
+    visibility:String,
+    color:Option[String] = None,
+    icon:Option[String] = None)
   private case class joinGameRequest(userId:Int,uuid:String)
+  private case class resourcePointsRequest(resourceId:Int,newValue:Int)
+  private case class submitPointsRequest(
+    resources:List[resourcePointsRequest]
+  )
 
   private def jsonResponse(error:Option[String],message:String = "") : SimpleResult = {
     error match {
@@ -187,6 +236,8 @@ object Ajax extends Controller {
       case Some(j:JsObject) =>
         val gameName = (j \ "title").asOpt[String]
         val players = (j \ "players").asOpt[Array[JsObject]]
+        val playerResources = (j \ "playerResources").asOpt[Array[JsObject]]
+        val configId = (j \ "configId").asOpt[Int]
 
         if ( gameName.isDefined && players.isDefined ) {
           val playersArr = players.get filter { p =>
@@ -199,6 +250,20 @@ object Ajax extends Controller {
                 icon = (p \ "iconClass").asOpt[String],
                 name = (p \ "name").asOpt[String]
               )
+          }
+
+          val playerResourcesArr : List[createGameRequestPlayerResource]= playerResources match {
+            case Some(arr) =>
+              (arr map { pr =>
+                createGameRequestPlayerResource(
+                  name = (pr \ "name").as[String],
+                  visibility = (pr \ "visibility").as[String],
+                  color = (pr \ "color").asOpt[String],
+                  icon = (pr \ "iconClass").asOpt[String]
+                )
+              }).toList
+            case None =>
+              List[createGameRequestPlayerResource]()
           }
 
           val creator : Seq[User] = players.get filter { p =>
@@ -215,7 +280,7 @@ object Ajax extends Controller {
           } filter(_.isDefined) map (_.get)
 
           if ( creator.length == 1 )
-            Some(createGameRequest(gameName.get,creator(0),playersArr))
+            Some(createGameRequest(gameName.get,creator(0),playersArr, configId, playerResourcesArr))
           else
             None
         }
@@ -237,6 +302,29 @@ object Ajax extends Controller {
         }
         else {
           None
+        }
+      case None =>
+        None
+    }
+  }
+
+  private def parseSubmitPointsRequest(json:Option[JsObject]) : Option[submitPointsRequest] = {
+    json match {
+      case Some(j:JsObject) =>
+        val resources = (j \ "resources").asOpt[JsObject]
+
+        resources match {
+          case Some(resList) =>
+            val keys = resList.keys
+
+            val res = keys map { k =>
+              val o = (resList \ k).as[JsObject]
+
+              resourcePointsRequest((o \ "id").as[Int], (o \ "score").as[Int])
+            }
+
+            Some(submitPointsRequest(res.toList))
+          case None => None
         }
       case None =>
         None
@@ -266,13 +354,6 @@ object Ajax extends Controller {
     if ( gameState.players.length > 0 ) {
 
       val playersJson = gameState.players map { player =>
-        // Only set score if this is a simple, single-resource game
-        val score : Option[Int] = player.resources.length match {
-          case 1 =>
-            Some(player.resources(0).value)
-          case _ =>
-            None
-        }
 
         val resources = player.resources map { playerRes =>
           Json.obj(
@@ -286,7 +367,6 @@ object Ajax extends Controller {
           "email" -> player.email,
           "playerId" -> player.id,
           "playerName" -> player.playerName,
-          "score" -> score,
           "color" -> player.color,
           "iconClass" -> player.icon,
           "isCreator" -> JsBoolean(player.userId == gameState.creatorId),
@@ -301,7 +381,20 @@ object Ajax extends Controller {
         "id" -> gameState.id
       )
 
-      Json.obj("game" -> gameJson, "players" -> Json.toJson(playersJson.toSeq))
+      val playerResourcesJson = gameState.playerResources map { pr =>
+        Json.obj(
+          "id" -> pr.id,
+          "name" -> pr.name,
+          "color" -> pr.color,
+          "icon" -> pr.icon
+        )
+      }
+
+      Json.obj(
+        "game" -> gameJson,
+        "players" -> Json.toJson(playersJson.toSeq),
+        "playerResourceDefinition" -> Json.toJson(playerResourcesJson.toSeq)
+      )
     } else {
       Json.obj("error" -> "NoPlayers","message" -> "found no players")
     }

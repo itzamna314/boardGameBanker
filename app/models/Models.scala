@@ -42,7 +42,7 @@ object Models {
 
   val players = TableQuery[PlayerTable]
 
-  case class PlayerResource(id:Option[Int],playerId:Int,resourceId:Option[Int] = None,value:Int = 0)
+  case class PlayerResource(id:Option[Int],playerId:Int,resourceId:Int,value:Int = 0)
 
   /*
    * Table to store player's resources.  This is where all scoring will be tracked.
@@ -50,13 +50,13 @@ object Models {
   class PlayerResourceTable(tag: Tag) extends Table[PlayerResource](tag,"player-resource"){
     def id = column[Int]("playerresourceid",O.PrimaryKey, O.AutoInc)
     def playerId = column[Int]("playerid",O.NotNull)
-    def resourceId = column[Int]("resourceid",O.Nullable)
+    def resourceId = column[Int]("resourceid",O.NotNull)
     def value = column[Int]("value",O.Default(0))
 
     def playerFk = foreignKey("playerresource-player",playerId,players)(_.id)
     def resourceFk = foreignKey("playerresource-resource",resourceId,resources)(_.id)
 
-    def * = (id.?,playerId,resourceId.?,value) <> (PlayerResource.tupled,PlayerResource.unapply)
+    def * = (id.?,playerId,resourceId,value) <> (PlayerResource.tupled,PlayerResource.unapply)
   }
 
   val playerResources = TableQuery[PlayerResourceTable]
@@ -72,7 +72,7 @@ object Models {
     def resourceId = column[Int]("resourceid",O.Nullable)
     def value = column[Int]("value",O.Default(0))
 
-    def playerFk = foreignKey("gameresource-game",gameId,players)(_.id)
+    def gameFk = foreignKey("gameresource-game",gameId,players)(_.id)
     def resourceFk = foreignKey("gameresource-resource",resourceId,resources)(_.id)
 
     def * = (id.?,gameId,resourceId.?,value) <> (GlobalResource.tupled,GlobalResource.unapply)
@@ -80,8 +80,8 @@ object Models {
 
   val globalResources = TableQuery[GlobalResourceTable]
 
-  case class Game(id:Option[Int],name:String,creatorId:Int,configId:Option[Int] = None,
-                  created:Timestamp = new java.sql.Timestamp(Calendar.getInstance().getTime.getTime), turn:Int = 0)
+  case class Game(id:Option[Int],name:String,creatorId:Int,configId:Int,
+                  created:Timestamp = new java.sql.Timestamp(Calendar.getInstance().getTime.getTime))
 
   /*
    * Table to store games.
@@ -92,13 +92,12 @@ object Models {
     def name = column[String]("gamename", O.NotNull)
     def creator = column[Int]("creator",O.NotNull)
     def createdDate = column[Timestamp]("created",O.NotNull)
-    def configId = column[Int]("config",O.Nullable)
-    def turn = column[Int]("turn",O.Default(0))
+    def configId = column[Int]("config",O.NotNull)
 
     def creatorFk = foreignKey("game-creator",creator,users)(_.id)
     def configFk = foreignKey("game-config",configId,configs)(_.id)
 
-    def * = (id.?, name, creator, configId.?, createdDate, turn) <> (Game.tupled, Game.unapply)
+    def * = (id.?, name, creator, configId, createdDate) <> (Game.tupled, Game.unapply)
   }
 
   val games = TableQuery[GameTable]
@@ -115,7 +114,8 @@ object Models {
   val configs = TableQuery[ConfigTable]
 
   case class Resource(id:Option[Int],name:String,iconClass:Option[String],color:Option[String],configId:Int,
-                      visibility:String,startValue:Option[Int],winCondition:Option[String],conditionValue:Option[Int])
+                      resourceType:String,visibility:String,startValue:Option[Int],winCondition:Option[String],
+                      conditionValue:Option[Int])
 
   /*
    * Table that identifies the settings for a single resource.
@@ -126,6 +126,7 @@ object Models {
     def name = column[String]("name", O.NotNull)
     def iconClass = column[String]("icon",O.Nullable)
     def color = column[String]("color",O.Nullable)
+    def resourceType = column[String]("resourcetype", O.Default("player"))
     def configId = column[Int]("configid",O.NotNull)
     def visibility = column[String]("visibility",O.Default("visible"))
     def startValue = column[Int]("startvalue",O.Nullable)
@@ -134,7 +135,7 @@ object Models {
 
     def configFk = foreignKey("resource-config",configId,configs)(_.id)
 
-    def * = (id.?,name,iconClass.?,color.?,configId,visibility,startValue.?,winCondition.?,conditionValue.?) <>
+    def * = (id.?,name,iconClass.?,color.?,configId,resourceType,visibility,startValue.?,winCondition.?,conditionValue.?) <>
             (Resource.tupled, Resource.unapply)
   }
 

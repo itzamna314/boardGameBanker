@@ -48,6 +48,21 @@ object Ajax extends Controller {
   }
 
   def addPoints(gameId:String,userId:String) = Action(parse.json) { implicit request =>
+    val reqJson = request.body.asOpt[JsObject]
+    val reqObj = parseSubmitPointsRequest(reqJson)
+
+    reqObj match {
+      case Some(req) =>
+        req.resources foreach { r =>
+          Dal.addPoints(gameId.toInt, userId.toInt, r.newValue, r.resourceId)
+        }
+
+        Ok(getGameState(gameId.toInt,userId.toInt))
+      case None =>
+        BadRequest(Json.obj("error" -> "IllegalUpdate","message" -> ("Game ID: " + gameId + ", User ID: " + userId)))
+    }
+
+    /*
     val numberOfPoints = (request.body \ "number").asOpt[Int].getOrElse(0)
     val resourceId = (request.body \ "resourceId").asOpt[Int]
     if (numberOfPoints != 0 &&
@@ -56,6 +71,7 @@ object Ajax extends Controller {
     } else {
       BadRequest(Json.obj("error" -> "IllegalUpdate","message" -> ("Game ID: " + gameId + ", User ID: " + userId)))
     }
+    */
   }
 
   def findUser(emailOrUsername:String) = Action {
@@ -199,6 +215,10 @@ object Ajax extends Controller {
     color:Option[String] = None,
     icon:Option[String] = None)
   private case class joinGameRequest(userId:Int,uuid:String)
+  private case class resourcePointsRequest(resourceId:Int,newValue:Int)
+  private case class submitPointsRequest(
+    resources:List[resourcePointsRequest]
+  )
 
   private def jsonResponse(error:Option[String],message:String = "") : SimpleResult = {
     error match {
@@ -282,6 +302,29 @@ object Ajax extends Controller {
         }
         else {
           None
+        }
+      case None =>
+        None
+    }
+  }
+
+  private def parseSubmitPointsRequest(json:Option[JsObject]) : Option[submitPointsRequest] = {
+    json match {
+      case Some(j:JsObject) =>
+        val resources = (j \ "resources").asOpt[JsObject]
+
+        resources match {
+          case Some(resList) =>
+            val keys = resList.keys
+
+            val res = keys map { k =>
+              val o = (resList \ k).as[JsObject]
+
+              resourcePointsRequest((o \ "id").as[Int], (o \ "score").as[Int])
+            }
+
+            Some(submitPointsRequest(res.toList))
+          case None => None
         }
       case None =>
         None

@@ -88,8 +88,8 @@ class DalSpec extends Specification {
     }
 
     "add points" in new resetDal {
-      Dal.addPoints(2,1,1) must_!= 0
-      Dal.addPoints(2,5,1,Some(1)) must_!= 0
+      Dal.addPoints(2,1,1,1) must_!= 0
+      Dal.addPoints(2,5,1,1) must_!= 0
     }
 
     "delete a game" in new resetDal {

@@ -2,7 +2,9 @@
     <utils-loading></utils-loading>
     <div class="container">
         <div class="row">
-            <div id="resource-carousel" class="carousel slide" data-ride="carousel">
+            <div id="resource-carousel" class="carousel slide" data-interval="false" data-ride="carousel"
+                 ng-swipe-left="carouselLeft()"
+                 ng-swipe-right="carouselRight()">
                 <ol class="carousel-indicators">
                     <li ng-repeat="(id,res) in playerResourceDefinitions"
                         data-slide-to="{{$index}}"
@@ -55,7 +57,8 @@
                                         <th>Player</th>
                                         <th class="text-center">Score</th>
                                     </tr>
-                                    <tr ng-repeat="player in players | orderBy:'score':true" class="player-score"
+                                    <tr class="player-score"
+                                        ng-repeat="player in players | orderBy:'player.resources[resId].score':true"
                                         ng-class="{creatorRow:player.isCreator,selfRow:player.isMe}"
                                         ng-style="{'background-color':player.color,'color':player.textColor}">
                                         <td>

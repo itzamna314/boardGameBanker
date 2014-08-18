@@ -89,20 +89,12 @@ object Dal {
     }
   }
 
-  def addPoints(gameId:Int,userId:Int,qty:Int,resourceId:Option[Int] = None) = {
+  def addPoints(gameId:Int,userId:Int,newValue:Int,resourceId:Int) = {
     play.api.db.slick.DB.withSession{ implicit session =>
-      val resourceQuery = resourceId match {
-        case Some(resId) =>
-          for {
-            p <- Models.players if p.gameId === gameId && p.userId === userId
-            pr <- Models.playerResources if pr.playerId === p.id && pr.resourceId === resId
-          } yield pr
-        case None =>
-          for {
-            p <- Models.players if p.gameId === gameId && p.userId === userId
-            pr <- Models.playerResources if pr.playerId === p.id
-          } yield pr
-      }
+      val resourceQuery = for {
+        p <- Models.players if p.gameId === gameId && p.userId === userId
+        pr <- Models.playerResources if pr.playerId === p.id && pr.resourceId === resourceId
+      } yield pr
 
       Query(resourceQuery.length).first match {
         case 1 =>
@@ -111,8 +103,7 @@ object Dal {
             pr <- Models.playerResources if pr.id === playerResourceId
           } yield pr.value
 
-          val curScore = updateQuery.first()
-          val retVal = updateQuery.update(curScore + qty)
+          val retVal = updateQuery.update(newValue)
           retVal > 0
 
         case _ =>

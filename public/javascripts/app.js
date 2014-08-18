@@ -2,7 +2,6 @@ var bgbControllers = angular.module('bgbControllers',[
     'utilsModule',
     'ngCookies',
     'ngTouch'
-    //'ngAnimate'
 ]);
 
 var bgbApp = angular.module('bgbApp',[

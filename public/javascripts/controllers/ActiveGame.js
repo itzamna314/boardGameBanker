@@ -12,10 +12,6 @@ bgbControllers.controller('ActiveGame',[
         $scope.refreshScore = function(){
             if ( $scope.game && $scope.game.id )
                 getDetails($scope.game.id);
-
-            if ( $scope.storedPoints ) {
-                submitPoints($scope.storedPoints);
-            }
         };
 
         $scope.modifyTransaction = function(resourceId, amount){
@@ -32,6 +28,16 @@ bgbControllers.controller('ActiveGame',[
             submitPoints();
 
             $scope.myResources[resId].transaction = 0;
+        };
+
+        $scope.carouselLeft = function()
+        {
+            $('#resource-carousel').carousel('next');
+        };
+
+        $scope.carouselRight = function()
+        {
+            $('#resource-carousel').carousel('prev');
         };
 
         function getDetails(gameId){
@@ -78,8 +84,18 @@ bgbControllers.controller('ActiveGame',[
                 resources: $scope.myResources
             })
             .success(function (data) {
-                $scope.storedPoints = 0;
-                $scope.players = data.players;
+                for ( var player in data.players ) {
+                    if ( !data.players.hasOwnProperty(player) )
+                        continue;
+
+                    for ( var resource in player.resources ) {
+                        if ( !player.resources.hasOwnProperty(resource) )
+                            continue;
+
+                        $scope.players[player].resources[resource] =
+                            player.resources[resource];
+                    }
+                }
             });
         }
 

@@ -15,10 +15,12 @@ bgbControllers.controller('NewGame',[
             res.type = resourceType;
             if ( resourceType == 'player' )
                 $scope.playerResources.push(res);
+            else if ( resourceType == 'global' )
+                $scope.globalResources.push(res);
         };
 
         $scope.createGame = function(){
-            var playerRes = $scope.playerResources
+            var playerRes = $scope.playerResources;
             playerRes = _.map(playerRes, function(pr){
                 pr.visibility = pr.visibility.id;
                 return pr;
@@ -33,14 +35,18 @@ bgbControllers.controller('NewGame',[
             });
         };
 
-        $scope.activate = function(section){
+        $scope.activate = function(section, isRight){
             var oldSwitch = $('#switch-' + $scope.newGameActive);
             var newSwitch = $('#switch-' + section);
 
             oldSwitch.removeClass('transition-switch-left transition-switch-right');
             newSwitch.removeClass('transition-switch-left transition-switch-right');
 
-            if ( sections[section] > sections[$scope.newGameActive] )   // Moving right, transition left
+            if ( isRight === undefined )
+                isRight = sections[section] < sections[$scope.newGameActive];
+
+            // Moving right, transition left
+            if ( !isRight  )
             {
                 oldSwitch.addClass('transition-switch-left');
                 newSwitch.addClass('transition-switch-left');
@@ -61,10 +67,10 @@ bgbControllers.controller('NewGame',[
         }
 
         sections = {
-                    players:1,
-                    settings:2,
-                    resources:3
-                };
+            players:1,
+            resources:2,
+            globals:3
+        };
 
         $scope.visibilities = [
             {name:'Visible', id:'visible'},
@@ -137,6 +143,8 @@ bgbControllers.controller('NewGame',[
         scoreResource.visibility = $scope.visibilities[0];
         $scope.playerResources = [scoreResource];
 
+        $scope.globalResources = [];
+
 
         httpWrapper.timeout = 1000;
         $rootScope.isActive = 'NewGame';
@@ -144,11 +152,5 @@ bgbControllers.controller('NewGame',[
         $scope.newGameActive = 'players';
 
         $('body').addClass('with-bottom-nav');
-        var defaultResource = new Resource();
-        defaultResource.resourceId = -1;
-        defaultResource.name = 'Points';
-        defaultResource.startValue = 0;
-        defaultResource.visibility = 'public';
-        $scope.resources = [defaultResource];
     }
 ]);

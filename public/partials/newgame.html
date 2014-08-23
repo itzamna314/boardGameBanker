@@ -11,7 +11,7 @@
 
     <div class="container full-page">
         <div class="full-page transition-switch-left" id="switch-players" ng-show="newGameActive == 'players'"
-             ng-swipe-left="activate('settings')">
+             ng-swipe-left="activate('resources', false)" ng-swipe-right="activate('globals', true)">
             <div ng-repeat="player in players">
                 <div class="row bump-bottom">
                     <div class="col-xs-9 panel-title">
@@ -51,14 +51,8 @@
                     </div>
                 </div>
         </div>
-        <div class="full-page transition-switch-left" id="switch-settings" ng-show="newGameActive == 'settings'"
-             ng-swipe-left="activate('resources')" ng-swipe-right="activate('players')">
-            <div class="row">
-                    <h2>Settings</h2>
-                </div>
-        </div>
         <div class="full-page transition-switch-left" id="switch-resources" ng-show="newGameActive == 'resources'"
-             ng-swipe-right="activate('settings')">
+             ng-swipe-left="activate('globals', false)" ng-swipe-right="activate('players', true)">
             <div ng-repeat="resource in playerResources">
                 <div class="row bump-bottom">
                     <div class="col-xs-9 panel-title">
@@ -96,6 +90,45 @@
                 </div>
             </div>
         </div>
+        <div class="full-page transition-switch-left" id="switch-globals" ng-show="newGameActive == 'globals'"
+             ng-swipe-left="activate('players', false)" ng-swipe-right="activate('resources', true)">
+            <div ng-repeat="resource in globalResources">
+                <div class="row bump-bottom">
+                    <div class="col-xs-9 panel-title">
+                        <input class="form-control" placeholder="Resource name" ng-model="resource.name" />
+                    </div>
+                    <div class="col-xs-1 text-right">
+                        <button type="button" class="btn btn-default" data-toggle="collapse"
+                                data-target="#global-resource-detail-{{$index}}" ng-click="collapsed=!collapsed">
+                            <span class="glyphicon"
+                                  ng-class="{'glyphicon-collapse-down':!collapsed,'glyphicon-collapse-up':collapsed}">
+                            </span>
+                        </button>
+                    </div>
+                </div>
+                <div class="row nudge-bottom">
+                    <div class="player-resource-detail collapse" id="global-resource-detail-{{$index}}">
+                        <div class="col-xs-5">
+                            <select class="form-control" ng-model="resource.visibility"
+                                    ng-options="vis.name for vis in visibilities" >
+                            </select>
+                        </div>
+                        <div class="col-xs-2">
+                            <utils-mini-color ng-model="player.color"></utils-mini-color>
+                        </div>
+                        <div class="col-xs-2">
+                            <utils-icon-select ng-model="player.iconClass"></utils-icon-select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row push-top">
+                <div class="col-xs-6">
+                    <button class="btn btn-default" ng-click="addResource('global')">Add Global</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <nav class="row navbar-fixed-bottom newgame-bottom-nav">
@@ -106,14 +139,14 @@
                         <span class="glyphicon glyphicon-user"></span>
                     </a>
                 </li>
-                <li class="menu-item-3 {{newGameActive=='settings' ? 'active' : ''}}">
-                    <a class="text-center" ng-click="activate('settings')">
-                        <span class="glyphicon glyphicon-cog"></span>
-                    </a>
-                </li>
                 <li class="menu-item-3 {{newGameActive=='resources' ? 'active' : ''}}">
                     <a class="text-center" ng-click="activate('resources')">
                         <span class="glyphicon glyphicon-tree-conifer"></span>
+                    </a>
+                </li>
+                <li class="menu-item-3 {{newGameActive=='globals' ? 'active' : ''}}">
+                    <a class="text-center" ng-click="activate('globals')">
+                        <span class="glyphicon glyphicon-globe"></span>
                     </a>
                 </li>
             </ul>

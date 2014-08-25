@@ -40,37 +40,35 @@ object Dal {
   }
 
   case class resourceState(id:Int,value:Int)
-  case class resourceDefinition(id:Int, name:String, color:Option[String] = None, icon: Option[String] = None)
-  // TODO: Separate player state from player definition
+  case class resourceDefinition(id:Int, name:String, resType:String,
+                                  color:Option[String] = None, icon: Option[String] = None)
+
+  // TODO: Separate states from definitions
   // state contains only resource states and player id.
   // definition contains everything else
+  // same goes for global states
+  // This will avoid sending game definition data for each update, improving performance
   case class playerState(id:Int,userId:Int,playerName:Option[String],userName:String,email:String,
                          resources:List[resourceState],color:Option[String] = None,icon:Option[String] = None)
-  case class gameState(id:Int,name:String,creatorId:Int,created:String,players:List[playerState],
-                        playerResources:List[resourceDefinition])
+  case class gameState(id:Int,name:String,creatorId:Int,created:String,resources:List[resourceDefinition],
+                       players:List[playerState], globals:List[resourceState])
 
   def getGame(gameId:Int) : gameState = {
     play.api.db.slick.DB.withSession { implicit session =>
-      val gameQuery = for {
+      val playersQuery = for {
         g <- Models.games if g.id === gameId
         p <- Models.players if p.gameId === g.id
         u <- Models.users if u.id === p.userId
         pr <- Models.playerResources if pr.playerId === p.id
-        r <- Models.resources if pr.resourceId === r.id
-      } yield (g,p,u,pr,r)
-      val queryResult = gameQuery.list
+      } yield (g,p,u,pr)
+      val queryResult = playersQuery.list
 
       val playerGroups = queryResult groupBy { rawQuery => rawQuery._2.id }
 
-      val resourceDefinitions = queryResult groupBy { rawQuery => rawQuery._5.id } map { grouped =>
-        val resource = grouped._2.take(1).toList(0)._5
-        resourceDefinition(resource.id.get, resource.name, resource.color, resource.iconClass)
-      }
-
-      val resourceStates = playerGroups map { groupedQuery =>
-        groupedQuery._1.get -> (groupedQuery._2 groupBy { raw => raw._5.id } map {rawQuery =>
+      val playerResourceStates = playerGroups map { groupedQuery =>
+        groupedQuery._1.get -> (groupedQuery._2 groupBy { raw => raw._4.resourceId } map {rawQuery =>
           val resState = rawQuery._2.take(1).toList(0)
-          resourceState(resState._5.id.get, resState._4.value)
+          resourceState(resState._4.resourceId, resState._4.value)
         })
       }
 
@@ -79,13 +77,33 @@ object Dal {
         val user = firstRow._3
         val player = firstRow._2
 
-        playerState(player.id.get,user.id.get,player.name,user.name,user.email,resourceStates(player.id.get).toList,
-          player.color,player.iconClass)
+        playerState(player.id.get,user.id.get,player.name,user.name,user.email,
+          playerResourceStates(player.id.get).toList, player.color,player.iconClass)
+      }
+
+      // Get global resource states
+      val globalsQuery = for {
+        gr <- Models.globalResources if gr.gameId === gameId
+      } yield gr
+
+      val globalStates = globalsQuery.list map { res =>
+        resourceState(res.resourceId, res.value)
+      }
+
+      // Get resource definitions
+      val resourceDefinitionsQuery = for {
+        g <- Models.games if g.id === gameId
+        c <- Models.configs if c.id === g.configId
+        r <- Models.resources if r.configId === c.id
+      } yield r
+
+      val resourceDefinitions = resourceDefinitionsQuery.list map { res =>
+        resourceDefinition(res.id.get, res.name, res.resourceType, res.color, res.iconClass)
       }
 
       val game = queryResult(0)._1
-      gameState(game.id.get,game.name,game.creatorId,game.created.toString,playerStates.toList,
-        resourceDefinitions.toList)
+      gameState(game.id.get,game.name,game.creatorId,game.created.toString,resourceDefinitions.toList,
+        playerStates.toList,globalStates.toList)
     }
   }
 
@@ -145,7 +163,14 @@ object Dal {
 
   def createGame(g:Game) : Int = {
     play.api.db.slick.DB.withSession { implicit session =>
-      (Models.games returning Models.games.map(_.id)) += g
+      val gameId = (Models.games returning Models.games.map(_.id)) += g
+
+      val r = Models.resources.filter(_.configId === g.configId).filter(_.resourceType === "global").list
+      r foreach { res =>
+        Models.globalResources += Models.GlobalResource(None, gameId, res.id.get)
+      }
+
+      gameId
     }
   }
 

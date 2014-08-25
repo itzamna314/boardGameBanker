@@ -113,7 +113,6 @@ object Ajax extends Controller {
 
     reqObj match {
       case Some(req : createGameRequest) =>
-
         val configId = req.configId match {
           case Some(cId) =>
             cId
@@ -125,10 +124,15 @@ object Ajax extends Controller {
               Dal.createResource(r)
             }
 
+            req.globalResources foreach { gr =>
+              val r = Resource(None, gr.name, gr.icon, gr.color, confId, "global", gr.visibility, None, None, None)
+              Dal.createResource(r)
+            }
+
             confId
         }
 
-        val gameId = Dal.createGame(Game(None,req.name,req.creator.id.get, configId))
+        val gameId = Dal.createGame(Game(None,req.name,req.creator.id.get,configId))
         req.players foreach { p=>
           val uuid = UUID.randomUUID().toString
 
@@ -198,17 +202,23 @@ object Ajax extends Controller {
   }
 
   private case class createGameRequest(
-  name:String,
-  creator:User,
-  players:Array[createGameRequestPlayer],
-  configId:Option[Int],
-  playerResources:List[createGameRequestPlayerResource])
+    name:String,
+    creator:User,
+    players:Array[createGameRequestPlayer],
+    configId:Option[Int],
+    playerResources:List[createGameRequestPlayerResource],
+    globalResources:List[createGameRequestGlobalResource])
   private case class createGameRequestPlayer(
     email:String,
     color:Option[String] = None,
     name:Option[String] = None,
     icon:Option[String] = None)
   private case class createGameRequestPlayerResource(
+    name:String,
+    visibility:String,
+    color:Option[String] = None,
+    icon:Option[String] = None)
+  private case class createGameRequestGlobalResource(
     name:String,
     visibility:String,
     color:Option[String] = None,
@@ -236,6 +246,7 @@ object Ajax extends Controller {
         val gameName = (j \ "title").asOpt[String]
         val players = (j \ "players").asOpt[Array[JsObject]]
         val playerResources = (j \ "playerResources").asOpt[Array[JsObject]]
+        val globalResources = (j \ "globalResources").asOpt[Array[JsObject]]
         val configId = (j \ "configId").asOpt[Int]
 
         if ( gameName.isDefined && players.isDefined ) {
@@ -265,6 +276,20 @@ object Ajax extends Controller {
               List[createGameRequestPlayerResource]()
           }
 
+          val globalResourcesArr : List[createGameRequestGlobalResource] = globalResources match {
+            case Some(arr) =>
+              (arr map { gr =>
+                createGameRequestGlobalResource(
+                  name = (gr \ "name").as[String],
+                  visibility = (gr \ "visibility").as[String],
+                  color = (gr \ "color").asOpt[String],
+                  icon = (gr \ "iconClass").asOpt[String]
+                )
+              }).toList
+            case None =>
+              List[createGameRequestGlobalResource]()
+          }
+
           val creator : Seq[User] = players.get filter { p =>
             val isCreator = (p \ "isCreator").asOpt[Boolean].getOrElse(false)
             isCreator
@@ -279,7 +304,14 @@ object Ajax extends Controller {
           } filter(_.isDefined) map (_.get)
 
           if ( creator.length == 1 )
-            Some(createGameRequest(gameName.get,creator(0),playersArr, configId, playerResourcesArr))
+            Some(createGameRequest(
+              gameName.get,
+              creator(0),
+              playersArr,
+              configId,
+              playerResourcesArr,
+              globalResourcesArr)
+            )
           else
             None
         }
@@ -352,6 +384,29 @@ object Ajax extends Controller {
 
     if ( gameState.players.length > 0 ) {
 
+      val gameJson = Json.obj(
+        "name" -> gameState.name,
+        "created" -> gameState.created,
+        "id" -> gameState.id
+      )
+
+      val resourceDefinitions = gameState.resources map { res =>
+        Json.obj(
+          "id" -> res.id,
+          "type" -> res.resType,
+          "name" -> res.name,
+          "color" -> res.color,
+          "icon" -> res.icon
+        )
+      }
+
+      val globalsJson = gameState.globals map { g =>
+        Json.obj(
+          "id" -> g.id,
+          "value" -> g.value
+        )
+      }
+
       val playersJson = gameState.players map { player =>
 
         val resources = player.resources map { playerRes =>
@@ -374,25 +429,11 @@ object Ajax extends Controller {
         )
       }
 
-      val gameJson = Json.obj(
-        "name" -> gameState.name,
-        "created" -> gameState.created,
-        "id" -> gameState.id
-      )
-
-      val playerResourcesJson = gameState.playerResources map { pr =>
-        Json.obj(
-          "id" -> pr.id,
-          "name" -> pr.name,
-          "color" -> pr.color,
-          "icon" -> pr.icon
-        )
-      }
-
       Json.obj(
         "game" -> gameJson,
         "players" -> Json.toJson(playersJson.toSeq),
-        "playerResourceDefinition" -> Json.toJson(playerResourcesJson.toSeq)
+        "globals" -> Json.toJson(globalsJson.toSeq),
+        "resourceDefinitions" -> Json.toJson(resourceDefinitions.toSeq)
       )
     } else {
       Json.obj("error" -> "NoPlayers","message" -> "found no players")

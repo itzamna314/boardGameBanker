@@ -71,6 +71,11 @@ body.with-bottom-nav{
     margin-top:0;
 }
 
+.menu-item-2 {
+    width:48%;
+    margin-top:0;
+}
+
 .activegame-menu-item {
     width:32%;
 }
@@ -180,4 +185,8 @@ body.with-bottom-nav{
 
 #resource-carousel h5 {
     margin-top:20px;
+}
+
+.global-row span.glyphicon {
+    padding-top:25%;
 }

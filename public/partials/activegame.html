@@ -1,89 +1,129 @@
 <div id="active-game" ng-controller="ActiveGame">
     <utils-loading></utils-loading>
-    <div class="container">
-        <div class="row">
-            <div id="resource-carousel" class="carousel slide" data-interval="false" data-ride="carousel"
-                 ng-swipe-left="carouselLeft()"
-                 ng-swipe-right="carouselRight()">
-                <ol class="carousel-indicators">
-                    <li ng-repeat="(id,res) in playerResourceDefinitions"
-                        data-slide-to="{{$index}}"
-                        ng-class="{active:$first}"
-                        data-target="#resource-carousel">
-                    </li>
-                </ol>
-                <div class="carousel-inner">
-                    <div ng-repeat="(resId,res) in playerResourceDefinitions" ng-class="{active: $first, item : true}">
-                        <div class="row">
-                            <div class="col-xs-4">
-                                <div ng-repeat="val in res.buttonsNegative" class="row scoreboard">
-                                    <button class="btn btn-default btn-block" ng-click="modifyTransaction(resId, -1 * val)">
-                                        {{-1 * val}}
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="col-xs-4">
+
+    <div class="container full-page">
+        <div class="full-page transition-switch-left" id="switch-players" ng-show="newGameActive == 'players'"
+             ng-swipe-left="activate('globals', false)" ng-swipe-right="activate('globals', true)">
+            <div class="row">
+                <div class="col-xs-10">
+                    <div id="resource-carousel" class="carousel slide" data-interval="false" data-ride="carousel"
+                         ng-swipe-left="carouselLeft()"
+                         ng-swipe-right="carouselRight()">
+                        <ol class="carousel-indicators" ng-show="Object.keys(playerResourceDefinitions).length">
+                            <li ng-repeat="res in playerResourceDefinitions"
+                                data-slide-to="{{$index}}"
+                                ng-class="{active:$first}"
+                                data-target="#resource-carousel">
+                            </li>
+                        </ol>
+                        <div class="carousel-inner">
+                            <div ng-repeat="res in playerResourceDefinitions"
+                                 ng-class="{active: $first, item : true}">
                                 <div class="row">
-                                    <h5 class="text-center">{{res.name}}</h5>
-                                </div>
-                                <div class="row">
-                                    <h1 class="text-center">{{myResources[resId].score}}</h1>
-                                </div>
-                                <div class="row" ng-show="myResources[resId].transaction != 0">
-                                    <h1 class="text-center"
-                                        ng-class="{'transaction-positive': myResources[resId].transaction > 0,
-                                                   'transaction-negative': myResources[resId].transaction < 0}">
-                                        {{myResources[resId].transaction}}
-                                    </h1>
-                                </div>
-                                <div class="row" ng-show="myResources[resId].transaction != undefined && myResources[resId].transaction != 0">
-                                    <div class="text-center">
-                                        <button class="btn btn-success" ng-click="commitTransaction(resId)">Submit</button>
+                                    <div class="col-xs-4">
+                                        <div ng-repeat="val in res.buttonsNegative" class="row scoreboard">
+                                            <button class="btn btn-default btn-block" ng-click="modifyTransaction(res.id, -1 * val)">
+                                                {{-1 * val}}
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <div class="row">
+                                            <h5 class="text-center">{{res.name}}</h5>
+                                        </div>
+                                        <div class="row">
+                                            <h1 class="text-center">{{myResources[res.id].score}}</h1>
+                                        </div>
+                                        <div class="row" ng-show="myResources[res.id].transaction != 0">
+                                            <h1 class="text-center"
+                                                ng-class="{'transaction-positive': myResources[res.id].transaction > 0,
+                                                           'transaction-negative': myResources[res.id].transaction < 0}">
+                                                {{myResources[res.id].transaction}}
+                                            </h1>
+                                        </div>
+                                        <div class="row" ng-show="myResources[res.id].transaction != undefined && myResources[res.id].transaction != 0">
+                                            <div class="text-center">
+                                                <button class="btn btn-success" ng-click="commitTransaction(res.id)">Submit</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <div ng-repeat="val in res.buttonsPositive" class="row scoreboard">
+                                            <button class="btn btn-default btn-block" ng-click="modifyTransaction(res.id, val)">
+                                                {{val}}
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-xs-4">
-                                <div ng-repeat="val in res.buttonsPositive" class="row scoreboard">
-                                    <button class="btn btn-default btn-block" ng-click="modifyTransaction(resId, val)">
-                                        {{val}}
-                                    </button>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <table class="table">
+                                            <tr class="player-score">
+                                                <th>Player</th>
+                                                <th class="text-center">Score</th>
+                                            </tr>
+                                            <tr class="player-score"
+                                                ng-repeat="player in players | orderBy:'player.resources[resId].score':true"
+                                                ng-class="{creatorRow:player.isCreator,selfRow:player.isMe}"
+                                                ng-style="{'background-color':player.color,'color':player.textColor}">
+                                                <td>
+                                                    <span ng-class="player.iconClass"></span>
+                                                <span>
+                                                    {{player.playerName || player.username}} ({{player.playerName ? player.username : player.email}})
+                                                </span>
+                                                </td>
+                                                <td class="text-center">
+                                                    {{player.resources[res.id].score}}
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <table class="table">
-                                    <tr class="player-score">
-                                        <th>Player</th>
-                                        <th class="text-center">Score</th>
-                                    </tr>
-                                    <tr class="player-score"
-                                        ng-repeat="player in players | orderBy:'player.resources[resId].score':true"
-                                        ng-class="{creatorRow:player.isCreator,selfRow:player.isMe}"
-                                        ng-style="{'background-color':player.color,'color':player.textColor}">
-                                        <td>
-                                            <span ng-class="player.iconClass"></span>
-                                        <span>
-                                            {{player.playerName || player.username}} ({{player.playerName ? player.username : player.email}})
-                                        </span>
-                                        </td>
-                                        <td class="text-center">
-                                            {{player.resources[resId].score}}
-                                        </td>
-                                    </tr>
-                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-5"></div>
-            <div class="col-xs-2">
-                <button class="btn btn-primary" ng-click="refreshScore()">Refresh</button>
+            <div class="row">
+                <div class="col-xs-5"></div>
+                <div class="col-xs-2">
+                    <button class="btn btn-primary" ng-click="refreshScore()">Refresh</button>
+                </div>
+                <div class="col-xs-5"></div>
             </div>
-            <div class="col-xs-5"></div>
+        </div>
+        <div class="full-page transition-switch-left" id="switch-globals" ng-show="newGameActive == 'globals'"
+             ng-swipe-left="activate('players', false)" ng-swipe-right="activate('players', true)">
+            <div class="row global-row" ng-repeat="res in globalResourceDefinitions"
+                 style="background-color:{{resourceDefinitions[res.id].color}}">
+                <div class="col-xs-1">
+                        <span class="{{resourceDefinitions[res.id].icon}}"></span>
+                </div>
+                <div class="col-xs-4">
+                    <h4>{{res.name}}</h4>
+                </div>
+                <div class="col-xs-1"></div>
+                <div class="col-xs-4">
+                    <h4>{{globalResources[res.id].value}}</h4>
+                </div>
+            </div>
         </div>
     </div>
+
+    <nav class="row navbar-fixed-bottom newgame-bottom-nav">
+        <div class="container">
+            <ul class="nav nav-pills nav-bottom">
+                <li class="menu-item-2 {{newGameActive=='players' ? 'active' : ''}}">
+                    <a class="text-center" ng-click="activate('players')">
+                        <span class="glyphicon glyphicon-user"></span>
+                    </a>
+                </li>
+                <li class="menu-item-2 {{newGameActive=='globals' ? 'active' : ''}}">
+                    <a class="text-center" ng-click="activate('globals')">
+                        <span class="glyphicon glyphicon-globe"></span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
 </div>

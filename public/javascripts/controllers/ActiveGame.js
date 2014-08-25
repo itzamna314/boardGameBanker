@@ -7,7 +7,7 @@ bgbControllers.controller('ActiveGame',[
     function($scope,$rootScope,$location,$routeParams,httpWrapper) {
         // If normalized background color intensity ([0,1]) < textColorCutoff,
         // set text color to white instead of black.
-        var textColorCutoff = 0.3;
+        var textColorCutoff = 0.3, sections;
 
         $scope.refreshScore = function(){
             if ( $scope.game && $scope.game.id )
@@ -40,22 +40,55 @@ bgbControllers.controller('ActiveGame',[
             $('#resource-carousel').carousel('prev');
         };
 
+        $scope.activate = function(section, isRight){
+            var oldSwitch = $('#switch-' + $scope.newGameActive);
+            var newSwitch = $('#switch-' + section);
+
+            oldSwitch.removeClass('transition-switch-left transition-switch-right');
+            newSwitch.removeClass('transition-switch-left transition-switch-right');
+
+            if ( isRight === undefined )
+                isRight = sections[section] < sections[$scope.newGameActive];
+
+            // Moving right, transition left
+            if ( !isRight  )
+            {
+                oldSwitch.addClass('transition-switch-left');
+                newSwitch.addClass('transition-switch-left');
+            }
+            else
+            {
+                oldSwitch.addClass('transition-switch-right');
+                newSwitch.addClass('transition-switch-right');
+            }
+
+            $scope.newGameActive = section;
+        };
+
         function getDetails(gameId){
             httpWrapper.get('ajax/gamedetail/' + gameId + '/' + $rootScope.user.id)
                 .success(function (data) {
                     $scope.game = data.game;
                     $scope.players = data.players;
                     // Store resource descriptors as {id -> resourceObj}
-                    $scope.playerResourceDefinitions = _.object(
-                        _.pluck(data.playerResourceDefinition, 'id'),
-                        data.playerResourceDefinition
+                    $scope.resourceDefinitions = _.object(
+                        _.pluck(data.resourceDefinitions, 'id'),
+                        data.resourceDefinitions
                     );
+
+                    $scope.playerResourceDefinitions = _.filter($scope.resourceDefinitions,function(res){
+                        return res.type === 'player';
+                    });
+
+                    $scope.globalResourceDefinitions = _.filter($scope.resourceDefinitions,function(res){
+                        return res.type === 'global';
+                    });
 
                     // Add in button descriptors.  We will want to get these from the server eventually, as they
                     // will be configurable.
-                    _.forEach($scope.playerResourceDefinitions, function(pr) {
-                        pr.buttonsNegative = [1,5,10,50,100,1000];
-                        pr.buttonsPositive = [1,5,10,50,100,1000];
+                    _.forEach($scope.resourceDefinitions, function(res) {
+                        res.buttonsNegative = [1,5,10,50,100,1000];
+                        res.buttonsPositive = [1,5,10,50,100,1000];
                     });
 
                     _.forEach($scope.players,function(player){
@@ -66,6 +99,11 @@ bgbControllers.controller('ActiveGame',[
                         // Store player resource values as {id -> scoreObj}
                         player.resources = _.object(_.pluck(player.resources, 'id'), player.resources);
                     });
+
+                    $scope.globalResources = _.object(
+                        _.pluck(data.globals, 'id'),
+                        data.globals
+                    );
 
                     var mePlayer = _.find(data.players,'isMe');
                     $scope.myResources = mePlayer.resources;
@@ -120,6 +158,12 @@ bgbControllers.controller('ActiveGame',[
         $scope.currentTransaction = 0;
         $scope.displayMode = 'Scoreboard';
         $scope.storedPoints = 0;
+        $scope.newGameActive = 'players';
+
+        sections = {
+            players: 1,
+            globals: 2
+        };
 
         getDetails($routeParams.id);
     }

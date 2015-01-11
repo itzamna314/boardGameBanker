@@ -14,9 +14,9 @@
       </SbtProjectSettings>
       <SbtProjectSettings>
         <option name="externalProjectPath" value="C:\Users\Kyl\Documents\GitHub\boardGameBanker" />
+        <option name="sbtVersion" value="0.13.0" />
         <option name="useAutoImport" value="true" />
       </SbtProjectSettings>
     </option>
   </component>
 </project>
-

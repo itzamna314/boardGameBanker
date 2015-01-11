@@ -6,10 +6,6 @@
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://localhost:3306/cb_bgb-db</jdbc-url>
-      <user-name>root</user-name>
-      <user-password>df91dfeadfc3dfebdfe7dff1dffcdfdcdf83df9edf86df99</user-password>
-      <schema-pattern>cb_bgb-db.*</schema-pattern>
-      <default-schemas>cb_bgb-db.*</default-schemas>
       <driver-properties>
         <property name="zeroDateTimeBehavior" value="convertToNull" />
         <property name="tinyInt1isBit" value="false" />
@@ -18,4 +14,3 @@
     </data-source>
   </component>
 </project>
-

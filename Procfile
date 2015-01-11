@@ -1,0 +1,1 @@
+web: target/universal/stage/bin/board-game-banker -Ddb.default.url=$CLEARDB_DATABASE_URL

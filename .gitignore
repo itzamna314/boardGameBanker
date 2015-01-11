@@ -14,7 +14,6 @@ dist
 deploy.bat
 /.idea/workspace.xml
 /.idea/misc.xml
-conf/application-prod.conf
 conf/stage.conf
 conf/evolutions.default
 .idea/dataSources.ids

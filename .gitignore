@@ -15,5 +15,7 @@ deploy.bat
 /.idea/workspace.xml
 /.idea/misc.xml
 conf/stage.conf
+conf/application-prod.conf
 conf/evolutions.default
 .idea/dataSources.ids
+Procfile

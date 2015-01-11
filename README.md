@@ -1,6 +1,6 @@
 Welcome to Board Game Banker
 
-This project is officially a [prototype!](http://board-game-banker.itzamna314.cloudbees.net/)
+This project is officially a [prototype!](https://lit-brushlands-7167.herokuapp.com/#/)
 
 If you're playing a board game and can't find the monopoly money/pencil and paper/however else you keep score, use this app!
 Instead of having everyone's score on a single device, everyone keeps score on their own device.

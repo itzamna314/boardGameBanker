@@ -22,7 +22,7 @@ bgbControllers.controller('Welcome',[
                         $location.path('/joingame');
                     }
 
-                    $scope.$storage.usersMru.add(query);
+                    $scope.$storage.userMru.push(query);
                 }
                 else {
                     $cookies.user = JSON.stringify({});
@@ -94,9 +94,9 @@ bgbControllers.controller('Welcome',[
         $rootScope.isActive = 'Welcome';
         httpWrapper.timeout = 1000;
 
-        /*$scope.$storage = $localStorage;
+        $scope.$storage = $localStorage;
 
-        if ( !$scope.$storage.usersMru )
-            $scope.$storage.usersMru = [];*/
+        if ( !$scope.$storage.userMru )
+            $scope.$storage.userMru = [];
     }
 ]);

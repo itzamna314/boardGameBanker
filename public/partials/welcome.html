@@ -48,14 +48,19 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-xs-6">
-                        <div role="form">
-                            <div class="form-group">
+                <div class="form-group">
+                    <div role="form">
+                        <div class="row">
+                            <div class="col-xs-12">
                                 <label for="enterEmail" id="enter-email-label">Enter e-mail</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-10">
                                 <input type="text" class="form-control" id="enterEmail" placeholder="Enter email"
                                        ng-model="userquery" />
-
+                            </div>
+                            <div class="col-xs-2">
                                 <input type="submit" class="btn btn-default" value="Go" ng-click="findUser(userquery)"/>
                             </div>
                         </div>

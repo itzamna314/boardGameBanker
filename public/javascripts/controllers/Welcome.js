@@ -3,8 +3,9 @@ bgbControllers.controller('Welcome',[
     '$cookies',
     '$rootScope',
     '$location',
+    '$localStorage',
     'httpWrapper',
-    function($scope,$cookies,$rootScope,$location,httpWrapper) {
+    function($scope,$cookies,$rootScope,$location,$localStorage,httpWrapper) {
         /**************************** Public *********************************/
         $scope.findUser = function(query){
             httpWrapper.get('ajax/getuser/' + query).success(function(data){
@@ -20,6 +21,8 @@ bgbControllers.controller('Welcome',[
                     if ( $rootScope.token ) {
                         $location.path('/joingame');
                     }
+
+                    $scope.$storage.usersMru.add(query);
                 }
                 else {
                     $cookies.user = JSON.stringify({});
@@ -90,5 +93,10 @@ bgbControllers.controller('Welcome',[
 
         $rootScope.isActive = 'Welcome';
         httpWrapper.timeout = 1000;
+
+        /*$scope.$storage = $localStorage;
+
+        if ( !$scope.$storage.usersMru )
+            $scope.$storage.usersMru = [];*/
     }
 ]);

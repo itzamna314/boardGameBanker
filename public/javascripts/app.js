@@ -1,7 +1,8 @@
 var bgbControllers = angular.module('bgbControllers',[
     'utilsModule',
     'ngCookies',
-    'ngTouch'
+    'ngTouch',
+    'ngStorage'
 ]);
 
 var bgbApp = angular.module('bgbApp',[
@@ -10,6 +11,8 @@ var bgbApp = angular.module('bgbApp',[
     'ngTouch',
     'ngAnimate',
     'utilsModule',
+    'ngStorage',
+    'ui.bootstrap',
     'bgbControllers'
 ]).run(['$rootScope',function($rootScope){
 
@@ -22,7 +25,7 @@ var bgbApp = angular.module('bgbApp',[
 }]);
 
 bgbApp.config(['$routeProvider',
-    function($routeProvider){
+        function($routeProvider){
         $routeProvider.
             when('/games',{
                 templateUrl:'assets/partials/listgames.html',

@@ -1,26 +1,26 @@
 .loading-bar{
-    -webkit-animation:1s loading infinite;
-    animation:1s loading infinite;
+    -webkit-animation:1.5s loading infinite;
+    animation:1.5s loading infinite;
 }
 
 .loading-bar-1 {
     -webkit-animation:2.5s loading-1 infinite ease-in-out;
-    animation:1s loading-1 infinite ease-in-out;
+    animation:2.5s loading-1 infinite ease-in-out;
 }
 
 .loading-bar-2 {
     -webkit-animation:2.5s loading-2 infinite ease-in-out;
-    animation:1s loading-2 infinite linear;
+    animation:2.5s loading-2 infinite ease-in-out;
 }
 
 .loading-bar-3 {
     -webkit-animation:2.5s loading-3 infinite ease-in-out;
-    animation:1s loading-3 infinite;
+    animation:2.5s loading-3 infinite ease-in-out;
 }
 
 .loading-bar-4 {
     -webkit-animation:2.5s loading-4 infinite ease-in-out;
-    animation:1s loading-4 infinite linear;
+    animation:2.5s loading-4 infinite ease-in-out;
 }
 
 @-webkit-keyframes loading {
@@ -44,23 +44,23 @@
 }
 
 @-webkit-keyframes loading-2 {
-    0%,100%  { width:15%; }
-    50% { width:25%; }
+    0%,100%  { width:5%; }
+    50% { width:35%; }
 }
 
 @keyframes loading-2 {
-    0%,100%   { width:15%; }
-    50% { width:25%; }
+    0%,100%   { width:5%; }
+    50% { width:35%; }
 }
 
 @-webkit-keyframes loading-3 {
-    0%,100%  { width:25%; }
-    50% { width:15%; }
+    0%,100%  { width:35%; }
+    50% { width:5%; }
 }
 
 @keyframes loading-3 {
-    0%,100%   { width:25%; }
-    50% { width:15%; }
+    0%,100%   { width:35%; }
+    50% { width:5%; }
 }
 
 @-webkit-keyframes loading-4 {

@@ -27,18 +27,25 @@
                                     <h5 class="text-center">{{res.name}}</h5>
                                 </div>
                                 <div class="row">
-                                    <h1 class="text-center">{{myResources[resId].score}}</h1>
+                                    <h1 class="text-center">{{currentPlayer.resources[resId].score}}</h1>
                                 </div>
-                                <div class="row" ng-show="myResources[resId].transaction != 0">
+                                <div class="row" ng-show="currentPlayer.resources[resId].transaction != 0">
                                     <h1 class="text-center"
-                                        ng-class="{'transaction-positive': myResources[resId].transaction > 0,
-                                                   'transaction-negative': myResources[resId].transaction < 0}">
-                                        {{myResources[resId].transaction}}
+                                        ng-class="{'transaction-positive': currentPlayer.resources[resId].transaction > 0,
+                                                   'transaction-negative': currentPlayer.resources[resId].transaction < 0}">
+                                        {{currentPlayer.resources[resId].transaction}}
                                     </h1>
                                 </div>
-                                <div class="row" ng-show="myResources[resId].transaction != undefined && myResources[resId].transaction != 0">
+                                <div class="row" ng-show="currentPlayer.resources[resId].transaction != undefined &&
+                                                          currentPlayer.resources[resId].transaction != 0">
                                     <div class="text-center">
                                         <button class="btn btn-success" ng-click="commitTransaction(resId)">Submit</button>
+                                        <button class="btn btn-danger" ng-click="cancelTransaction(resId)">Cancel</button>
+                                    </div>
+                                </div>
+                                <div class="row" ng-show="currentPlayer != me">
+                                    <div class="text-center">
+                                        <h4 class="text-center">{{currentPlayer.playerName || currentPlayer.username}}</h4>
                                     </div>
                                 </div>
                             </div>
@@ -60,7 +67,8 @@
                                     <tr class="player-score"
                                         ng-repeat="player in players | orderBy:'player.resources[resId].score':true"
                                         ng-class="{creatorRow:player.isCreator,selfRow:player.isMe}"
-                                        ng-style="{'background-color':player.color,'color':player.textColor}">
+                                        ng-style="{'background-color':player.color,'color':player.textColor}"
+                                        ng-click="setCurrentPlayer(player)">
                                         <td>
                                             <span ng-class="player.iconClass"></span>
                                         <span>

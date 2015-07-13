@@ -15,19 +15,23 @@ bgbControllers.controller('ActiveGame',[
         };
 
         $scope.modifyTransaction = function(resourceId, amount){
-            if ( $scope.myResources[resourceId].transaction === undefined )
-                $scope.myResources[resourceId].transaction = 0;
+            if ( $scope.currentPlayer.resources[resourceId].transaction === undefined )
+                $scope.currentPlayer.resources[resourceId].transaction = 0;
 
-            $scope.myResources[resourceId].transaction += amount;
+            $scope.currentPlayer.resources[resourceId].transaction += amount;
         };
 
         $scope.commitTransaction = function(resId){
-            $scope.myResources[resId].score +=
-                $scope.myResources[resId].transaction;
+            $scope.currentPlayer.resources[resId].score +=
+                $scope.currentPlayer.resources[resId].transaction;
 
             submitPoints();
 
-            $scope.myResources[resId].transaction = 0;
+            $scope.currentPlayer.resources[resId].transaction = 0;
+        };
+
+        $scope.cancelTransaction = function(resId){
+            $scope.currentPlayer.resources[resId].transaction = 0;
         };
 
         $scope.carouselLeft = function()
@@ -38,6 +42,12 @@ bgbControllers.controller('ActiveGame',[
         $scope.carouselRight = function()
         {
             $('#resource-carousel').carousel('prev');
+        };
+
+        $scope.setCurrentPlayer = function(player){
+            if ( $scope.me.isCreator ) {
+                $scope.currentPlayer = player;
+            }
         };
 
         function getDetails(gameId){
@@ -67,8 +77,7 @@ bgbControllers.controller('ActiveGame',[
                         player.resources = _.object(_.pluck(player.resources, 'id'), player.resources);
                     });
 
-                    var mePlayer = _.find(data.players,'isMe');
-                    $scope.myResources = mePlayer.resources;
+                    $scope.me = $scope.currentPlayer = _.find(data.players,'isMe');
                 })
                 .error(function(data){
                     $rootScope.modalTitle = 'Failed to reach server!';
@@ -79,9 +88,9 @@ bgbControllers.controller('ActiveGame',[
                 });
         }
 
-        function submitPoints(){
-            httpWrapper.post('ajax/gameaddpoints/' + $scope.game.id + '/' + $rootScope.user.id, {
-                resources: $scope.myResources
+        function submitPoints(userId){
+            httpWrapper.post('ajax/gameaddpoints/' + $scope.game.id + '/' + $scope.currentPlayer.playerId, {
+                resources: $scope.currentPlayer.resources
             })
             .success(function (data) {
                 for ( var player in data.players ) {

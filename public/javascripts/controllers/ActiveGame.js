@@ -88,10 +88,15 @@ bgbControllers.controller('ActiveGame',[
                 });
         }
 
-        function submitPoints(userId){
-            httpWrapper.post('ajax/gameaddpoints/' + $scope.game.id + '/' + $scope.currentPlayer.playerId, {
-                resources: $scope.currentPlayer.resources
-            })
+        function submitPoints(){
+            var resourceObj = {
+                resources: _.each($scope.currentPlayer.resources, function(r){
+                    r.resourceId = r.id;
+                }),
+                playerId: $scope.currentPlayer.playerId
+            };
+
+            httpWrapper.post('ajax/gameaddpoints/' + $scope.game.id + '/' + $scope.me.playerId, resourceObj)
             .success(function (data) {
                 for ( var player in data.players ) {
                     if ( !data.players.hasOwnProperty(player) )

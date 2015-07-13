@@ -46,19 +46,19 @@ object Ajax extends Controller {
     }
   }
 
-  def addPoints(gameId:String,userId:String) = Action(parse.json) { implicit request =>
+  def addPoints(gameId:String, userId:String) = Action(parse.json) { implicit request =>
     val reqJson = request.body.asOpt[JsObject]
     val reqObj = parseSubmitPointsRequest(reqJson)
 
     reqObj match {
       case Some(req) =>
         req.resources foreach { r =>
-          Dal.addPoints(gameId.toInt, userId.toInt, r.newValue, r.resourceId)
+          Dal.addPoints(gameId.toInt, req.playerId, r.newValue, r.resourceId)
         }
 
-        Ok(getGameState(gameId.toInt,userId.toInt))
+        Ok(getGameState(gameId.toInt, userId.toInt))
       case None =>
-        BadRequest(Json.obj("error" -> "IllegalUpdate","message" -> ("Game ID: " + gameId + ", User ID: " + userId)))
+        BadRequest(Json.obj("error" -> "IllegalUpdate","message" -> ("Game ID: " + gameId + ", User ID: " + userId.toInt)))
     }
 
     /*
@@ -216,7 +216,8 @@ object Ajax extends Controller {
   private case class joinGameRequest(userId:Int,uuid:String)
   private case class resourcePointsRequest(resourceId:Int,newValue:Int)
   private case class submitPointsRequest(
-    resources:List[resourcePointsRequest]
+    resources:List[resourcePointsRequest],
+    playerId:Int
   )
 
   private def jsonResponse(error:Option[String],message:String = "") : SimpleResult = {
@@ -311,18 +312,23 @@ object Ajax extends Controller {
     json match {
       case Some(j:JsObject) =>
         val resources = (j \ "resources").asOpt[JsObject]
+        val playerId = (j \ "playerId").asOpt[Int]
 
-        resources match {
-          case Some(resList) =>
-            val keys = resList.keys
+        playerId match {
+          case Some(player) =>
+            resources match {
+              case Some(resList) =>
+                val keys = resList.keys
 
-            val res = keys map { k =>
-              val o = (resList \ k).as[JsObject]
+                val res = keys map { k =>
+                  val o = (resList \ k).as[JsObject]
 
-              resourcePointsRequest((o \ "id").as[Int], (o \ "score").as[Int])
+                  resourcePointsRequest((o \ "resourceId").as[Int], (o \ "score").as[Int])
+                }
+
+                Some(submitPointsRequest(res.toList, player))
+              case None => None
             }
-
-            Some(submitPointsRequest(res.toList))
           case None => None
         }
       case None =>

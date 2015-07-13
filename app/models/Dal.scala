@@ -89,10 +89,10 @@ object Dal {
     }
   }
 
-  def addPoints(gameId:Int,userId:Int,newValue:Int,resourceId:Int) = {
+  def addPoints(gameId:Int,playerId:Int,newValue:Int,resourceId:Int) = {
     play.api.db.slick.DB.withSession{ implicit session =>
       val resourceQuery = for {
-        p <- Models.players if p.gameId === gameId && p.userId === userId
+        p <- Models.players if p.id === playerId
         pr <- Models.playerResources if pr.playerId === p.id && pr.resourceId === resourceId
       } yield pr
 

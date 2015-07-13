@@ -50,6 +50,11 @@ bgbControllers.controller('ActiveGame',[
             }
         };
 
+        $scope.sortPlayers = function(player)
+        {
+
+        };
+
         function getDetails(gameId){
             httpWrapper.get('ajax/gamedetail/' + gameId + '/' + $rootScope.user.id)
                 .success(function (data) {

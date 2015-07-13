@@ -65,7 +65,7 @@
                                         <th class="text-center">Score</th>
                                     </tr>
                                     <tr class="player-score"
-                                        ng-repeat="player in players | orderBy:'player.resources[resId].score':true"
+                                        ng-repeat="player in players | orderBy:'-resources[' + resId + '].score'"
                                         ng-class="{creatorRow:player.isCreator,selfRow:player.isMe}"
                                         ng-style="{'background-color':player.color,'color':player.textColor}"
                                         ng-click="setCurrentPlayer(player)">

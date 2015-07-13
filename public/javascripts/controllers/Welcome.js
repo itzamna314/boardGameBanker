@@ -44,6 +44,10 @@ bgbControllers.controller('Welcome',[
                     };
 
                     $cookies.user = JSON.stringify($scope.user);
+
+                    if ( $rootScope.token != null ) {
+                        $location.path('/joingame');
+                    }
                 }
                 else {
                     $cookies.user = JSON.stringify({});
